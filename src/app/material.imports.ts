@@ -7,6 +7,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSnackBarModule } from '@angular/material/snack-bar'; // Para notificaciones
 import { MatCheckboxModule } from '@angular/material/checkbox'; // Para "Recordarme"
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatDialogModule } from '@angular/material/dialog';
 
 export const MATERIAL_IMPORTS = [
   MatButtonModule,
@@ -17,5 +20,8 @@ export const MATERIAL_IMPORTS = [
   MatProgressSpinnerModule,
   MatToolbarModule,
   MatSnackBarModule,
-  MatCheckboxModule
+  MatCheckboxModule,
+  MatSidenavModule,
+  MatListModule,
+  MatDialogModule
 ];
