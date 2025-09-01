@@ -2,9 +2,8 @@
   <!-- Lado izquierdo con imagen/logo -->
   <div class="login-left">
     <div class="logo-container">
-      <img src="assets/images/logo-epa.png" alt="EPA Logo">
+      <img src="assets/logoepa.png" alt="EPA Logo">
       <h1>PLAT-EPA</h1>
-      <p>Plataforma de Apoyo TIC</p>
     </div>
   </div>
 
@@ -13,7 +12,7 @@
     <mat-card class="login-card">
       <mat-card-header>
         <mat-card-title>Iniciar Sesión</mat-card-title>
-        <mat-card-subtitle>Sistema de Gestión de Tickets EPA</mat-card-subtitle>
+        <mat-card-subtitle>Plataforma de Apoyo TIC EPA</mat-card-subtitle>
       </mat-card-header>
       
       <mat-card-content>
@@ -24,11 +23,10 @@
             <input 
               matInput 
               type="email" 
-              [(ngModel)]="email" 
+              [(ngModel)]="credentials.email" 
               name="email" 
               required
               email
-              placeholder="usuario@epa.gov.co"
               [disabled]="isLoading">
             <mat-icon matPrefix>email</mat-icon>
             <mat-error>Ingrese un email válido</mat-error>
@@ -40,11 +38,9 @@
             <input 
               matInput 
               [type]="hidePassword ? 'password' : 'text'"
-              [(ngModel)]="password" 
+              [(ngModel)]="credentials.password" 
               name="password" 
               required
-              minlength="6"
-              placeholder="••••••••"
               [disabled]="isLoading">
             <mat-icon matPrefix>lock</mat-icon>
             <button 
@@ -54,10 +50,10 @@
               (click)="hidePassword = !hidePassword">
               <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
-            <mat-error>La contraseña debe tener al menos 6 caracteres</mat-error>
+            <mat-error>La contraseña es requerida</mat-error>
           </mat-form-field>
 
-          <!-- Recordarme -->
+          <!-- Recordarme y Olvidé contraseña -->
           <div class="remember-forgot">
             <mat-checkbox [(ngModel)]="rememberMe" name="rememberMe">
               Recordarme
@@ -84,7 +80,7 @@
           </button>
         </form>
 
-        <!-- Registro opcional -->
+        <!-- Link a registro -->
         <div class="register-link">
           <span>¿No tienes cuenta?</span>
           <a routerLink="/register">Registrarse</a>

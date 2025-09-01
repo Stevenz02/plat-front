@@ -12,11 +12,13 @@
   align-items: center;
   justify-content: center;
   color: white;
+  position: relative;
 }
 
 .logo-container {
   text-align: center;
   animation: fadeIn 1s ease-in;
+  padding: 20px;
 }
 
 .logo-container img {
@@ -24,17 +26,21 @@
   height: 150px;
   margin-bottom: 20px;
   filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+  background: white;
+  border-radius: 20px;
+  padding: 15px;
 }
 
 .logo-container h1 {
   font-size: 2.5rem;
   margin: 0;
   font-weight: 600;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
 }
 
 .logo-container p {
   font-size: 1.1rem;
-  opacity: 0.9;
+  opacity: 0.95;
   margin-top: 10px;
 }
 
@@ -50,9 +56,10 @@
 .login-card {
   width: 100%;
   max-width: 450px;
-  padding: 20px;
+  padding: 30px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.1) !important;
   border-radius: 15px !important;
+  animation: slideIn 0.5s ease-out;
 }
 
 .login-card mat-card-header {
@@ -61,13 +68,14 @@
 }
 
 .login-card mat-card-title {
-  font-size: 1.8rem;
+  font-size: 1.8rem !important;
   color: #333;
-  margin-bottom: 10px;
+  margin-bottom: 10px !important;
+  font-weight: 500;
 }
 
 .login-card mat-card-subtitle {
-  font-size: 1rem;
+  font-size: 1rem !important;
   color: #666;
 }
 
@@ -77,8 +85,20 @@
   margin-bottom: 15px;
 }
 
-.mat-mdc-form-field {
+::ng-deep .mat-mdc-form-field {
   width: 100%;
+}
+
+::ng-deep .mat-mdc-form-field-outline {
+  color: rgba(0,0,0,0.12) !important;
+}
+
+::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline {
+  color: #667eea !important;
+}
+
+::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-label {
+  color: #667eea !important;
 }
 
 /* Remember y Forgot */
@@ -87,6 +107,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  margin-top: -10px;
 }
 
 .forgot-link {
@@ -105,19 +126,32 @@
 /* Botón de login */
 .login-button {
   height: 48px;
-  font-size: 1rem;
+  font-size: 1rem !important;
   font-weight: 500;
   margin-top: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  transition: transform 0.2s ease;
+}
+
+.login-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.login-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .login-button mat-icon {
   font-size: 20px;
-  height: 20px;
   width: 20px;
+  height: 20px;
 }
 
 .spinner-button {
@@ -159,6 +193,17 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
