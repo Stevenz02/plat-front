@@ -19,14 +19,17 @@ import { MATERIAL_IMPORTS } from '../../material.imports';
   styleUrls: ['./login.css']
 })
 export class LoginComponent {
-  email: string = '';
-  password: string = '';
+  credentials = {
+    email: '',
+    password: ''
+  };
+  
   rememberMe: boolean = false;
   hidePassword: boolean = true;
   isLoading: boolean = false;
 
   constructor(
-    // private authService: AuthService,
+    private authService: AuthService,
     private router: Router,
     private snackBar: MatSnackBar
   ) {}
@@ -34,28 +37,32 @@ export class LoginComponent {
   onLogin() {
     this.isLoading = true;
 
-    const loginData = {
-      email: this.email,
-      password: this.password
-    };
-  }}
-/*
-    this.authService.login(loginData).subscribe({
+    this.authService.login(this.credentials).subscribe({
       next: (response) => {
         this.isLoading = false;
         
+        // Obtener el usuario actual para verificar el rol
+        const user = this.authService.getCurrentUser();
+        const roleId = this.authService.getUserRoleId();
+        
         // Mostrar mensaje de éxito
-        this.snackBar.open('¡Inicio de sesión exitoso!', 'Cerrar', {
-          duration: 3000,
-          panelClass: ['success-snackbar']
-        });
+        this.snackBar.open(
+          `¡Bienvenido ${user?.nombres || 'Usuario'}!`, 
+          'Cerrar', 
+          {
+            duration: 3000,
+            panelClass: ['success-snackbar']
+          }
+        );
+
+        // Actualizar actividad
+        this.authService.updateActivity();
 
         // Redirigir según rol
-        const rol = response.user?.rol || '';
         setTimeout(() => {
-          if (rol === 'ADMINISTRADOR' || rol === 'TECNICO') {
+          if (roleId === 1 || roleId === 2) { // Admin o Técnico
             this.router.navigate(['/dashboard-admin']);
-          } else {
+          } else { // Usuario Final
             this.router.navigate(['/dashboard']);
           }
         }, 500);
@@ -63,17 +70,26 @@ export class LoginComponent {
       error: (error) => {
         this.isLoading = false;
         
-        // Mostrar mensaje de error
-        this.snackBar.open(
-          error.error?.message || 'Credenciales incorrectas', 
-          'Cerrar', 
-          {
-            duration: 5000,
-            panelClass: ['error-snackbar']
-          }
-        );
+        // Manejar errores específicos
+        let errorMessage = 'Error al iniciar sesión';
+        
+        if (error.status === 401) {
+          errorMessage = 'Credenciales incorrectas';
+        } else if (error.status === 403) {
+          errorMessage = 'Su cuenta no está activa. Revise su correo para activarla';
+        } else if (error.status === 404) {
+          errorMessage = 'Usuario no encontrado';
+        } else if (error.status === 500) {
+          errorMessage = 'Error del servidor. Intente más tarde';
+        } else if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+        
+        this.snackBar.open(errorMessage, 'Cerrar', {
+          duration: 5000,
+          panelClass: ['error-snackbar']
+        });
       }
     });
   }
 }
-*/
