@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonToggleModule } from '@angular/material/button-toggle'; // <-- Importar MatButtonToggleModule
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MATERIAL_IMPORTS } from '../material.imports';
 import { TerminosDialogComponent } from '../shared/dialogs/terminos-dialog/terminos';
 
@@ -18,11 +18,11 @@ import { TerminosDialogComponent } from '../shared/dialogs/terminos-dialog/termi
     MatSidenavModule,
     MatToolbarModule,
     MatIconModule,
-    MatButtonToggleModule, // <-- Asegúrate de importar este módulo
+    MatButtonToggleModule,
     ...MATERIAL_IMPORTS
   ],
   templateUrl: './dashboard.html',
-  styleUrls: ['./dashboard.css'] // Cambié `styleUrl` por `styleUrls` ya que es el nombre correcto
+  styleUrls: ['./dashboard.css']
 })
 export class DashboardComponent {
   menuAbierto = true;
