@@ -42,8 +42,8 @@ export class DashboardComponent {
   }
 
   // Volver al portal
-  volverPortal() {
-    window.location.href = 'https://intraepa.gov.co/dashboard';
+  cerrarSesion() {
+    window.location.href = '/login';
   }
 
   // Abrir el diálogo de términos
