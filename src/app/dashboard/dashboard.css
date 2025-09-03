@@ -95,7 +95,7 @@ mat-sidenav-container {
 }
 
 /* Botón volver con Material Design */
-.volver-btn {
+.cerrarsesion-btn {
   background-color: #e53935 !important;
   color: white !important;
   width: 90%;
