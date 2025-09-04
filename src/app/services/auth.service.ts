@@ -22,46 +22,49 @@ export class AuthService {
     private router: Router
   ) {}
 
-  // Login - según tu Swagger
-  login(credentials: { email: string; password: string }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/auth/login`, credentials)
-      .pipe(
-        tap((response: any) => {
-          if (response && response.success) {
-            // Guardar tokens
-            if (response.tokens) {
-              localStorage.setItem(this.tokenKey, response.tokens.access_token);
-              localStorage.setItem(this.refreshTokenKey, response.tokens.refresh_token);
-            }
-            
-            // Guardar datos del usuario
-            if (response.data && response.data.user) {
-              const userData = {
-                id: response.data.user.id,
-                email: response.data.user.email,
-                nombres: response.data.user.nombre_usuario,
-                apellidos: response.data.user.apellidos,
-                telefono: response.data.user.telefono,
-                departamento: response.data.user.departamento,
-                cargo: response.data.user.cargo,
-                rol_id: response.data.user.rol.id,
-                rol_nombre: response.data.user.rol.nombre,
-                activo: response.data.user.activo
-              };
-              localStorage.setItem(this.userKey, JSON.stringify(userData));
-            }
-            
-            // Actualizar última actividad
-            localStorage.setItem('ultimo_acceso', response.data.ultimo_acceso);
-            
-            // Actualizar estado de autenticación
-            this.isAuthenticatedSubject.next(true);
+login(credentials: { email: string; password: string }): Observable<any> {
+  return this.http.post(`${this.apiUrl}/api/auth/login`, credentials)
+    .pipe(
+      tap((response: any) => {
+        if (response && response.success) {
+          // Los tokens están en response.data.tokens
+          if (response.data && response.data.tokens) {
+            localStorage.setItem(this.tokenKey, response.data.tokens.access_token);
+            localStorage.setItem(this.refreshTokenKey, response.data.tokens.refresh_token);
           }
-        })
-      );
-  }
+          
+          if (response.data && response.data.user) {
+            const userData = {
+              id: response.data.user.id,
+              email: response.data.user.email,
+              nombres: response.data.user.nombres,
+              apellidos: response.data.user.apellidos,
+              telefono: response.data.user.telefono,
+              departamento: response.data.user.departamento,
+              cargo: response.data.user.cargo,
+              rol_id: response.data.user.rol.id,
+              rol_nombre: response.data.user.rol.nombre,
+              activo: true, // Si llegó hasta aquí, está activo
+              ultimo_acceso: response.data.user.ultimo_acceso,
+              // ✅ AGREGAR PERMISOS TAMBIÉN
+              permisos: response.data.permisos
+            };
+            localStorage.setItem(this.userKey, JSON.stringify(userData));
+          }
+          
+          // Actualizar última actividad
+          if (response.data && response.data.user && response.data.user.ultimo_acceso) {
+            localStorage.setItem('ultimo_acceso', response.data.user.ultimo_acceso);
+          }
+          
+          // Actualizar estado de autenticación
+          this.isAuthenticatedSubject.next(true);
+        }
+      })
+    );
+}
 
-  // Logout - según tu Swagger
+  // Logout
   logout(): Observable<any> {
     const token = this.getToken();
     const headers = new HttpHeaders({
@@ -91,7 +94,7 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
-  // Obtener información del usuario actual - según tu Swagger
+  // Obtener información del usuario actual
   getCurrentUserFromAPI(): Observable<any> {
     const token = this.getToken();
     const headers = new HttpHeaders({
@@ -257,4 +260,19 @@ export class AuthService {
   updateActivity(): void {
     localStorage.setItem('lastActivity', Date.now().toString());
   }
+
+  // Recuperar contraseña - generar token
+forgotPassword(email: string): Observable<any> {
+  return this.http.post(`${this.apiUrl}/api/usuarios/recuperar-contrasena`, { 
+    email: email 
+  });
+}
+
+// Restablecer contraseña con token
+resetPassword(token: string, newPassword: string): Observable<any> {
+  return this.http.post(`${this.apiUrl}/api/usuarios/restablecer-contrasena`, {
+    token: token,
+    passwordNueva: newPassword
+  });
+}
 }
