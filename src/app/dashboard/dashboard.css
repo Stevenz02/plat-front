@@ -94,23 +94,38 @@ mat-sidenav-container {
   margin-left: 0.5rem;
 }
 
-/* Botón volver con Material Design */
+/* Botón cerrar sesión con Material Design - versión más pequeña */
 .cerrarsesion-btn {
   background-color: #e53935 !important;
   color: white !important;
-  width: 90%;
+  width: 100px !important; /* Reducido de 90% */
+  max-width: 250px !important;
   margin: 0 auto;
   border-radius: 8px !important;
-  padding: 0.8rem !important;
-  font-weight: bold;
+  padding: 0.5rem 1rem !important; /* Reducido el padding */
+  font-weight: 500 !important;
+  font-size: 14px !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.volver-btn:hover {
+.cerrarsesion-btn:hover {
   background-color: #c62828 !important;
+  transform: translateY(-1px);
+}
+
+.cerrarsesion-btn mat-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.cerrarsesion-btn .label {
+  font-size: 14px !important;
 }
 
 /* Contenido principal */
