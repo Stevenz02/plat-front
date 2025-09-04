@@ -6,6 +6,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { AuthService } from '../services/auth.service';
 import { MATERIAL_IMPORTS } from '../material.imports';
 import { TerminosDialogComponent } from '../shared/dialogs/terminos-dialog/terminos';
 
@@ -29,7 +30,7 @@ export class DashboardComponent {
   currentYear = new Date().getFullYear();
   showDashboard = true; // <-- Definir la propiedad showDashboard
 
-  constructor(private router: Router, private dialog: MatDialog) {}
+  constructor(private authService: AuthService, private router: Router, private dialog: MatDialog) {}
 
   // Toggle para abrir/cerrar el menú
   toggleMenu() {
@@ -41,9 +42,19 @@ export class DashboardComponent {
     this.router.navigate([ruta]);
   }
 
-  // Volver al portal
-  cerrarSesion() {
-    window.location.href = '/login';
+  // Cerrar sesion
+cerrarSesion(): void {
+    this.authService.logout().subscribe({
+      next: (response) => {
+        console.log('Sesión cerrada exitosamente:', response);
+        // El AuthService ya maneja la limpieza y redirección en clearSession()
+      },
+      error: (error) => {
+        console.error('Error al cerrar sesión:', error);
+        // Incluso si hay error en el servidor, hacer logout local
+        this.authService.logoutLocal();
+      }
+    });
   }
 
   // Abrir el diálogo de términos

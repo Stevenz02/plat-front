@@ -1,1 +1,104 @@
-<p>dashboard-admin works!</p>
+<!-- app.component.html -->
+<mat-sidenav-container class="layout-container">
+  <mat-sidenav class="sidebar" mode="side" [opened]="menuAbierto">
+    <div class="logo-container">
+      <img src="assets/logoepa.png" alt="EPA" class="logo-img" />
+      <h3>Tablero de control</h3>
+      <h4>Versión: 1.0</h4>
+    </div>
+    <nav class="menu">
+      <div class="menu-item" routerLink="/dashboard" routerLinkActive="active">
+        <mat-icon>home</mat-icon> <span class="label">Inicio</span>
+      </div>
+      <div class="menu-item" routerLink="/contratos" routerLinkActive="active">
+        <mat-icon>folder</mat-icon> <span class="label">Gestión de Tickets</span>
+      </div>
+      <div class="menu-item disabled">
+        <mat-icon>build</mat-icon> <span class="label">Inventario</span>
+      </div>
+      <div class="menu-item disabled">
+        <mat-icon>receipt_long</mat-icon> <span class="label">Base de conocimiento</span>
+      </div>
+    </nav>
+    
+    <mat-button-toggle class="cerrarsesion-btn" (click)="cerrarSesion()">
+      <mat-icon>logout</mat-icon>
+      <span class="label">Cerrar Sesión</span>
+    </mat-button-toggle>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="main-content">
+    <mat-toolbar color="primary" class="topbar">
+      Plataforma de Apoyo TIC - EPA
+    </mat-toolbar>
+    
+    <div class="content-wrapper">
+      <!-- Contenido del Dashboard integrado aquí -->
+      <div class="home-container" *ngIf="showDashboard">
+        <h2 class="titulo">Bienvenido a <strong>PLAT-EPA</strong></h2>
+        
+        <div class="modulos-grid">
+          <!-- Módulo disponible -->
+          <mat-card class="modulo disponible" (click)="irAModulo('/contratos')">
+            <mat-card-content>
+              <div class="modulo-icono">
+                <mat-icon class="large-icon">description</mat-icon>
+              </div>
+              <h3>Gestión de Tickets</h3>
+              <p>Consulte, administre y gestione los tickets de la entidad</p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-raised-button color="primary" class="modulo-btn">Acceder</button>
+            </mat-card-actions>
+          </mat-card>
+
+          <!-- Módulo en desarrollo -->
+          <mat-card class="modulo en-desarrollo">
+            <mat-card-content>
+              <div class="modulo-icono">
+                <mat-icon class="large-icon disabled-icon">inventory</mat-icon>
+              </div>
+              <h3>Inventario</h3>
+              <p>Módulo actualmente en desarrollo.</p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-raised-button disabled class="modulo-btn">En desarrollo</button>
+            </mat-card-actions>
+          </mat-card>
+
+          <!-- Módulo en desarrollo -->
+          <mat-card class="modulo en-desarrollo">
+            <mat-card-content>
+              <div class="modulo-icono">
+                <mat-icon class="large-icon disabled-icon">build</mat-icon>
+              </div>
+              <h3>Base de conocimiento y analisis de datos</h3>
+              <p>Módulo actualmente en desarrollo.</p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-raised-button disabled class="modulo-btn">En desarrollo</button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+
+      <!-- Router Outlet para otras rutas -->
+      <router-outlet *ngIf="!showDashboard"></router-outlet>
+    </div>
+
+    <footer class="footer-horizontal">
+      <div class="footer-col izquierda">
+        © {{ currentYear }} Empresas Públicas de Armenia E.S.P.
+      </div>
+      <div class="footer-col centro">
+        Plataforma de Apoyo TIC - EPA <br>
+        <a (click)="abrirTerminos()" style="cursor: pointer;">Términos, Condiciones de uso y Aviso Legal.</a> 
+      </div>
+      <div class="footer-col derecha">
+        Contacto de soporte · 
+        <mat-icon inline>email</mat-icon><a href="mailto:redes.tic@epa.gov.co">redes.tic&#64;epa.gov.co</a>
+        <p><mat-icon inline>phone</mat-icon> Tel: (606) 741 17 80 Ext. 1512 - 1513</p>
+      </div>
+    </footer>
+  </mat-sidenav-content>
+</mat-sidenav-container>
