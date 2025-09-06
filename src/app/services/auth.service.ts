@@ -275,4 +275,12 @@ resetPassword(token: string, newPassword: string): Observable<any> {
     passwordNueva: newPassword
   });
 }
+
+// Activar cuenta de usuario
+activateAccount(email: string, codigo: string): Observable<any> {
+  return this.http.post(`${this.apiUrl}/api/usuarios/activar`, {
+    email: email,
+    codigo: codigo
+  });
+}
 }

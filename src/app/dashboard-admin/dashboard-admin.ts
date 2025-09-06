@@ -25,7 +25,7 @@ import { TerminosDialogComponent } from '../shared/dialogs/terminos-dialog/termi
   templateUrl: './dashboard-admin.html',
   styleUrl: './dashboard-admin.css'
 })
-export class DashboardAdmin {
+export class DashboardAdminComponent {
   menuAbierto = true;
   currentYear = new Date().getFullYear();
   showDashboard = true; // <-- Definir la propiedad showDashboard
