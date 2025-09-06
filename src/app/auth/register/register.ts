@@ -62,15 +62,18 @@ export class RegisterComponent {
           '¡Registro exitoso! Revise su correo para activar su cuenta.', 
           'Cerrar', 
           {
-            duration: 6000,
+            duration: 5000,
             panelClass: ['success-snackbar']
           }
         );
 
-        // Redirigir al login después de 2 segundos
-        setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 2000);
+    // Redirigir a activación con el email pre-llenado
+    this.router.navigate(['/activate-account'], {
+      queryParams: { 
+        email: this.userData.email,
+        fromRegister: 'true'  // Para indicar que viene del registro
+          }
+        });
       },
       error: (error) => {
         this.isLoading = false;
