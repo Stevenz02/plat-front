@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -43,7 +43,6 @@ export class LoginComponent {
         
         // Obtener el usuario actual para verificar el rol
         const user = this.authService.getCurrentUser();
-        const roleId = this.authService.getUserRoleId();
         
         // Mostrar mensaje de éxito
         this.snackBar.open(
@@ -58,13 +57,10 @@ export class LoginComponent {
         // Actualizar actividad
         this.authService.updateActivity();
 
-        // Redirigir según rol
+        // Redirigir usando el método del AuthService
         setTimeout(() => {
-          if (roleId === 1 || roleId === 2) { // Admin o Técnico
-            this.router.navigate(['/dashboard-admin']);
-          } else { // Usuario Final
-            this.router.navigate(['/dashboard']);
-          }
+          const returnUrl = this.authService.getReturnUrl();
+          this.router.navigateByUrl(returnUrl);
         }, 500);
       },
       error: (error) => {

@@ -1,1 +1,227 @@
-<p>crear-ticket works!</p>
+<div class="crear-ticket-container">
+  <!-- Header -->
+  <div class="header-section">
+    <div class="title-section">
+      <h1 class="page-title">
+        <mat-icon>add_circle_outline</mat-icon>
+        Crear Nuevo Ticket de Soporte
+      </h1>
+      <p class="page-subtitle">
+        Completa el formulario para reportar un problema o solicitar asistencia técnica
+      </p>
+    </div>
+  </div>
+
+  <!-- Información del usuario -->
+  <mat-card class="user-info-card">
+    <mat-card-content>
+      <div class="user-info-header">
+        <mat-icon>person</mat-icon>
+        <h3>Información del Solicitante</h3>
+      </div>
+      <div class="user-details">
+        <div class="user-field">
+          <strong>Nombre:</strong> {{ currentUser?.nombres }} {{ currentUser?.apellidos }}
+        </div>
+        <div class="user-field">
+          <strong>Email:</strong> {{ currentUser?.email }}
+        </div>
+        <div class="user-field">
+          <strong>Departamento:</strong> {{ currentUser?.departamento }}
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Plantillas rápidas -->
+  <mat-card class="templates-card">
+    <mat-card-content>
+      <div class="templates-header">
+        <mat-icon>speed</mat-icon>
+        <h3>Plantillas Rápidas</h3>
+        <span class="optional-text">(Opcional)</span>
+      </div>
+      <p class="templates-description">
+        Selecciona una plantilla para llenar automáticamente el formulario con información estructurada
+      </p>
+      <div class="templates-buttons">
+        <button 
+          mat-stroked-button 
+          class="template-btn hardware"
+          (click)="aplicarPlantilla('hardware')">
+          <mat-icon>computer</mat-icon>
+          Problema de Hardware
+        </button>
+        <button 
+          mat-stroked-button 
+          class="template-btn software"
+          (click)="aplicarPlantilla('software')">
+          <mat-icon>apps</mat-icon>
+          Problema de Software
+        </button>
+        <button 
+          mat-stroked-button 
+          class="template-btn access"
+          (click)="aplicarPlantilla('acceso')">
+          <mat-icon>vpn_key</mat-icon>
+          Solicitud de Acceso
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Formulario principal -->
+  <mat-card class="form-card">
+    <mat-card-content>
+      <form #ticketForm="ngForm" (ngSubmit)="onSubmit()">
+        
+        <!-- Título del ticket -->
+        <div class="form-group">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Título del Problema *</mat-label>
+            <input 
+              matInput
+              name="titulo"
+              [(ngModel)]="ticketData.titulo"
+              [maxlength]="maxTituloLength"
+              (input)="onTituloInput()"
+              placeholder="Describe brevemente el problema..."
+              [class.error]="isSubmitted && !isTituloValid()"
+              required>
+            <mat-icon matSuffix>title</mat-icon>
+            <mat-hint align="end" 
+              [class.warning]="ticketData.titulo.length > maxTituloLength * 0.8">
+              {{ getTituloCharacterCount() }}
+            </mat-hint>
+            <mat-error *ngIf="isSubmitted && !isTituloValid()">
+              {{ getTituloErrorMessage() }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Descripción detallada -->
+        <div class="form-group">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Descripción Detallada *</mat-label>
+            <textarea 
+              matInput
+              name="descripcion"
+              [(ngModel)]="ticketData.descripcion"
+              [maxlength]="maxDescripcionLength"
+              (input)="onDescripcionInput()"
+              placeholder="Describe el problema en detalle, incluyendo:&#10;• ¿Qué estaba haciendo cuando ocurrió?&#10;• ¿Qué mensaje de error apareció?&#10;• ¿Cuándo comenzó el problema?&#10;• ¿Qué pasos ya has intentado?"
+              rows="8"
+              [class.error]="isSubmitted && !isDescripcionValid()"
+              required>
+            </textarea>
+            <mat-icon matSuffix>description</mat-icon>
+            <mat-hint align="start">
+              Mínimo {{ minDescripcionLength }} caracteres para una mejor asistencia
+            </mat-hint>
+            <mat-hint align="end" 
+              [class.warning]="isDescripcionCountWarning()">
+              {{ getDescripcionCharacterCount() }}
+            </mat-hint>
+            <mat-error *ngIf="isSubmitted && !isDescripcionValid()">
+              {{ getDescripcionErrorMessage() }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Información adicional -->
+        <mat-card class="info-card">
+          <mat-card-content>
+            <div class="info-header">
+              <mat-icon>info</mat-icon>
+              <h4>Información Importante</h4>
+            </div>
+            <ul class="info-list">
+              <li>Tu ticket será revisado y asignado automáticamente a un técnico especializado</li>
+              <li>Recibirás notificaciones sobre el progreso de tu ticket por correo electrónico</li>
+              <li>El tiempo de respuesta depende de la prioridad asignada por el sistema</li>
+              <li>Puedes consultar el estado de tu ticket en cualquier momento desde "Mis Tickets"</li>
+            </ul>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Botones de acción -->
+        <div class="actions-section">
+          <div class="actions-container">
+            <!-- Botones secundarios -->
+            <div class="secondary-actions">
+              <button 
+                type="button"
+                mat-button
+                class="cancel-btn"
+                (click)="cancelar()"
+                [disabled]="isLoading">
+                <mat-icon>close</mat-icon>
+                Cancelar
+              </button>
+              
+              <button 
+                type="button"
+                mat-stroked-button
+                class="clear-btn"
+                (click)="limpiarFormulario()"
+                [disabled]="isLoading || (!ticketData.titulo && !ticketData.descripcion)">
+                <mat-icon>clear_all</mat-icon>
+                Limpiar
+              </button>
+            </div>
+
+            <!-- Botón principal -->
+            <button 
+              type="submit"
+              mat-raised-button
+              color="primary"
+              class="submit-btn"
+              [disabled]="isLoading || (isSubmitted && !isFormValid())">
+              <span *ngIf="!isLoading" class="submit-content">
+                <mat-icon>send</mat-icon>
+                Crear Ticket
+              </span>
+              <span *ngIf="isLoading" class="loading-content">
+                <mat-spinner diameter="20"></mat-spinner>
+                Creando ticket...
+              </span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Consejos adicionales -->
+  <mat-card class="tips-card">
+    <mat-card-content>
+      <div class="tips-header">
+        <mat-icon>lightbulb</mat-icon>
+        <h3>Consejos para un Mejor Soporte</h3>
+      </div>
+      <div class="tips-grid">
+        <div class="tip-item">
+          <mat-icon>description</mat-icon>
+          <div>
+            <strong>Sé específico</strong>
+            <p>Incluye detalles como mensajes de error, pasos realizados y cuándo ocurrió</p>
+          </div>
+        </div>
+        <div class="tip-item">
+          <mat-icon>screenshot</mat-icon>
+          <div>
+            <strong>Capturas de pantalla</strong>
+            <p>Si tienes capturas del error, puedes enviarlas por email mencionando el número de ticket</p>
+          </div>
+        </div>
+        <div class="tip-item">
+          <mat-icon>schedule</mat-icon>
+          <div>
+            <strong>Urgencia real</strong>
+            <p>Describe el impacto en tu trabajo para que asignemos la prioridad correcta</p>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
