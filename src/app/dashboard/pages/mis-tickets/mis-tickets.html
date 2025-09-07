@@ -146,47 +146,49 @@
             </td>
           </ng-container>
 
-          <!-- Columna Categoría -->
-          <ng-container matColumnDef="categoria">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>
-              <strong>Categoría</strong>
-            </th>
-            <td mat-cell *matCellDef="let ticket">
-              <span class="categoria-chip">
-                {{ ticket.categoria || 'Sin categoría' }}
-              </span>
-            </td>
-          </ng-container>
+<!-- REEMPLAZAR TODA LA SECCIÓN DE CATEGORÍA, PRIORIDAD Y ESTADO -->
 
-          <!-- Columna Prioridad -->
-          <ng-container matColumnDef="prioridad">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>
-              <strong>Prioridad</strong>
-            </th>
-            <td mat-cell *matCellDef="let ticket">
-              <mat-chip 
-                class="prioridad-chip"
-                [style.background-color]="getPrioridadColor(ticket.prioridad)"
-                [style.color]="'white'">
-                {{ getPrioridadLabel(ticket.prioridad) }}
-              </mat-chip>
-            </td>
-          </ng-container>
+<!-- Columna Categoría -->
+<ng-container matColumnDef="categoria">
+  <th mat-header-cell *matHeaderCellDef mat-sort-header>
+    <strong>Categoría</strong>
+  </th>
+  <td mat-cell *matCellDef="let ticket">
+    <span class="categoria-chip">
+      {{ getCategoriaLabel(ticket.categoria) }}
+    </span>
+  </td>
+</ng-container>
 
-          <!-- Columna Estado -->
-          <ng-container matColumnDef="estado">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>
-              <strong>Estado</strong>
-            </th>
-            <td mat-cell *matCellDef="let ticket">
-              <mat-chip 
-                class="estado-chip"
-                [style.background-color]="getEstadoColor(ticket.estado)"
-                [style.color]="'white'">
-                {{ getEstadoLabel(ticket.estado) }}
-              </mat-chip>
-            </td>
-          </ng-container>
+<!-- Columna Prioridad -->
+<ng-container matColumnDef="prioridad">
+  <th mat-header-cell *matHeaderCellDef mat-sort-header>
+    <strong>Prioridad</strong>
+  </th>
+  <td mat-cell *matCellDef="let ticket">
+    <mat-chip 
+      class="prioridad-chip"
+      [style.background-color]="getPrioridadColor(ticket)"
+      [style.color]="'white'">
+      {{ getPrioridadLabel(ticket.prioridad) }}
+    </mat-chip>
+  </td>
+</ng-container>
+
+<!-- Columna Estado -->
+<ng-container matColumnDef="estado">
+  <th mat-header-cell *matHeaderCellDef mat-sort-header>
+    <strong>Estado</strong>
+  </th>
+  <td mat-cell *matCellDef="let ticket">
+    <mat-chip 
+      class="estado-chip"
+      [style.background-color]="getEstadoColor(ticket)"
+      [style.color]="'white'">
+      {{ ticket.estado }}
+    </mat-chip>
+  </td>
+</ng-container>
 
           <!-- Columna Fecha de Creación -->
           <ng-container matColumnDef="fecha_creacion">

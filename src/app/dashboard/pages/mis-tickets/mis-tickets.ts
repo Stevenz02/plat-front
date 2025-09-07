@@ -143,12 +143,13 @@ estados = [
   }
 
   // Métodos de utilidad para mostrar información formateada
-  getEstadoColor(estado: string): string {
-    return this.ticketService.getEstadoColor(estado);
+  // Estos métodos ahora pueden recibir null sin problemas
+  getEstadoColor(ticket: Ticket): string {
+    return this.ticketService.getEstadoColor(ticket.estado, ticket.estado_color);
   }
 
-  getPrioridadColor(prioridad: string): string {
-    return this.ticketService.getPrioridadColor(prioridad);
+  getPrioridadColor(ticket: Ticket): string {
+    return this.ticketService.getPrioridadColor(ticket.prioridad, ticket.prioridad_color);
   }
 
   formatFecha(fecha: string): string {
@@ -163,6 +164,10 @@ estados = [
   getPrioridadLabel(prioridad: string): string {
     // Los nombres ya vienen correctos desde la BD
     return prioridad || 'No asignada';
+  }
+
+  getCategoriaLabel(categoria: string | null): string {
+    return categoria || 'Sin categoría';
   }
 
   // Método para truncar texto largo

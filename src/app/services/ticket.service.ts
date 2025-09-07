@@ -7,9 +7,6 @@ import { AuthService } from './auth.service';
 export interface CreateTicketRequest {
   titulo: string;
   descripcion: string;
-  categoria_id?: number | null;
-  prioridad_id?: number | null;
-  equipo_afectado_id?: number | null;
 }
 
 export interface Ticket {
@@ -17,18 +14,25 @@ export interface Ticket {
   numero_ticket: string;
   titulo: string;
   descripcion: string;
-  categoria: string;
-  prioridad: string;
-  prioridad_nivel: number;
+  categoria: string | null;
+  prioridad: string | null;
+  prioridad_nivel: number | null; 
+  prioridad_color: string | null;
   estado: string;
+  estado_color: string; 
   usuario_solicitante: string;
-  email_solicitante: string;
+  usuario_email: string;
   tecnico_asignado: string | null;
+  tecnico_email: string | null;
   equipo_afectado: string | null;
   fecha_creacion: string;
   fecha_asignacion: string | null;
   fecha_resolucion: string | null;
   fecha_cierre: string | null;
+  horas_transcurridas: number;
+  es_urgente: boolean;
+  puede_editar: boolean;
+  puede_cerrar: boolean;
 }
 
 export interface TicketResponse {
@@ -85,14 +89,9 @@ export class TicketService {
   // Crear un nuevo ticket
   createTicket(ticketData: CreateTicketRequest): Observable<TicketResponse> {
     const headers = this.authService.getAuthHeaders();
-    
-    // Por ahora enviar los campos como null según tu requerimiento
     const requestData = {
       titulo: ticketData.titulo,
       descripcion: ticketData.descripcion,
-      categoria_id: null,
-      prioridad_id: null,
-      equipo_afectado_id: null
     };
 
     return this.http.post<TicketResponse>(`${this.apiUrl}/api/tickets`, requestData, { headers });
@@ -185,31 +184,37 @@ searchTickets(searchTerm: string, page: number = 1, limit: number = 10): Observa
 }
 
   // Métodos de utilidad
-getEstadoColor(estado: string): string {
+// Actualizar las firmas para aceptar null
+getEstadoColor(estado: string, estadoColor?: string | null): string {
+  // Si viene el color del backend, usarlo; si no, usar fallback
+  if (estadoColor) {
+    return estadoColor;
+  }
+  
+  // Fallback para compatibilidad
   switch (estado.toLowerCase()) {
-    case 'pendiente':
-      return '#ff9800'; // Naranja
-    case 'en progreso':
-      return '#2196f3'; // Azul
-    case 'resuelto':
-      return '#4caf50'; // Verde
-    case 'cerrado':
-      return '#9e9e9e'; // Gris
-    default:
-      return '#757575';
+    case 'pendiente': return '#FFA500';
+    case 'en progreso': return '#2196f3';
+    case 'resuelto': return '#4caf50';
+    case 'cerrado': return '#9e9e9e';
+    default: return '#757575';
   }
 }
 
-getPrioridadColor(prioridad: string): string {
+getPrioridadColor(prioridad: string | null, prioridadColor?: string | null): string {
+  // Si viene el color del backend, usarlo; si no, usar fallback
+  if (prioridadColor) {
+    return prioridadColor;
+  }
+  
+  // Fallback para compatibilidad
+  if (!prioridad) return '#757575';
+  
   switch (prioridad.toLowerCase()) {
-    case 'alta':
-      return '#f44336'; // Rojo
-    case 'media':
-      return '#ff9800'; // Naranja  
-    case 'baja':
-      return '#4caf50'; // Verde
-    default:
-      return '#757575';
+    case 'alta': return '#f44336';
+    case 'media': return '#ff9800';
+    case 'baja': return '#4caf50';
+    default: return '#757575';
   }
 }
 
