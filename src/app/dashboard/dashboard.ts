@@ -65,7 +65,7 @@ cerrarSesion(): void {
   }
 
   // Método para ir a un módulo específico
-  irAModulo(ruta: string) {
-    this.router.navigate([ruta]);
-  }
+irAModulo(ruta: string): void {
+  this.router.navigate([`/dashboard${ruta}`]);
+}
 }

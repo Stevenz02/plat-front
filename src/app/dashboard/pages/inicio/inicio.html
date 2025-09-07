@@ -1,1 +1,47 @@
-<p>inicio works!</p>
+<div class="home-container">
+  <h2 class="titulo">Bienvenido a <strong>PLAT-EPA</strong></h2>
+  
+  <div class="modulos-grid">
+    <!-- Módulo disponible -->
+    <mat-card class="modulo disponible" (click)="irAModulo('/tickets')">
+      <mat-card-content>
+        <div class="modulo-icono">
+          <mat-icon class="large-icon">description</mat-icon>
+        </div>
+        <h3>Gestión de Tickets</h3>
+        <p>Consulte sus tickets</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" class="modulo-btn">Acceder</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Módulo en desarrollo -->
+    <mat-card class="modulo en-desarrollo">
+      <mat-card-content>
+        <div class="modulo-icono">
+          <mat-icon class="large-icon disabled-icon">inventory</mat-icon>
+        </div>
+        <h3>Inventario</h3>
+        <p>Módulo actualmente en desarrollo.</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button disabled class="modulo-btn">En desarrollo</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Módulo en desarrollo -->
+    <mat-card class="modulo en-desarrollo">
+      <mat-card-content>
+        <div class="modulo-icono">
+          <mat-icon class="large-icon disabled-icon">build</mat-icon>
+        </div>
+        <h3>Base de conocimiento y analisis de datos</h3>
+        <p>Módulo actualmente en desarrollo.</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button disabled class="modulo-btn">En desarrollo</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

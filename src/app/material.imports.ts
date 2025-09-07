@@ -10,6 +10,12 @@ import { MatCheckboxModule } from '@angular/material/checkbox'; // Para "Recorda
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 export const MATERIAL_IMPORTS = [
   MatButtonModule,
@@ -23,5 +29,11 @@ export const MATERIAL_IMPORTS = [
   MatCheckboxModule,
   MatSidenavModule,
   MatListModule,
-  MatDialogModule
+  MatDialogModule,
+  MatSelectModule,
+  MatChipsModule,
+  MatTableModule,
+  MatPaginatorModule,
+  MatSortModule,
+  MatTooltipModule,
 ];

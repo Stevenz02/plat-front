@@ -283,4 +283,20 @@ activateAccount(email: string, codigo: string): Observable<any> {
     codigo: codigo
   });
 }
+
+// Obtener URL de retorno desde query params
+getReturnUrl(): string {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('returnUrl') || this.getDefaultDashboard();
+}
+
+// Obtener dashboard por defecto según rol
+getDefaultDashboard(): string {
+  const roleId = this.getUserRoleId();
+  if (roleId === 1 || roleId === 2) { // Admin o Técnico
+    return '/dashboard-admin';
+  } else { // Usuario Final
+    return '/dashboard';
+  }
+}
 }
