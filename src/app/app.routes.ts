@@ -5,10 +5,13 @@ import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password'
 import { ResetPasswordComponent } from './auth/reset-password/reset-password';
 import { ActivateAccountComponent } from './auth/activate-account/activate-account';
 import { DashboardComponent } from './dashboard/dashboard';
-import { DashboardAdminComponent } from './dashboard-admin/dashboard-admin';
 import { InicioComponent } from './dashboard/pages/inicio/inicio';
 import { MisTicketsComponent } from './dashboard/pages/mis-tickets/mis-tickets';
 import { CrearTicketComponent } from './dashboard/pages/crear-ticket/crear-ticket';
+import { DashboardAdminComponent } from './dashboard-admin/dashboard-admin';
+import { InicioAdminComponent } from './dashboard-admin/pages/inicio-admin/inicio-admin';
+import { GestionarTicketsComponent } from './dashboard-admin/pages/gestionar-tickets/gestionar-tickets';
+
 // Importar guards
 import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
@@ -60,7 +63,12 @@ export const routes: Routes = [
     path: 'dashboard-admin', 
     component: DashboardAdminComponent,
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['admin', 'tecnico', 'admin_tecnico'] } // Admin y técnicos
+    data: { roles: ['admin', 'tecnico', 'admin_tecnico'] }, // Admin y técnicos
+    children: [
+      { path: '', redirectTo: 'inicio-admin', pathMatch: 'full' },
+      { path: 'inicio-admin', component: InicioAdminComponent },
+      { path: 'tickets/gestionar', component: GestionarTicketsComponent }
+    ]
   },
 
   // Ruta por defecto

@@ -11,7 +11,7 @@ import { MATERIAL_IMPORTS } from '../material.imports';
 import { TerminosDialogComponent } from '../shared/dialogs/terminos-dialog/terminos';
 
 @Component({
-  selector: 'app-dashboard-admin',
+  selector: 'app-dashboard',
   standalone: true,
   imports: [
     CommonModule,
@@ -23,7 +23,7 @@ import { TerminosDialogComponent } from '../shared/dialogs/terminos-dialog/termi
     ...MATERIAL_IMPORTS
   ],
   templateUrl: './dashboard-admin.html',
-  styleUrl: './dashboard-admin.css'
+  styleUrls: ['./dashboard-admin.css']
 })
 export class DashboardAdminComponent {
   menuAbierto = true;
@@ -65,7 +65,7 @@ cerrarSesion(): void {
   }
 
   // Método para ir a un módulo específico
-  irAModulo(ruta: string) {
-    this.router.navigate([ruta]);
-  }
+irAModulo(ruta: string): void {
+  this.router.navigate([`/dashboard-admin${ruta}`]);
+}
 }
