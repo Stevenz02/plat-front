@@ -1,4 +1,3 @@
-<!-- app.component.html -->
 <mat-sidenav-container class="layout-container">
   <mat-sidenav class="sidebar" mode="side" [opened]="menuAbierto">
     <div class="logo-container">
@@ -7,10 +6,10 @@
       <h4>Versión: 1.0</h4>
     </div>
     <nav class="menu">
-      <div class="menu-item" routerLink="/dashboard-admin" routerLinkActive="active">
+      <div class="menu-item" routerLink="/dashboard-admin/inicio-admin" routerLinkActive="active">
         <mat-icon>home</mat-icon> <span class="label">Inicio</span>
       </div>
-      <div class="menu-item" routerLink="/contratos" routerLinkActive="active">
+      <div class="menu-item" routerLink="/dashboard-admin/tickets/gestionar" routerLinkActive="active">
         <mat-icon>folder</mat-icon> <span class="label">Gestión de Tickets</span>
       </div>
       <div class="menu-item disabled">
@@ -33,57 +32,8 @@
     </mat-toolbar>
     
     <div class="content-wrapper">
-      <!-- Contenido del Dashboard integrado aquí -->
-      <div class="home-container" *ngIf="showDashboard">
-        <h2 class="titulo">Bienvenido a <strong>PLAT-EPA</strong></h2>
-        
-        <div class="modulos-grid">
-          <!-- Módulo disponible -->
-          <mat-card class="modulo disponible" (click)="irAModulo('/contratos')">
-            <mat-card-content>
-              <div class="modulo-icono">
-                <mat-icon class="large-icon">description</mat-icon>
-              </div>
-              <h3>Gestión de Tickets</h3>
-              <p>Consulte, administre y gestione los tickets de la entidad</p>
-            </mat-card-content>
-            <mat-card-actions>
-              <button mat-raised-button color="primary" class="modulo-btn">Acceder</button>
-            </mat-card-actions>
-          </mat-card>
-
-          <!-- Módulo en desarrollo -->
-          <mat-card class="modulo en-desarrollo">
-            <mat-card-content>
-              <div class="modulo-icono">
-                <mat-icon class="large-icon disabled-icon">inventory</mat-icon>
-              </div>
-              <h3>Inventario</h3>
-              <p>Módulo actualmente en desarrollo.</p>
-            </mat-card-content>
-            <mat-card-actions>
-              <button mat-raised-button disabled class="modulo-btn">En desarrollo</button>
-            </mat-card-actions>
-          </mat-card>
-
-          <!-- Módulo en desarrollo -->
-          <mat-card class="modulo en-desarrollo">
-            <mat-card-content>
-              <div class="modulo-icono">
-                <mat-icon class="large-icon disabled-icon">build</mat-icon>
-              </div>
-              <h3>Base de conocimiento y analisis de datos</h3>
-              <p>Módulo actualmente en desarrollo.</p>
-            </mat-card-content>
-            <mat-card-actions>
-              <button mat-raised-button disabled class="modulo-btn">En desarrollo</button>
-            </mat-card-actions>
-          </mat-card>
-        </div>
-      </div>
-
-      <!-- Router Outlet para otras rutas -->
-      <router-outlet *ngIf="!showDashboard"></router-outlet>
+      <!-- Aquí se cargan todas las páginas hijas -->
+      <router-outlet></router-outlet>
     </div>
 
     <footer class="footer-horizontal">

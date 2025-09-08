@@ -75,6 +75,36 @@ export interface TicketsListResponse {
   };
 }
 
+export interface AssignTicketRequest {
+  tecnico_id: number;
+  categoria_id: number;
+  prioridad_id: number;
+  equipo_afectado_id?: number;
+  comentario_asignacion?: string;
+}
+
+export interface ChangeStatusRequest {
+  nuevo_estado_id: number;
+  comentario_tecnico?: string;
+  motivo_cambio?: string;
+}
+
+export interface Technician {
+  id: number;
+  nombre: string;
+  email: string;
+  especialidad?: string;
+  activo: boolean;
+}
+
+export interface Equipment {
+  id: number;
+  nombre: string;
+  codigo: string;
+  ubicacion?: string;
+  activo: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -99,17 +129,23 @@ export class TicketService {
 
   // Obtener tickets del usuario actual
   getMyTickets(page: number = 1, limit: number = 10): Observable<TicketsListResponse> {
-    const headers = this.authService.getAuthHeaders();
-    const params = {
-      page: page.toString(),
-      limit: limit.toString()
-    };
-
-    return this.http.get<TicketsListResponse>(`${this.apiUrl}/api/tickets`, { 
-      headers, 
-      params 
-    });
+  // Si es admin o técnico, obtener todos los tickets
+  if (this.authService.isAdminOrTechnician()) {
+    return this.getAllTickets(page, limit);
   }
+  
+  // Si es usuario final, obtener solo sus tickets
+  const headers = this.authService.getAuthHeaders();
+  const params = {
+    page: page.toString(),
+    limit: limit.toString()
+  };
+
+  return this.http.get<TicketsListResponse>(`${this.apiUrl}/api/tickets`, { 
+    headers, 
+    params 
+  });
+}
 
   // Obtener un ticket específico por ID
   getTicketById(ticketId: number): Observable<any> {
@@ -236,4 +272,95 @@ getPrioridadColor(prioridad: string | null, prioridadColor?: string | null): str
     const headers = this.authService.getAuthHeaders();
     return this.http.get(`${this.apiUrl}/api/tickets/mis-tickets/estadisticas`, { headers });
   }
+
+  // Obtener TODOS los tickets (para administrador/técnico)
+getAllTickets(page: number = 1, limit: number = 10, filters?: any): Observable<TicketsListResponse> {
+  const headers = this.authService.getAuthHeaders();
+  let params: any = {
+    page: page.toString(),
+    limit: limit.toString()
+  };
+
+  // Agregar filtros opcionales
+  if (filters) {
+    if (filters.estado_id) params.estado_id = filters.estado_id;
+    if (filters.categoria_id) params.categoria_id = filters.categoria_id;
+    if (filters.prioridad_id) params.prioridad_id = filters.prioridad_id;
+    if (filters.fecha_desde) params.fecha_desde = filters.fecha_desde;
+    if (filters.fecha_hasta) params.fecha_hasta = filters.fecha_hasta;
+  }
+
+  return this.http.get<TicketsListResponse>(`${this.apiUrl}/api/tickets`, { 
+    headers, 
+    params 
+  });
+}
+
+// Cambiar estado de un ticket
+changeTicketStatus(ticketId: number, newStatus: number, comment?: string): Observable<any> {
+  const headers = this.authService.getAuthHeaders();
+  const body: any = {
+    nuevo_estado_id: newStatus
+  };
+  
+  if (comment) {
+    body.comentario_tecnico = comment;
+    body.motivo_cambio = "Ticket asignado y trabajo iniciado";
+  }
+
+  return this.http.patch(`${this.apiUrl}/api/tickets/${ticketId}/estado`, body, { headers });
+}
+
+// Asignar ticket a técnico
+assignTicket(ticketId: number, assignmentData: {
+  tecnico_id: number;
+  categoria_id: number;
+  prioridad_id: number;
+  equipo_afectado_id?: number;
+  comentario_asignacion?: string;
+}): Observable<any> {
+  const headers = this.authService.getAuthHeaders();
+  
+  return this.http.patch(`${this.apiUrl}/api/tickets/${ticketId}/asignar`, assignmentData, { headers });
+}
+
+// Obtener técnicos disponibles - USANDO ENDPOINT REAL
+getTechnicians(): Observable<any> {
+  const headers = this.authService.getAuthHeaders();
+  
+  const params = { 
+    rol_id: '2',        // Técnicos tienen rol_id = 2
+    activo: 'true',     // Solo técnicos activos
+    limit: '50'         // Límite suficiente
+  };
+  
+  return this.http.get(`${this.apiUrl}/api/usuarios`, { headers, params });
+}
+
+// Obtener equipos para asignación
+getEquipmentForAssignment(): Observable<any> {
+  const headers = this.authService.getAuthHeaders();
+  return this.http.get(`${this.apiUrl}/api/equipos`, { headers });
+}
+
+// Estados para administrador (incluye más opciones)
+getEstadosParaAdmin() {
+  return [
+    { id: 1, nombre: 'Pendiente', color: '#FFA500' },
+    { id: 2, nombre: 'En Progreso', color: '#2196f3' },
+    { id: 3, nombre: 'Resuelto', color: '#4caf50' },
+    { id: 4, nombre: 'Cerrado', color: '#9e9e9e' }
+  ];
+}
+
+// Determinar si el usuario puede gestionar tickets
+canManageTickets(): boolean {
+  return this.authService.isAdminOrTechnician();
+}
+
+// Obtener estadísticas globales (para admin)
+getGlobalTicketStats(): Observable<any> {
+  const headers = this.authService.getAuthHeaders();
+  return this.http.get(`${this.apiUrl}/api/tickets/estadisticas/globales`, { headers });
+}
 }
