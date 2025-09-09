@@ -79,11 +79,6 @@
   flex-wrap: wrap;
 }
 
-.search-field {
-  flex: 2;
-  min-width: 250px;
-}
-
 .status-field {
   flex: 1;
   min-width: 200px;
@@ -319,7 +314,7 @@
     align-items: stretch;
   }
   
-  .search-field, .status-field {
+  .status-field {
     flex: none;
     min-width: auto;
   }

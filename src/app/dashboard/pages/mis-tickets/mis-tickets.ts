@@ -39,17 +39,16 @@ export class MisTicketsComponent implements OnInit {
   totalTickets = 0;
   currentPage = 1;
   pageSize = 10;
-  searchTerm = '';
   selectedStatus = '';
 
   // Estados disponibles para filtro
-estados = [
-  { value: '', label: 'Todos los estados' },
-  { value: 'Pendiente', label: 'Pendiente' },
-  { value: 'En Progreso', label: 'En Progreso' },
-  { value: 'Resuelto', label: 'Resuelto' },
-  { value: 'Cerrado', label: 'Cerrado' }
-];
+  estados = [
+    { value: '', label: 'Todos los estados' },
+    { value: 'Pendiente', label: 'Pendiente' },
+    { value: 'En Progreso', label: 'En Progreso' },
+    { value: 'Resuelto', label: 'Resuelto' },
+    { value: 'Cerrado', label: 'Cerrado' }
+  ];
 
   constructor(
     private ticketService: TicketService,
@@ -71,24 +70,22 @@ estados = [
     
     let observable;
     
-    if (this.searchTerm) {
-      observable = this.ticketService.searchTickets(this.searchTerm, this.currentPage, this.pageSize);
-    } else if (this.selectedStatus) {
+    if (this.selectedStatus) {
       observable = this.ticketService.getTicketsByStatus(this.selectedStatus, this.currentPage, this.pageSize);
     } else {
       observable = this.ticketService.getMyTickets(this.currentPage, this.pageSize);
     }
 
-  observable.subscribe({
-    next: (response) => {
-      this.isLoading = false;
-      if (response.success) {
-        this.dataSource.data = response.data.tickets;
-        this.totalTickets = response.data.pagination.total_items;  // Usar la nueva estructura
-      } else {
-        this.showError('Error al cargar los tickets');
-      }
-    },
+    observable.subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        if (response.success) {
+          this.dataSource.data = response.data.tickets;
+          this.totalTickets = response.data.pagination.total_items;
+        } else {
+          this.showError('Error al cargar los tickets');
+        }
+      },
       error: (error) => {
         this.isLoading = false;
         console.error('Error cargando tickets:', error);
@@ -106,22 +103,12 @@ estados = [
     });
   }
 
-  onSearchChange(): void {
-    // Implementar debounce para no hacer muchas consultas
-    setTimeout(() => {
-      this.currentPage = 1;
-      this.loadTickets();
-    }, 500);
-  }
-
   onStatusChange(): void {
     this.currentPage = 1;
-    this.searchTerm = ''; // Limpiar búsqueda al filtrar por estado
     this.loadTickets();
   }
 
   clearFilters(): void {
-    this.searchTerm = '';
     this.selectedStatus = '';
     this.currentPage = 1;
     this.loadTickets();
@@ -138,12 +125,10 @@ estados = [
   }
 
   verDetalle(ticket: Ticket): void {
-    // Navegar al componente de detalle (lo implementaremos después)
     this.router.navigate(['/dashboard/tickets/detalle', ticket.id]);
   }
 
   // Métodos de utilidad para mostrar información formateada
-  // Estos métodos ahora pueden recibir null sin problemas
   getEstadoColor(ticket: Ticket): string {
     return this.ticketService.getEstadoColor(ticket.estado, ticket.estado_color);
   }
@@ -157,12 +142,10 @@ estados = [
   }
 
   getEstadoLabel(estado: string): string {
-    // Los nombres ya vienen correctos desde la BD
     return estado || 'Sin estado';
   }
 
   getPrioridadLabel(prioridad: string): string {
-    // Los nombres ya vienen correctos desde la BD
     return prioridad || 'No asignada';
   }
 
@@ -170,7 +153,6 @@ estados = [
     return categoria || 'Sin categoría';
   }
 
-  // Método para truncar texto largo
   truncateText(text: string, maxLength: number = 50): string {
     if (!text) return 'N/A';
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
@@ -190,7 +172,6 @@ estados = [
     });
   }
 
-  // Método para refrescar la lista
   refreshTickets(): void {
     this.currentPage = 1;
     this.loadTickets();
