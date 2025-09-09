@@ -1,0 +1,278 @@
+<div class="asignar-container">
+  <!-- Header con navegación -->
+  <div class="header-section">
+    <div class="breadcrumb-section">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a [routerLink]="['/dashboard-admin/pages/tickets/gestionar']">
+              <mat-icon>list</mat-icon>
+              Gestión de Tickets
+            </a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            <mat-icon>assignment_ind</mat-icon>
+            Asignar Ticket
+          </li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="title-section">
+      <h1 class="page-title">
+        <mat-icon>assignment_ind</mat-icon>
+        Asignar Ticket
+      </h1>
+      <p class="page-subtitle">Asigna el ticket a un técnico y define su categoría y prioridad</p>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Cargando información del ticket...</p>
+  </div>
+
+  <!-- Contenido principal -->
+  <div *ngIf="!isLoading && ticket" class="content-section">
+    
+    <!-- Información del ticket -->
+    <mat-card class="ticket-info-card">
+      <mat-card-header>
+        <mat-card-title>
+          <div class="ticket-header">
+            <span class="ticket-number">{{ ticket.numero_ticket }}</span>
+            <span class="estado-chip" [ngClass]="getEstadoClass(ticket.estado)">
+              {{ ticket.estado }}
+            </span>
+            <mat-icon *ngIf="ticket.es_urgente" class="urgente-icon" matTooltip="Ticket Urgente">
+              priority_high
+            </mat-icon>
+          </div>
+        </mat-card-title>
+        <mat-card-subtitle>
+          {{ ticket.titulo }}
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="ticket-details">
+          <div class="detail-row">
+            <div class="detail-item">
+              <strong>Solicitante:</strong>
+              <span>{{ ticket.usuario_solicitante }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Email:</strong>
+              <span>{{ ticket.usuario_email }}</span>
+            </div>
+          </div>
+          
+          <div class="detail-row">
+            <div class="detail-item">
+              <strong>Fecha de creación:</strong>
+              <span>{{ formatFecha(ticket.fecha_creacion) }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Tiempo transcurrido:</strong>
+              <span class="tiempo-transcurrido">{{ ticket.horas_transcurridas }}h</span>
+            </div>
+          </div>
+          
+          <div class="detail-row full-width">
+            <div class="detail-item">
+              <strong>Descripción:</strong>
+              <p class="descripcion-text">{{ ticket.descripcion || 'Sin descripción' }}</p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Formulario de asignación -->
+    <mat-card class="assignment-form-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>settings</mat-icon>
+          Datos de Asignación
+        </mat-card-title>
+        <mat-card-subtitle>
+          Complete la información para asignar el ticket
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <form class="assignment-form" #assignForm="ngForm">
+          
+          <!-- Técnico asignado -->
+          <div class="form-row">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>Técnico Asignado *</mat-label>
+              <mat-select 
+                [(ngModel)]="assignmentData.tecnico_id" 
+                name="tecnico_id"
+                required
+                (selectionChange)="onTecnicoChange()"
+                [disabled]="isSubmitting">
+                <mat-option value="0" disabled>Seleccione un técnico</mat-option>
+                <mat-option *ngFor="let tecnico of tecnicos" [value]="tecnico.id">
+                  <div class="tecnico-option">
+                    <span class="tecnico-name">{{ tecnico.nombres }} {{ tecnico.apellidos }}</span>
+                    <span class="tecnico-email">{{ tecnico.email }}</span>
+                  </div>
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="assignmentData.tecnico_id === 0">
+                Debe seleccionar un técnico
+              </mat-error>
+              <mat-hint>Seleccione el técnico que se encargará del ticket</mat-hint>
+            </mat-form-field>
+          </div>
+
+          <!-- Categoría y Prioridad -->
+          <div class="form-row two-columns">
+            <mat-form-field appearance="outline">
+              <mat-label>Categoría *</mat-label>
+              <mat-select 
+                [(ngModel)]="assignmentData.categoria_id" 
+                name="categoria_id"
+                required
+                (selectionChange)="onCategoriaChange()"
+                [disabled]="isSubmitting">
+                <mat-option value="0" disabled>Seleccione una categoría</mat-option>
+                <mat-option *ngFor="let categoria of categorias" [value]="categoria.id">
+                  <div class="categoria-option">
+                    <span class="categoria-name">{{ categoria.nombre }}</span>
+                    <span class="categoria-desc">{{ categoria.descripcion }}</span>
+                  </div>
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="assignmentData.categoria_id === 0">
+                Debe seleccionar una categoría
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Prioridad *</mat-label>
+              <mat-select 
+                [(ngModel)]="assignmentData.prioridad_id" 
+                name="prioridad_id"
+                required
+                (selectionChange)="onPrioridadChange()"
+                [disabled]="isSubmitting">
+                <mat-option value="0" disabled>Seleccione una prioridad</mat-option>
+                <mat-option *ngFor="let prioridad of prioridades" [value]="prioridad.id">
+                  <div class="prioridad-option">
+                    <span class="prioridad-indicator" [style.background-color]="prioridad.color"></span>
+                    <div class="prioridad-info">
+                      <span class="prioridad-name">{{ prioridad.nombre }}</span>
+                      <span class="prioridad-desc">{{ prioridad.descripcion }}</span>
+                    </div>
+                  </div>
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="assignmentData.prioridad_id === 0">
+                Debe seleccionar una prioridad
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Comentario de asignación -->
+          <div class="form-row">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>Comentario de Asignación</mat-label>
+              <textarea 
+                matInput 
+                [(ngModel)]="assignmentData.comentario_asignacion"
+                name="comentario_asignacion"
+                rows="4"
+                placeholder="Agregue notas adicionales sobre la asignación, instrucciones especiales o contexto relevante..."
+                [disabled]="isSubmitting"
+                maxlength="500">
+              </textarea>
+              <mat-hint align="end">
+                {{ assignmentData.comentario_asignacion?.length || 0 }}/500
+              </mat-hint>
+            </mat-form-field>
+          </div>
+
+          <!-- Resumen de asignación -->
+          <div class="assignment-summary" *ngIf="isFormValid()">
+            <h3>Resumen de Asignación</h3>
+            <div class="summary-content">
+              <div class="summary-item">
+                <strong>Técnico:</strong> 
+                <span>{{ getTecnicoById(assignmentData.tecnico_id)?.nombres }} {{ getTecnicoById(assignmentData.tecnico_id)?.apellidos }}</span>
+              </div>
+              <div class="summary-item">
+                <strong>Categoría:</strong> 
+                <span>{{ getCategoriaById(assignmentData.categoria_id)?.nombre }}</span>
+              </div>
+              <div class="summary-item">
+                <strong>Prioridad:</strong> 
+                <span [style.color]="getPrioridadColor(assignmentData.prioridad_id)">
+                  {{ getPrioridadById(assignmentData.prioridad_id)?.nombre }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Acciones -->
+    <div class="actions-section">
+      <div class="actions-container">
+        <button 
+          mat-stroked-button 
+          (click)="cancelAssignment()"
+          [disabled]="isSubmitting"
+          class="cancel-button">
+          <mat-icon>arrow_back</mat-icon>
+          Volver
+        </button>
+        
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="assignTicket()"
+          [disabled]="!isFormValid() || !canAssignTicket() || isSubmitting"
+          class="assign-button">
+          <mat-spinner diameter="20" *ngIf="isSubmitting"></mat-spinner>
+          <mat-icon *ngIf="!isSubmitting">assignment_ind</mat-icon>
+          <span *ngIf="!isSubmitting">Asignar Ticket</span>
+          <span *ngIf="isSubmitting">Asignando...</span>
+        </button>
+      </div>
+      
+      <!-- Advertencias -->
+      <div class="warnings-section" *ngIf="!canAssignTicket()">
+        <mat-card class="warning-card">
+          <mat-card-content>
+            <div class="warning-content">
+              <mat-icon>warning</mat-icon>
+              <div>
+                <p><strong>No se puede asignar este ticket</strong></p>
+                <p>Solo se pueden asignar tickets en estado "Pendiente" y debe tener permisos de administrador.</p>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="!isLoading && !ticket" class="error-state">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <h3>Ticket no encontrado</h3>
+    <p>El ticket solicitado no existe o no tiene permisos para verlo.</p>
+    <button mat-raised-button color="primary" [routerLink]="['/dashboard-admin/pages/tickets/gestionar']">
+      <mat-icon>arrow_back</mat-icon>
+      Volver a Gestión de Tickets
+    </button>
+  </div>
+
+</div>

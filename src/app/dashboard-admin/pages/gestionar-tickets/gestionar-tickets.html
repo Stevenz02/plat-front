@@ -311,20 +311,25 @@
                 </button>
                 
                 <button 
-                  mat-icon-button 
+                  mat-raised-button 
                   color="accent"
-                  (click)="openAssignModal(ticket)"
+                  class="action-button"
+                  (click)="irAsignarTicket(ticket)"
                   [disabled]="!canAssignTicket(ticket)"
                   matTooltip="Asignar ticket">
                   <mat-icon>assignment_ind</mat-icon>
+                  Asignar
                 </button>
                 
                 <button 
-                  mat-icon-button 
-                  (click)="openStatusModal(ticket)"
+                  mat-raised-button 
+                  color="warn"
+                  class="action-button"
+                  (click)="irCambiarEstado(ticket)"
                   [disabled]="!canChangeStatus(ticket)"
                   matTooltip="Cambiar estado">
                   <mat-icon>edit</mat-icon>
+                  Estado
                 </button>
               </div>
             </td>
@@ -351,143 +356,4 @@
       </div>
     </mat-card-content>
   </mat-card>
-</div>
-
-<!-- Modal de Asignación -->
-<div class="modal-overlay" *ngIf="showAssignModal" (click)="closeAssignModal()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h2>Asignar Ticket</h2>
-      <button mat-icon-button (click)="closeAssignModal()">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
-    
-    <div class="modal-body">
-      <div class="ticket-info" *ngIf="selectedTicket">
-        <h3>{{ selectedTicket.numero_ticket }} - {{ selectedTicket.titulo }}</h3>
-        <p>Solicitante: {{ selectedTicket.usuario_solicitante }}</p>
-      </div>
-      
-      <form class="assign-form" #assignForm="ngForm">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Técnico Asignado *</mat-label>
-          <mat-select 
-            [(ngModel)]="assignmentData.tecnico_id" 
-            name="tecnico_id"
-            required>
-            <mat-option *ngFor="let tecnico of tecnicos" [value]="tecnico.id">
-              {{ tecnico.nombres }} {{ tecnico.apellidos }} - {{ tecnico.email }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Categoría *</mat-label>
-          <mat-select 
-            [(ngModel)]="assignmentData.categoria_id" 
-            name="categoria_id"
-            required>
-            <mat-option *ngFor="let categoria of categorias" [value]="categoria.id">
-              {{ categoria.nombre }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Prioridad *</mat-label>
-          <mat-select 
-            [(ngModel)]="assignmentData.prioridad_id" 
-            name="prioridad_id"
-            required>
-            <mat-option *ngFor="let prioridad of prioridades" [value]="prioridad.id">
-              {{ prioridad.nombre }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Comentario de Asignación</mat-label>
-          <textarea 
-            matInput 
-            [(ngModel)]="assignmentData.comentario_asignacion"
-            name="comentario_asignacion"
-            rows="3"
-            placeholder="Notas adicionales sobre la asignación...">
-          </textarea>
-        </mat-form-field>
-      </form>
-    </div>
-    
-    <div class="modal-footer">
-      <button mat-stroked-button (click)="closeAssignModal()">
-        Cancelar
-      </button>
-      <button 
-        mat-raised-button 
-        color="primary" 
-        (click)="assignTicket()"
-        [disabled]="!assignmentData.tecnico_id">
-        Asignar Ticket
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal de Cambio de Estado -->
-<div class="modal-overlay" *ngIf="showStatusModal" (click)="closeStatusModal()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h2>Cambiar Estado del Ticket</h2>
-      <button mat-icon-button (click)="closeStatusModal()">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
-    
-    <div class="modal-body">
-      <div class="ticket-info" *ngIf="selectedTicket">
-        <h3>{{ selectedTicket.numero_ticket }} - {{ selectedTicket.titulo }}</h3>
-        <p>Estado actual: <span class="current-status">{{ selectedTicket.estado }}</span></p>
-      </div>
-      
-      <form class="status-form" #statusForm="ngForm">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Nuevo Estado *</mat-label>
-          <mat-select 
-            [(ngModel)]="statusChangeData.nuevo_estado_id" 
-            name="nuevo_estado_id"
-            required>
-            <mat-option value="1">Pendiente</mat-option>
-            <mat-option value="2">En Progreso</mat-option>
-            <mat-option value="3">Resuelto</mat-option>
-            <mat-option value="4">Cerrado</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Comentario del Técnico</mat-label>
-          <textarea 
-            matInput 
-            [(ngModel)]="statusChangeData.comentario_tecnico"
-            name="comentario_tecnico"
-            rows="4"
-            placeholder="Describe las acciones realizadas o el motivo del cambio...">
-          </textarea>
-        </mat-form-field>
-      </form>
-    </div>
-    
-    <div class="modal-footer">
-      <button mat-stroked-button (click)="closeStatusModal()">
-        Cancelar
-      </button>
-      <button 
-        mat-raised-button 
-        color="primary" 
-        (click)="changeStatus()"
-        [disabled]="!statusChangeData.nuevo_estado_id">
-        Cambiar Estado
-      </button>
-    </div>
-  </div>
 </div>

@@ -4,12 +4,12 @@
 
 :root {
   /* Colores Institucionales */
-  --primary-blue: #1E3A8A;          /* Azul institucional principal */
-  --secondary-blue: #3B82F6;        /* Azul medio */
-  --light-blue: #DBEAFE;            /* Azul claro */
-  --extra-light-blue: #EFF6FF;      /* Azul muy claro */
+  --primary-blue: #002d72;          /* Azul institucional principal */
+  --secondary-blue: #1E3A8A;        /* Azul secundario */
+  --light-blue: #E8F2FF;            /* Azul claro */
+  --extra-light-blue: #F3F7FF;      /* Azul muy claro */
   --primary-white: #FFFFFF;         /* Blanco principal */
-  --off-white: #F8FAFC;             /* Blanco grisáceo */
+  --off-white: #FAFBFC;             /* Blanco grisáceo */
   
   /* Colores de texto */
   --text-primary: #1E293B;          /* Texto principal */
@@ -27,10 +27,10 @@
   --info-color: var(--secondary-blue); /* Azul para información */
   
   /* Sombras */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 45, 114, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 45, 114, 0.1), 0 2px 4px -1px rgba(0, 45, 114, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 45, 114, 0.1), 0 4px 6px -2px rgba(0, 45, 114, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 45, 114, 0.1), 0 10px 10px -5px rgba(0, 45, 114, 0.04);
 }
 
 /* ==========================================================================
@@ -86,7 +86,7 @@ body {
 
 .page-title mat-icon {
   font-size: 36px;
-  color: var(--secondary-blue);
+  color: var(--primary-blue);
 }
 
 .page-subtitle {
@@ -244,29 +244,6 @@ body {
   width: 100%;
 }
 
-/* Inputs, selects y textareas */
-input, select, textarea {
-  width: 100%;
-  padding: 12px 16px;
-  border: 2px solid var(--border-light);
-  border-radius: 8px;
-  font-size: 14px;
-  background: var(--primary-white);
-  color: var(--text-primary);
-  transition: all 0.3s ease;
-  font-family: inherit;
-}
-
-input:focus, select:focus, textarea:focus {
-  outline: none;
-  border-color: var(--secondary-blue);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-input::placeholder, textarea::placeholder {
-  color: var(--text-light);
-}
-
 /* ==========================================================================
    BOTONES
    ========================================================================== */
@@ -292,7 +269,7 @@ button[mat-raised-button][color="primary"] {
 
 .mat-raised-button[color="primary"]:hover,
 button[mat-raised-button][color="primary"]:hover {
-  background: #1E40AF;
+  background: var(--secondary-blue);
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
 }
@@ -350,12 +327,29 @@ button[mat-icon-button]:hover {
 
 .mat-icon-button[color="primary"],
 button[mat-icon-button][color="primary"] {
-  color: var(--secondary-blue);
+  color: var(--primary-blue);
 }
 
 .mat-icon-button[color="accent"],
 button[mat-icon-button][color="accent"] {
   color: var(--success-color);
+}
+
+/* Botones de acciones en tabla */
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px !important;
+  font-size: 12px !important;
+  height: 32px !important;
+  min-width: auto !important;
+}
+
+.action-button mat-icon {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
 }
 
 /* ==========================================================================
@@ -516,7 +510,7 @@ button[mat-icon-button][color="accent"] {
   display: inline-block;
 }
 
-/* Colores específicos para prioridades - CORREGIDOS */
+/* Colores específicos para prioridades */
 .prioridad-chip {
   padding: 6px 16px;
   border-radius: 20px;
@@ -553,7 +547,7 @@ button[mat-icon-button][color="accent"] {
   color: white;
 }
 
-/* Estados - CORREGIDOS */
+/* Estados */
 .estado-chip {
   padding: 6px 16px;
   border-radius: 20px;
@@ -579,8 +573,8 @@ button[mat-icon-button][color="accent"] {
 }
 
 .estado-chip.estado-en-progreso {
-  background: linear-gradient(135deg, #3B82F6, #2563EB) !important;
-  border-color: #1D4ED8;
+  background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue)) !important;
+  border-color: var(--primary-blue);
   color: white;
 }
 
@@ -646,8 +640,9 @@ button[mat-icon-button][color="accent"] {
 
 .actions-container {
   display: flex;
-  gap: 4px;
+  gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 /* ==========================================================================
@@ -659,193 +654,83 @@ button[mat-icon-button][color="accent"] {
   border-top: 1px solid var(--border-light);
   padding: 16px 0;
 }
-/* ==========================================================================
-   MODALES - VERSIÓN CORREGIDA
-   ========================================================================== */
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(30, 58, 138, 0.6) !important;
-  /* Incrementar z-index para estar por encima de Angular Material */
-  z-index: 9999 !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  /* Remover backdrop-filter temporalmente para evitar problemas de renderizado */
-  /* backdrop-filter: blur(1px); */
-}
-
-.modal-content {
-  background: var(--primary-white);
-  border-radius: 12px;
-  box-shadow: var(--shadow-xl);
-  max-width: 600px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  animation: modalAppear 0.3s ease;
-  /* Asegurar posicionamiento relativo */
-  position: relative;
-  z-index: 10000 !important;
-  /* Asegurar que el contenido se vea */
-  opacity: 1;
-  transform: none;
-}
-
-@keyframes modalAppear {
-  from {
-    opacity: 0;
-    transform: scale(0.9) translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 24px 24px 16px 24px;
-  border-bottom: 1px solid var(--border-light);
-  margin-bottom: 0;
-  /* Asegurar que el header se vea */
-  background: var(--primary-white);
-  position: relative;
-  z-index: 1;
-}
-
-.modal-header h2 {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--primary-blue);
-  margin: 0;
-}
-
-.modal-body {
-  padding: 24px;
-  /* Asegurar que el body se vea */
-  background: var(--primary-white);
-  position: relative;
-  z-index: 1;
-}
-
-.modal-footer {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-  padding: 16px 24px 24px 24px;
-  border-top: 1px solid var(--border-light);
-  margin-top: 0;
-  /* Asegurar que el footer se vea */
-  background: var(--primary-white);
-  position: relative;
-  z-index: 1;
-}
 
 /* ==========================================================================
-   SOBRESCRIBIR ESTILOS DE ANGULAR MATERIAL QUE PUEDAN INTERFERIR
+   RESPONSIVE
    ========================================================================== */
 
-/* Asegurar que los mat-form-field en modales se vean correctamente */
-.modal-content .mat-form-field {
-  width: 100% !important;
-  margin-bottom: 16px !important;
-}
-
-/* Asegurar que los botones en modales se vean correctamente */
-.modal-content button {
-  position: relative !important;
-  z-index: 1 !important;
-}
-
-/* Asegurar que los mat-select funcionen en modales */
-.modal-content .mat-select {
-  position: relative !important;
-  z-index: 1 !important;
-}
-
-/* ==========================================================================
-   INFORMACIÓN DE TICKET EN MODALES - CORREGIDA
-   ========================================================================== */
-
-.ticket-info {
-  background: var(--extra-light-blue);
-  border: 1px solid var(--light-blue);
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 24px;
-  /* Asegurar visibilidad */
-  position: relative;
-  z-index: 1;
-}
-
-.ticket-info h3 {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--primary-blue);
-  margin-bottom: 8px;
-}
-
-.ticket-info p {
-  font-size: 14px;
-  color: var(--text-secondary);
-  margin: 0;
-}
-
-.current-status {
-  font-weight: 600;
-  color: var(--primary-blue);
-}
-
-/* ==========================================================================
-   FORMULARIOS EN MODALES - CORREGIDOS
-   ========================================================================== */
-
-.assign-form,
-.status-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  /* Asegurar visibilidad */
-  position: relative;
-  z-index: 1;
-}
-
-/* ==========================================================================
-   RESPONSIVE PARA MODALES
-   ========================================================================== */
-
-@media (max-width: 768px) {
-  .modal-content {
-    margin: 16px;
-    max-width: calc(100vw - 32px);
-    max-height: calc(100vh - 32px);
+@media (max-width: 1024px) {
+  .gestionar-container {
+    padding: 16px;
   }
   
-  .modal-header,
-  .modal-body,
-  .modal-footer {
-    padding-left: 20px;
-    padding-right: 20px;
+  .stats-cards {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  
+  .actions-container {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .action-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 24px;
+  }
+  
+  .page-subtitle {
+    margin-left: 36px;
+    font-size: 14px;
+  }
+  
+  .stats-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .tickets-table {
+    font-size: 12px;
+  }
+  
+  .tickets-table th,
+  .tickets-table td {
+    padding: 8px;
+  }
+  
+  .action-button {
+    font-size: 11px !important;
+    padding: 6px 12px !important;
+    height: 28px !important;
   }
 }
 
 @media (max-width: 480px) {
-  .modal-overlay {
-    padding: 10px;
+  .gestionar-container {
+    padding: 12px;
   }
   
-  .modal-content {
-    margin: 0;
-    max-width: 100%;
-    max-height: 100%;
-    border-radius: 8px;
+  .page-title {
+    font-size: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .page-subtitle {
+    margin-left: 0;
+  }
+  
+  .stat-content {
+    padding: 16px;
+  }
+  
+  .stat-number {
+    font-size: 24px;
   }
 }
