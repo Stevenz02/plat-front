@@ -122,7 +122,7 @@
                   </div>
                 </mat-option>
               </mat-select>
-              <mat-error *ngIf="assignmentData.tecnico_id === 0">
+              <mat-error *ngIf="toNumber(assignmentData.tecnico_id) === 0">
                 Debe seleccionar un técnico
               </mat-error>
               <mat-hint>Seleccione el técnico que se encargará del ticket</mat-hint>
@@ -147,7 +147,7 @@
                   </div>
                 </mat-option>
               </mat-select>
-              <mat-error *ngIf="assignmentData.categoria_id === 0">
+              <mat-error *ngIf="toNumber(assignmentData.categoria_id) === 0">
                 Debe seleccionar una categoría
               </mat-error>
             </mat-form-field>
@@ -171,7 +171,7 @@
                   </div>
                 </mat-option>
               </mat-select>
-              <mat-error *ngIf="assignmentData.prioridad_id === 0">
+              <mat-error *ngIf="toNumber(assignmentData.prioridad_id) === 0">
                 Debe seleccionar una prioridad
               </mat-error>
             </mat-form-field>

@@ -134,10 +134,10 @@ export class AsignarTicketComponent implements OnInit {
   // ===== MÉTODOS DE VALIDACIÓN =====
   
   isFormValid(): boolean {
-    return this.assignmentData.tecnico_id > 0 && 
-           this.assignmentData.categoria_id > 0 && 
-           this.assignmentData.prioridad_id > 0;
-  }
+    return Number(this.assignmentData.tecnico_id) > 0 && 
+          Number(this.assignmentData.categoria_id) > 0 && 
+          Number(this.assignmentData.prioridad_id) > 0;
+}
 
   canAssignTicket(): boolean {
     if (!this.ticket) return false;
@@ -147,15 +147,15 @@ export class AsignarTicketComponent implements OnInit {
   // ===== MÉTODOS DE FORMULARIO =====
 
   onTecnicoChange(): void {
-    // Lógica adicional cuando cambia el técnico si es necesario
+    this.assignmentData.tecnico_id = Number(this.assignmentData.tecnico_id);
   }
 
   onCategoriaChange(): void {
-    // Lógica adicional cuando cambia la categoría si es necesario
+    this.assignmentData.categoria_id = Number(this.assignmentData.categoria_id);
   }
 
   onPrioridadChange(): void {
-    // Lógica adicional cuando cambia la prioridad si es necesario
+    this.assignmentData.prioridad_id = Number(this.assignmentData.prioridad_id);
   }
 
   // ===== MÉTODOS DE ACCIÓN =====
@@ -202,6 +202,10 @@ export class AsignarTicketComponent implements OnInit {
   }
 
   // ===== MÉTODOS DE UTILIDAD =====
+
+  toNumber(value: any): number {
+    return Number(value);
+  }
 
   formatFecha(fecha: string): string {
     return this.ticketService.formatFecha(fecha);
