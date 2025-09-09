@@ -106,19 +106,21 @@ export interface Equipment {
   activo: boolean;
 }
 
-export interface Priority {
+// Categorías
+export interface Category {
   id: number;
   nombre: string;
-  nivel: number;
-  color: string;
   descripcion: string;
   activo: boolean;
+  fecha_creacion: string;
 }
-
-export interface PrioritiesResponse {
+export interface CategoriesResponse {
   success: boolean;
-  message: string;
-  data: Priority[];
+  data: Category[];
+}
+export interface CategoryResponse {
+    success: boolean;
+    data: Category;
 }
 
 // Estados de Ticket
@@ -135,19 +137,25 @@ export interface TicketStatesResponse {
   success: boolean;
   data: TicketState[];
 }
-
-// Categorías
-export interface Category {
-  id: number;
-  nombre: string;
-  descripcion: string;
-  activo: boolean;
-  fecha_creacion: string;
+export interface TicketStateResponse {
+    success: boolean;
+    data: TicketState;
 }
 
-export interface CategoriesResponse {
+// Prioridades
+export interface Priority {
+  id: number;
+  nombre: string;
+  nivel: number;
+  color: string;
+  descripcion: string;
+  activo: boolean;
+}
+
+export interface PrioritiesResponse {
   success: boolean;
-  data: Category[];
+  message: string;
+  data: Priority[];
 }
 
 @Injectable({
@@ -161,142 +169,44 @@ export class TicketService {
     private authService: AuthService
   ) {}
 
-  // Crear un nuevo ticket
-  createTicket(ticketData: CreateTicketRequest): Observable<TicketResponse> {
-    const headers = this.authService.getAuthHeaders();
-    const requestData = {
-      titulo: ticketData.titulo,
-      descripcion: ticketData.descripcion,
-    };
+    // ========== CATEGORÍAS ==========
 
-    return this.http.post<TicketResponse>(`${this.apiUrl}/api/tickets`, requestData, { headers });
-  }
-
-  // Obtener tickets del usuario actual
-  getMyTickets(page: number = 1, limit: number = 10): Observable<TicketsListResponse> {
-  // Si es admin o técnico, obtener todos los tickets
-  if (this.authService.isAdminOrTechnician()) {
-    return this.getAllTickets(page, limit);
-  }
-  
-  // Si es usuario final, obtener solo sus tickets
-  const headers = this.authService.getAuthHeaders();
-  const params = {
-    page: page.toString(),
-    limit: limit.toString()
-  };
-
-  return this.http.get<TicketsListResponse>(`${this.apiUrl}/api/tickets`, { 
-    headers, 
-    params 
-  });
-}
-
-  // Obtener un ticket específico por ID
-  getTicketById(ticketId: number): Observable<any> {
-    const headers = this.authService.getAuthHeaders();
-    return this.http.get(`${this.apiUrl}/api/tickets/${ticketId}`, { headers });
-  }
-
-// Obtener todas las prioridades disponibles
-getPriorities(activo: boolean = true, limit: number = 10, offset: number = 0): Observable<PrioritiesResponse> {
-  const headers = this.authService.getAuthHeaders();
-  
-  const params: any = {
-    limit: limit.toString(),
-    offset: offset.toString()
-  };
-  
-  // Solo agregar el filtro activo si se especifica
-  if (activo !== undefined) {
-    params.activo = activo.toString();
-  }
-
-  return this.http.get<PrioritiesResponse>(`${this.apiUrl}/api/prioridades`, { 
-    headers, 
-    params 
-  });
-}
-
-// Obtener una prioridad específica por ID
-getPriorityById(priorityId: number): Observable<any> {
-  const headers = this.authService.getAuthHeaders();
-  return this.http.get(`${this.apiUrl}/api/prioridades/${priorityId}`, { headers });
-}
-
-// Método auxiliar para obtener solo prioridades activas (más común)
-getActivePriorities(): Observable<PrioritiesResponse> {
-  return this.getPriorities(true, 50, 0); // Obtener hasta 50 prioridades activas
-}
-
-// Método auxiliar para obtener prioridades ordenadas por nivel (alta, media, baja)
-getPrioritiesOrderedByLevel(): Observable<Priority[]> {
-  return this.getActivePriorities().pipe(
-    map(response => {
-      if (response.success && response.data) {
-        // Ordenar por nivel (asumiendo que nivel más alto = mayor prioridad)
-        return response.data.sort((a, b) => b.nivel - a.nivel);
-      }
-      return [];
-    })
-  );
-}
-
-// Método para obtener el color por nivel de prioridad (útil si manejas niveles numéricos)
-getPriorityColorByLevel(nivel: number): string {
-  switch (nivel) {
-    case 3: return '#f44336'; // Alta - Rojo
-    case 2: return '#ff9800'; // Media - Naranja  
-    case 1: return '#4caf50'; // Baja - Verde
-    default: return '#757575'; // Gris por defecto
-  }
-}
-
-  // Filtrar tickets por estado
-  getTicketsByStatus(status: string, page: number = 1, limit: number = 10): Observable<TicketsListResponse> {
+  // Obtener todas las categorías disponibles
+  getCategories(activo: boolean = true): Observable<CategoriesResponse> {
     const headers = this.authService.getAuthHeaders();
     
-    // Necesitas usar el estado_id según tu BD
-    let estado_id: string = '';
-    switch (status.toLowerCase()) {
-      case 'pendiente': estado_id = '1'; break;
-      case 'en progreso': estado_id = '2'; break;
-      case 'resuelto': estado_id = '3'; break;
-      case 'cerrado': estado_id = '4'; break;
+    const params: any = {};
+    
+    if (activo !== undefined) {
+      params.activo = activo.toString();
     }
-    
-    const params = {
-      page: page.toString(),
-      limit: limit.toString(),
-      estado_id: estado_id
-    };
 
-    return this.http.get<TicketsListResponse>(`${this.apiUrl}/api/tickets`, { 
+    return this.http.get<CategoriesResponse>(`${this.apiUrl}/api/categorias`, { 
       headers, 
       params 
     });
   }
 
-  // Métodos de utilidad
-  getPrioridadColor(prioridad: string | null, prioridadColor?: string | null): string {
-    // Si viene el color del backend, usarlo prioritariamente
-    if (prioridadColor) {
-      return prioridadColor;
-    }
-    
-    // Fallback para compatibilidad (mantener el código existente)
-    if (!prioridad) return '#757575';
-    
-    switch (prioridad.toLowerCase()) {
-      case 'alta': return '#f44336';
-      case 'media': return '#ff9800'; 
-      case 'baja': return '#4caf50';
-      default: return '#757575';
-    }
+  // Obtener una categoría específica por ID
+  getCategoryById(categoryId: number): Observable<any> {
+    const headers = this.authService.getAuthHeaders();
+    return this.http.get(`${this.apiUrl}/api/categorias/${categoryId}`, { headers });
   }
 
-    // ========== ESTADOS DE TICKET ==========
+  // Método auxiliar para obtener solo categorías activas
+  getActiveCategories(): Observable<Category[]> {
+    return this.getCategories(true).pipe(
+      map(response => {
+        if (response.success && response.data) {
+          return response.data.sort((a, b) => a.nombre.localeCompare(b.nombre));
+        }
+        return [];
+      })
+    );
+  }
 
+
+  // ========== ESTADOS DE TICKET ==========
   // Obtener todos los estados de ticket
   getTicketStates(activo: boolean = true, es_final?: boolean, limit: number = 50, offset: number = 0): Observable<TicketStatesResponse> {
     const headers = this.authService.getAuthHeaders();
@@ -343,40 +253,138 @@ getPriorityColorByLevel(nivel: number): string {
     );
   }
 
-  // ========== CATEGORÍAS ==========
-
-  // Obtener todas las categorías disponibles
-  getCategories(activo: boolean = true): Observable<CategoriesResponse> {
+  // Obtener todas las prioridades disponibles
+  getPriorities(activo: boolean = true, limit: number = 10, offset: number = 0): Observable<PrioritiesResponse> {
     const headers = this.authService.getAuthHeaders();
     
-    const params: any = {};
+    const params: any = {
+      limit: limit.toString(),
+      offset: offset.toString()
+    };
     
+    // Solo agregar el filtro activo si se especifica
     if (activo !== undefined) {
       params.activo = activo.toString();
     }
 
-    return this.http.get<CategoriesResponse>(`${this.apiUrl}/api/categorias`, { 
+    return this.http.get<PrioritiesResponse>(`${this.apiUrl}/api/prioridades`, { 
       headers, 
       params 
     });
   }
 
-  // Obtener una categoría específica por ID
-  getCategoryById(categoryId: number): Observable<any> {
+  // Obtener una prioridad específica por ID
+  getPriorityById(priorityId: number): Observable<any> {
     const headers = this.authService.getAuthHeaders();
-    return this.http.get(`${this.apiUrl}/api/categorias/${categoryId}`, { headers });
+    return this.http.get(`${this.apiUrl}/api/prioridades/${priorityId}`, { headers });
   }
 
-  // Método auxiliar para obtener solo categorías activas
-  getActiveCategories(): Observable<Category[]> {
-    return this.getCategories(true).pipe(
+  // Método auxiliar para obtener solo prioridades activas (más común)
+  getActivePriorities(): Observable<PrioritiesResponse> {
+    return this.getPriorities(true, 50, 0); // Obtener hasta 50 prioridades activas
+  }
+
+  // Método auxiliar para obtener prioridades ordenadas por nivel (alta, media, baja)
+  getPrioritiesOrderedByLevel(): Observable<Priority[]> {
+    return this.getActivePriorities().pipe(
       map(response => {
         if (response.success && response.data) {
-          return response.data.sort((a, b) => a.nombre.localeCompare(b.nombre));
+          // Ordenar por nivel (asumiendo que nivel más alto = mayor prioridad)
+          return response.data.sort((a, b) => b.nivel - a.nivel);
         }
         return [];
       })
     );
+  }
+
+  // Método para obtener el color por nivel de prioridad (útil si manejas niveles numéricos)
+  getPriorityColorByLevel(nivel: number): string {
+    switch (nivel) {
+      case 3: return '#f44336'; // Alta - Rojo
+      case 2: return '#ff9800'; // Media - Naranja  
+      case 1: return '#4caf50'; // Baja - Verde
+      default: return '#757575'; // Gris por defecto
+    }
+  }
+
+  // Crear un nuevo ticket
+  createTicket(ticketData: CreateTicketRequest): Observable<TicketResponse> {
+    const headers = this.authService.getAuthHeaders();
+    const requestData = {
+      titulo: ticketData.titulo,
+      descripcion: ticketData.descripcion,
+    };
+
+    return this.http.post<TicketResponse>(`${this.apiUrl}/api/tickets`, requestData, { headers });
+  }
+
+  // Obtener tickets del usuario actual
+  getMyTickets(page: number = 1, limit: number = 10): Observable<TicketsListResponse> {
+  // Si es admin o técnico, obtener todos los tickets
+  if (this.authService.isAdminOrTechnician()) {
+    return this.getAllTickets(page, limit);
+  }
+  
+  // Si es usuario final, obtener solo sus tickets
+  const headers = this.authService.getAuthHeaders();
+  const params = {
+    page: page.toString(),
+    limit: limit.toString()
+  };
+
+  return this.http.get<TicketsListResponse>(`${this.apiUrl}/api/tickets`, { 
+    headers, 
+    params 
+  });
+}
+
+  // Obtener un ticket específico por ID
+  getTicketById(ticketId: number): Observable<any> {
+    const headers = this.authService.getAuthHeaders();
+    return this.http.get(`${this.apiUrl}/api/tickets/${ticketId}`, { headers });
+  }
+
+  // Filtrar tickets por estado
+  getTicketsByStatus(status: string, page: number = 1, limit: number = 10): Observable<TicketsListResponse> {
+    const headers = this.authService.getAuthHeaders();
+    
+    // Necesitas usar el estado_id según tu BD
+    let estado_id: string = '';
+    switch (status.toLowerCase()) {
+      case 'pendiente': estado_id = '1'; break;
+      case 'en progreso': estado_id = '2'; break;
+      case 'resuelto': estado_id = '3'; break;
+      case 'cerrado': estado_id = '4'; break;
+    }
+    
+    const params = {
+      page: page.toString(),
+      limit: limit.toString(),
+      estado_id: estado_id
+    };
+
+    return this.http.get<TicketsListResponse>(`${this.apiUrl}/api/tickets`, { 
+      headers, 
+      params 
+    });
+  }
+
+  // Métodos de utilidad
+  getPrioridadColor(prioridad: string | null, prioridadColor?: string | null): string {
+    // Si viene el color del backend, usarlo prioritariamente
+    if (prioridadColor) {
+      return prioridadColor;
+    }
+    
+    // Fallback para compatibilidad (mantener el código existente)
+    if (!prioridad) return '#757575';
+    
+    switch (prioridad.toLowerCase()) {
+      case 'alta': return '#f44336';
+      case 'media': return '#ff9800'; 
+      case 'baja': return '#4caf50';
+      default: return '#757575';
+    }
   }
 
   // ========== MÉTODOS AUXILIARES MEJORADOS ==========
