@@ -11,6 +11,9 @@ import { CrearTicketComponent } from './dashboard/pages/crear-ticket/crear-ticke
 import { DashboardAdminComponent } from './dashboard-admin/dashboard-admin';
 import { InicioAdminComponent } from './dashboard-admin/pages/inicio-admin/inicio-admin';
 import { GestionarTicketsComponent } from './dashboard-admin/pages/gestionar-tickets/gestionar-tickets';
+import { AsignarTicketComponent } from './dashboard-admin/pages/asignar-ticket/asignar-ticket';
+import { CambiarEstadoTicketComponent } from './dashboard-admin/pages/cambiar-estado-ticket/cambiar-estado-ticket';
+import { DetalleTicketComponent } from './dashboard-admin/pages/detalle-ticket/detalle-ticket';
 
 // Importar guards
 import { AuthGuard } from './guards/auth.guard';
@@ -67,7 +70,10 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'inicio-admin', pathMatch: 'full' },
       { path: 'inicio-admin', component: InicioAdminComponent },
-      { path: 'tickets/gestionar', component: GestionarTicketsComponent }
+      { path: 'tickets/gestionar', component: GestionarTicketsComponent },
+      { path: 'tickets/asignar/:id', component: AsignarTicketComponent },
+      { path: 'tickets/cambiar-estado/:id', component: CambiarEstadoTicketComponent },
+      { path: 'tickets/detalle/:id', component: DetalleTicketComponent }
     ]
   },
 

@@ -6,9 +6,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
 import { MATERIAL_IMPORTS } from '../../../material.imports';
-import { TicketService, Ticket, Technician, Equipment } from '../../../services/ticket.service';
+import { TicketService, Ticket } from '../../../services/ticket.service';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
@@ -58,7 +57,6 @@ export class GestionarTicketsComponent implements OnInit {
     { value: '4', label: 'Cerrado' }
   ];
 
-  // Datos locales basados en tu BD
   categorias: any[] = [
     { id: '', nombre: 'Todas las categorías' },
     { id: '1', nombre: 'Hardware' },
@@ -74,9 +72,6 @@ export class GestionarTicketsComponent implements OnInit {
     { id: '3', nombre: 'Baja' }
   ];
   
-  // Técnicos cargados desde API real
-  tecnicos: any[] = [];
-  
   estadisticas: any = {
     total_tickets: 0,
     pendientes: 0,
@@ -85,43 +80,20 @@ export class GestionarTicketsComponent implements OnInit {
     cerrados: 0
   };
 
-  // Modal de asignación - SIN equipos por ahora
-  showAssignModal = false;
-  selectedTicket: Ticket | null = null;
-  assignmentData = {
-    tecnico_id: 0,
-    categoria_id: 0,
-    prioridad_id: 0,
-    comentario_asignacion: ''
-  };
-
-  // Modal de cambio de estado
-  showStatusModal = false;
-  statusChangeData = {
-    nuevo_estado_id: 0,
-    comentario_tecnico: ''
-  };
-
   constructor(
     private ticketService: TicketService,
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
-    this.loadInitialData();
+    this.loadTickets();
   }
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-  }
-
-  loadInitialData(): void {
-    this.loadTickets();
-    this.loadTecnicos(); // Cargar técnicos reales
   }
 
   loadTickets(): void {
@@ -146,8 +118,6 @@ export class GestionarTicketsComponent implements OnInit {
         if (response.success) {
           this.dataSource.data = response.data.tickets;
           this.totalTickets = response.data.pagination.total_items;
-          
-          // Calcular estadísticas desde los tickets cargados
           this.calcularEstadisticasDesdeTickets();
         } else {
           this.showError('Error al cargar los tickets');
@@ -160,22 +130,6 @@ export class GestionarTicketsComponent implements OnInit {
     });
   }
 
-  // Cargar técnicos reales desde el backend
-  loadTecnicos(): void {
-    this.ticketService.getTechnicians().subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.tecnicos = response.data.filter((t: any) => t.activo);
-        }
-      },
-      error: (error) => {
-        // Si falla, usar lista vacía
-        this.tecnicos = [];
-      }
-    });
-  }
-
-  // Calcular estadísticas desde los tickets cargados
   private calcularEstadisticasDesdeTickets(): void {
     const tickets = this.dataSource.data;
     this.estadisticas = {
@@ -187,7 +141,7 @@ export class GestionarTicketsComponent implements OnInit {
     };
   }
 
-  // ===== MÉTODOS PARA CLASES CSS - CORREGIDOS =====
+  // ===== MÉTODOS PARA CLASES CSS =====
   getPrioridadClass(prioridad: string | null): string {
     if (!prioridad) return '';
     
@@ -229,7 +183,7 @@ export class GestionarTicketsComponent implements OnInit {
     }
   }
 
-  // Métodos de filtrado
+  // ===== MÉTODOS DE FILTRADO =====
   onSearchChange(): void {
     setTimeout(() => {
       this.currentPage = 1;
@@ -258,108 +212,25 @@ export class GestionarTicketsComponent implements OnInit {
     this.loadTickets();
   }
 
-  // Acciones de tickets
+  refreshTickets(): void {
+    this.currentPage = 1;
+    this.loadTickets();
+  }
+
+  // ===== NAVEGACIÓN A VISTAS =====
   verDetalle(ticket: Ticket): void {
     this.router.navigate(['/dashboard-admin/tickets/detalle', ticket.id]);
   }
 
-  openAssignModal(ticket: Ticket): void {
-    this.selectedTicket = ticket;
-    this.assignmentData = {
-      tecnico_id: 0,
-      categoria_id: ticket.categoria ? parseInt(ticket.categoria) : 0,
-      prioridad_id: ticket.prioridad_nivel || 0,
-      comentario_asignacion: ''
-    };
-    this.showAssignModal = true;
+  irAsignarTicket(ticket: Ticket): void {
+    this.router.navigate(['/dashboard-admin/tickets/asignar', ticket.id]);
   }
 
-  closeAssignModal(): void {
-    this.showAssignModal = false;
-    this.selectedTicket = null;
-    this.assignmentData = {
-      tecnico_id: 0,
-      categoria_id: 0,
-      prioridad_id: 0,
-      comentario_asignacion: ''
-    };
+  irCambiarEstado(ticket: Ticket): void {
+    this.router.navigate(['/dashboard-admin/tickets/cambiar-estado', ticket.id]);
   }
 
-  assignTicket(): void {
-    if (!this.selectedTicket || !this.assignmentData.tecnico_id) {
-      this.showError('Debe seleccionar un técnico');
-      return;
-    }
-
-    // Payload según el swagger
-    const payload = {
-      tecnico_id: this.assignmentData.tecnico_id,
-      categoria_id: this.assignmentData.categoria_id,
-      prioridad_id: this.assignmentData.prioridad_id,
-      comentario_asignacion: this.assignmentData.comentario_asignacion
-    };
-
-    this.ticketService.assignTicket(this.selectedTicket.id, payload).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.showSuccess('Ticket asignado exitosamente');
-          this.closeAssignModal();
-          this.loadTickets();
-        } else {
-          this.showError(response.message || 'Error al asignar ticket');
-        }
-      },
-      error: (error) => {
-        this.handleError(error, 'Error al asignar el ticket');
-      }
-    });
-  }
-
-  openStatusModal(ticket: Ticket): void {
-    this.selectedTicket = ticket;
-    this.statusChangeData = {
-      nuevo_estado_id: 0,
-      comentario_tecnico: ''
-    };
-    this.showStatusModal = true;
-  }
-
-  closeStatusModal(): void {
-    this.showStatusModal = false;
-    this.selectedTicket = null;
-    this.statusChangeData = {
-      nuevo_estado_id: 0,
-      comentario_tecnico: ''
-    };
-  }
-
-  changeStatus(): void {
-    if (!this.selectedTicket || !this.statusChangeData.nuevo_estado_id) {
-      this.showError('Debe seleccionar un estado');
-      return;
-    }
-
-    this.ticketService.changeTicketStatus(
-      this.selectedTicket.id, 
-      this.statusChangeData.nuevo_estado_id,
-      this.statusChangeData.comentario_tecnico
-    ).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.showSuccess('Estado del ticket actualizado');
-          this.closeStatusModal();
-          this.loadTickets();
-        } else {
-          this.showError(response.message || 'Error al cambiar estado');
-        }
-      },
-      error: (error) => {
-        this.handleError(error, 'Error al cambiar el estado del ticket');
-      }
-    });
-  }
-
-  // Métodos de utilidad
+  // ===== MÉTODOS DE UTILIDAD =====
   formatFecha(fecha: string): string {
     return this.ticketService.formatFecha(fecha);
   }
@@ -383,12 +254,7 @@ export class GestionarTicketsComponent implements OnInit {
     return this.authService.isAdminOrTechnician();
   }
 
-  refreshTickets(): void {
-    this.currentPage = 1;
-    this.loadTickets();
-  }
-
-  // Manejo de errores
+  // ===== MANEJO DE ERRORES =====
   private handleError(error: any, defaultMessage: string): void {
     let errorMessage = defaultMessage;
     
