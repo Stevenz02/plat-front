@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
     ...MATERIAL_IMPORTS
   ],
   templateUrl: './mis-tickets.html',
@@ -107,12 +108,6 @@ export class MisTicketsComponent implements OnInit {
 
   crearNuevoTicket(): void {
     this.router.navigate(['/dashboard/tickets/crear']);
-  }
-
-  verDetalle(ticketId: number): void {
-    // Aquí puedes navegar a una vista de detalle si la tienes
-    // Por ahora, solo como ejemplo:
-    this.snackBar.open(`Navegando al detalle del ticket #${ticketId}`, 'Cerrar', { duration: 2000 });
   }
 
   private showError(message: string): void {
