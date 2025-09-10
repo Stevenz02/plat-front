@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MATERIAL_IMPORTS } from '../../../material.imports';
@@ -21,37 +21,38 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./mis-tickets.css']
 })
 export class MisTicketsComponent implements OnInit {
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-
+  // Columnas a mostrar (se quitó 'prioridad')
   displayedColumns: string[] = [
     'numero_ticket', 
     'titulo', 
     'categoria', 
-    'prioridad', 
     'estado', 
     'fecha_creacion', 
+    'tecnico_asignado',
     'acciones'
   ];
   
   dataSource = new MatTableDataSource<Ticket>();
   isLoading = true;
   totalTickets = 0;
-  currentPage = 1;
   pageSize = 10;
-  selectedStatus = '';
+  currentPage = 1;
+  selectedStatus: string | null = null;
 
-  // Estados disponibles para filtro
-  estados = [
-    { value: '', label: 'Todos los estados' },
+  // Estados para el filtro, ahora con tipo explícito
+  estados: { value: string | null; label: string }[] = [
+    { value: null, label: 'Todos los estados' },
     { value: 'Pendiente', label: 'Pendiente' },
     { value: 'En Progreso', label: 'En Progreso' },
     { value: 'Resuelto', label: 'Resuelto' },
     { value: 'Cerrado', label: 'Cerrado' }
   ];
 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
   constructor(
-    private ticketService: TicketService,
+    public ticketService: TicketService, // Público para usar métodos en la plantilla
     private router: Router,
     private snackBar: MatSnackBar
   ) {}
@@ -60,61 +61,45 @@ export class MisTicketsComponent implements OnInit {
     this.loadTickets();
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
-
   loadTickets(): void {
     this.isLoading = true;
     
-    let observable;
-    
-    if (this.selectedStatus) {
-      observable = this.ticketService.getTicketsByStatus(this.selectedStatus, this.currentPage, this.pageSize);
-    } else {
-      observable = this.ticketService.getMyTickets(this.currentPage, this.pageSize);
-    }
+    // La lógica para decidir qué método del servicio llamar es correcta
+    const observable = this.selectedStatus
+      ? this.ticketService.getTicketsByStatus(this.selectedStatus, this.currentPage, this.pageSize)
+      : this.ticketService.getMyTickets(this.currentPage, this.pageSize);
 
     observable.subscribe({
       next: (response) => {
-        this.isLoading = false;
-        if (response.success) {
+        if (response.success && response.data) {
           this.dataSource.data = response.data.tickets;
           this.totalTickets = response.data.pagination.total_items;
         } else {
-          this.showError('Error al cargar los tickets');
+          this.showError(response.message || 'Error al cargar los tickets');
         }
-      },
-      error: (error) => {
         this.isLoading = false;
-        console.error('Error cargando tickets:', error);
-        
-        let errorMessage = 'Error al cargar los tickets';
-        if (error.status === 401) {
-          errorMessage = 'Sesión expirada. Por favor, inicia sesión nuevamente';
-          this.router.navigate(['/login']);
-        } else if (error.error?.message) {
-          errorMessage = error.error.message;
-        }
-        
-        this.showError(errorMessage);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error('Error cargando tickets:', err);
+        this.showError('Ocurrió un error al conectar con el servidor.');
       }
     });
   }
 
-  onStatusChange(): void {
+  onFilterChange(): void {
+    this.paginator.pageIndex = 0;
     this.currentPage = 1;
     this.loadTickets();
   }
 
   clearFilters(): void {
-    this.selectedStatus = '';
-    this.currentPage = 1;
-    this.loadTickets();
+    if (this.selectedStatus === null) return;
+    this.selectedStatus = null;
+    this.onFilterChange();
   }
 
-  onPageChange(event: any): void {
+  handlePageEvent(event: PageEvent): void {
     this.currentPage = event.pageIndex + 1;
     this.pageSize = event.pageSize;
     this.loadTickets();
@@ -124,56 +109,16 @@ export class MisTicketsComponent implements OnInit {
     this.router.navigate(['/dashboard/tickets/crear']);
   }
 
-  verDetalle(ticket: Ticket): void {
-    this.router.navigate(['/dashboard/tickets/detalle', ticket.id]);
-  }
-
-  // Métodos de utilidad para mostrar información formateada
-  getEstadoColor(ticket: Ticket): string {
-    return this.ticketService.getEstadoColor(ticket.estado, ticket.estado_color);
-  }
-
-  getPrioridadColor(ticket: Ticket): string {
-    return this.ticketService.getPrioridadColor(ticket.prioridad, ticket.prioridad_color);
-  }
-
-  formatFecha(fecha: string): string {
-    return this.ticketService.formatFecha(fecha);
-  }
-
-  getEstadoLabel(estado: string): string {
-    return estado || 'Sin estado';
-  }
-
-  getPrioridadLabel(prioridad: string): string {
-    return prioridad || 'No asignada';
-  }
-
-  getCategoriaLabel(categoria: string | null): string {
-    return categoria || 'Sin categoría';
-  }
-
-  truncateText(text: string, maxLength: number = 50): string {
-    if (!text) return 'N/A';
-    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  verDetalle(ticketId: number): void {
+    // Aquí puedes navegar a una vista de detalle si la tienes
+    // Por ahora, solo como ejemplo:
+    this.snackBar.open(`Navegando al detalle del ticket #${ticketId}`, 'Cerrar', { duration: 2000 });
   }
 
   private showError(message: string): void {
     this.snackBar.open(message, 'Cerrar', {
       duration: 5000,
-      panelClass: ['error-snackbar']
+      panelClass: ['snackbar-error'] // Asegúrate de tener estilos para esto
     });
-  }
-
-  private showSuccess(message: string): void {
-    this.snackBar.open(message, 'Cerrar', {
-      duration: 3000,
-      panelClass: ['success-snackbar']
-    });
-  }
-
-  refreshTickets(): void {
-    this.currentPage = 1;
-    this.loadTickets();
   }
 }

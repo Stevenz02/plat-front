@@ -1,0 +1,80 @@
+<div class="container-fluid p-4">
+  <div class="loading-container" *ngIf="isLoading">
+    <mat-spinner color="primary"></mat-spinner>
+    <p class="mt-3">Cargando información del ticket...</p>
+  </div>
+
+  <mat-card class="status-change-card" *ngIf="!isLoading && ticket">
+    <mat-card-header class="card-header">
+      <mat-card-title>
+        Gestionar Ticket #{{ ticket.numero_ticket }}
+      </mat-card-title>
+      <button mat-icon-button (click)="goBack()" class="close-button" aria-label="Volver a la lista">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-card-header>
+
+    <mat-card-content class="card-content">
+      <div class="ticket-details">
+        <h2>Información Actual</h2>
+        <p><strong>Solicitante:</strong> {{ ticket.usuario_solicitante }}</p>
+        <p><strong>Técnico Asignado:</strong> {{ ticket.tecnico_asignado }}</p>
+        <p>
+          <strong>Estado Actual:</strong>
+          <span class="status-badge" [style.background-color]="ticketService.getEstadoColor(ticket.estado, ticket.estado_color)">
+            {{ ticket.estado }}
+          </span>
+        </p>
+        
+        <mat-divider class="my-3"></mat-divider>
+
+        <h2>Detalles del Ticket</h2>
+        <h3>{{ ticket.titulo }}</h3>
+        <p class="ticket-description">{{ ticket.descripcion }}</p>
+      </div>
+
+      <div class="status-change-form">
+        <h2>Actualizar Estado</h2>
+        <form [formGroup]="statusChangeForm" (ngSubmit)="onSubmit()">
+          
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Nuevo Estado</mat-label>
+            <mat-select formControlName="nuevo_estado_id" required>
+              <mat-option *ngFor="let state of availableStates" [value]="state.id">
+                {{ state.nombre }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="statusChangeForm.get('nuevo_estado_id')?.hasError('required')">
+              Debe seleccionar un nuevo estado.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Comentario / Resumen del Trabajo</mat-label>
+            <textarea matInput formControlName="comentario_tecnico"
+                      rows="6"
+                      placeholder="Ej: Se realizó el cambio del tóner de la impresora y se ejecutaron pruebas de impresión."
+                      required></textarea>
+            <mat-error *ngIf="statusChangeForm.get('comentario_tecnico')?.hasError('required')">
+              El comentario es obligatorio.
+            </mat-error>
+            <mat-error *ngIf="statusChangeForm.get('comentario_tecnico')?.hasError('minlength')">
+              El comentario debe tener al menos 10 caracteres.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-card-actions align="end">
+            <button type="button" mat-stroked-button (click)="goBack()">Cancelar</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitting">
+              <span *ngIf="!isSubmitting">Actualizar Estado</span>
+              <span *ngIf="isSubmitting" class="d-flex align-items-center">
+                Actualizando...
+                <mat-spinner [diameter]="20" class="ms-2"></mat-spinner>
+              </span>
+            </button>
+          </mat-card-actions>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
