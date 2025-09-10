@@ -98,11 +98,14 @@
 
 /* Botones de acción */
 .actions-cell {
-  white-space: nowrap; /* Evita que los botones se partan en dos líneas */
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
 }
 
-.actions-cell button {
-  margin-right: 8px;
+/* Aplica un margen a CUALQUIER botón o enlace dentro de la celda */
+.actions-cell > * {
+  margin: 0 4px;
 }
 
 .btn-manage-ticket {

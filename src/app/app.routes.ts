@@ -75,7 +75,7 @@ export const routes: Routes = [
       { path: 'tickets/gestionar', component: GestionarTicketsComponent },
       { path: 'tickets/asignar/:id', component: AsignarTicketComponent },
       { path: 'tickets/cambiar-estado/:id', component: CambiarEstadoTicketComponent },
-      { path: 'tickets/detalle/:id', component: DetalleTicketComponent }
+      { path: 'tickets/:id', component: DetalleTicketComponent }
     ]
   },
 
