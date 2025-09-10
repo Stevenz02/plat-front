@@ -76,7 +76,33 @@ export interface TicketsListResponse {
   };
 }
 
-// Detalle ticket
+// Interfaz para el historial de cambios
+export interface TicketHistoryEvent {
+  accion: string;
+  descripcion: string;
+  comentario: string;
+  fecha_cambio: string;
+  fecha_cambio_formateada: string;
+  usuario_nombre: string;
+  usuario_email: string;
+}
+
+// Interfaz para la vista completa del ticket (Admin/Técnico)
+export interface TicketDetailAdmin {
+  ticket: Ticket; // Reutilizamos la interfaz base que ya tenemos
+  historial: TicketHistoryEvent[];
+  // Añadimos aquí los otros campos que devuelve la API para la vista completa
+  permisos_usuario: {
+    puede_editar: boolean;
+    puede_cambiar_estado: boolean;
+    puede_asignar: boolean;
+    puede_comentar: boolean;
+    puede_ver_historial: boolean;
+  };
+  siguiente_accion?: string;
+}
+
+// Detalle ticket usuario 
 export interface TicketDetailUsuario {
   numero_ticket: string;
   titulo: string;
@@ -523,6 +549,23 @@ export class TicketService {
   // Determinar si el usuario puede gestionar tickets
   canManageTickets(): boolean {
     return this.authService.isAdminOrTechnician();
+  }
+
+  /**
+   * Obtiene los detalles completos de un ticket para la vista de Admin/Técnico.
+   * @param ticketId El ID del ticket a consultar.
+   * @returns Un Observable con los detalles completos del ticket.
+   */
+  getTicketDetailForAdmin(ticketId: number): Observable<TicketDetailAdmin> {
+    return this.getTicketById(ticketId).pipe(
+      map(response => {
+        if (!response.success) {
+          throw new Error(response.message || 'Error al obtener los detalles completos del ticket');
+        }
+        // La API ya nos da la estructura que necesitamos, así que la devolvemos directamente
+        return response.data as TicketDetailAdmin;
+      })
+    );
   }
 
   /**

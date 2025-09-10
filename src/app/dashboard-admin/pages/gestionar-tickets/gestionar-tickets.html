@@ -59,6 +59,7 @@
           <ng-container matColumnDef="acciones">
             <th mat-header-cell *matHeaderCellDef>Acciones</th>
             <td mat-cell *matCellDef="let ticket" class="actions-cell">
+
               <button *ngIf="isAdmin && !ticket.tecnico_asignado" 
                       mat-raised-button 
                       color="primary" 
@@ -72,7 +73,14 @@
                       (click)="gestionarTicket(ticket.id)">
                 Gestionar
               </button>
-            </td>
+
+              <a mat-icon-button 
+                color="primary" 
+                [routerLink]="['/dashboard-admin/tickets', ticket.id]" 
+                matTooltip="Ver detalles del ticket">
+                <mat-icon>visibility</mat-icon>
+              </a>
+              </td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>

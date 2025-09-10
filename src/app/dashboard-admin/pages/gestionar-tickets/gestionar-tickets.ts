@@ -1,16 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
-// Importamos el array directamente desde tu archivo
 import { MATERIAL_IMPORTS } from '../../../material.imports';
-
 // El resto de los imports de Angular Material ya no son necesarios uno por uno
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-
-// Tus servicios e interfaces
 import { Ticket } from '../../../services/ticket.service';
 import { TicketService } from '../../../services/ticket.service';
 import { AuthService } from '../../../services/auth.service';
@@ -20,14 +15,14 @@ import { AuthService } from '../../../services/auth.service';
   standalone: true,
   imports: [
     CommonModule,
-    ...MATERIAL_IMPORTS // <-- ¡ESTE ES EL CAMBIO! Usamos el spread operator
+    RouterModule,
+    ...MATERIAL_IMPORTS
   ],
   templateUrl: './gestionar-tickets.html',
   styleUrls: ['./gestionar-tickets.css']
 })
 export class GestionarTicketsComponent implements OnInit {
 
-  // El resto del código del componente permanece exactamente igual.
   displayedColumns: string[] = [
     'numero_ticket',
     'titulo',
