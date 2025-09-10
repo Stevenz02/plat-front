@@ -76,6 +76,21 @@ export interface TicketsListResponse {
   };
 }
 
+// Detalle ticket
+export interface TicketDetailUsuario {
+  numero_ticket: string;
+  titulo: string;
+  descripcion: string;
+  categoria: string | null;
+  usuario_solicitante: string;
+  tecnico_asignado: string | null;
+  fecha_creacion: string;
+  fecha_asignacion: string | null;
+  fecha_resolucion: string | null;
+  estado: string;
+  estado_color: string;
+}
+
 export interface AssignTicketRequest {
   tecnico_id: number;
   categoria_id: number;
@@ -508,5 +523,43 @@ export class TicketService {
   // Determinar si el usuario puede gestionar tickets
   canManageTickets(): boolean {
     return this.authService.isAdminOrTechnician();
+  }
+
+  /**
+   * Obtiene los detalles completos de un ticket y los transforma
+   * a una vista simplificada para el usuario final.
+   * @param ticketId El ID del ticket a consultar.
+   * @returns Un Observable con los detalles básicos del ticket.
+   */
+  getTicketDetailForUser(ticketId: number): Observable<TicketDetailUsuario> {
+    // Reutilizamos el método que ya obtiene toda la información
+    return this.getTicketById(ticketId).pipe(
+      map(response => {
+        if (!response.success) {
+          // Si la API devuelve un error, lanzamos una excepción para que el componente lo sepa
+          throw new Error(response.message || 'Error al obtener el ticket');
+        }
+
+        // Extraemos el ticket completo
+        const fullTicket = response.data.ticket;
+
+        // Creamos y devolvemos el nuevo objeto con solo los campos necesarios
+        const userTicketView: TicketDetailUsuario = {
+          numero_ticket: fullTicket.numero_ticket,
+          titulo: fullTicket.titulo,
+          descripcion: fullTicket.descripcion,
+          categoria: fullTicket.categoria,
+          usuario_solicitante: fullTicket.usuario_solicitante,
+          tecnico_asignado: fullTicket.tecnico_asignado,
+          fecha_creacion: fullTicket.fecha_creacion,
+          fecha_asignacion: fullTicket.fecha_asignacion,
+          fecha_resolucion: fullTicket.fecha_resolucion,
+          estado: fullTicket.estado,
+          estado_color: fullTicket.estado_color
+        };
+        
+        return userTicketView;
+      })
+    );
   }
 }

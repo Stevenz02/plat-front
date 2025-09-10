@@ -70,9 +70,12 @@
           <ng-container matColumnDef="acciones">
             <th mat-header-cell *matHeaderCellDef>Acciones</th>
             <td mat-cell *matCellDef="let ticket">
-              <button mat-icon-button color="primary" (click)="verDetalle(ticket.id)" matTooltip="Ver detalles del ticket">
+              <a mat-icon-button 
+                color="primary" 
+                [routerLink]="['/dashboard/tickets', ticket.id]" 
+                matTooltip="Ver detalles del ticket">
                 <mat-icon>visibility</mat-icon>
-              </button>
+              </a>
             </td>
           </ng-container>
 

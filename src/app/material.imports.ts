@@ -5,8 +5,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatSnackBarModule } from '@angular/material/snack-bar'; // Para notificaciones
-import { MatCheckboxModule } from '@angular/material/checkbox'; // Para "Recordarme"
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -16,6 +16,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDividerModule } from '@angular/material/divider';
 
 export const MATERIAL_IMPORTS = [
   MatButtonModule,
@@ -36,4 +37,5 @@ export const MATERIAL_IMPORTS = [
   MatPaginatorModule,
   MatSortModule,
   MatTooltipModule,
+  MatDividerModule,
 ];

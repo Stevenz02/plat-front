@@ -1,0 +1,88 @@
+<div class="ticket-detail-container">
+  @if (!ticket() && !error()) {
+    <div class="spinner-container">
+      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    </div>
+  }
+
+  @if (ticket()) {
+    <mat-card class="ticket-card">
+      <mat-card-header>
+        <div class="header-container">
+          <div class="header-content">
+            <mat-card-title>{{ ticket()?.numero_ticket }}</mat-card-title>
+            <mat-card-subtitle>{{ ticket()?.titulo }}</mat-card-subtitle>
+          </div>
+          <mat-chip-listbox class="status-chip">
+            <mat-chip [style.backgroundColor]="ticket()?.estado_color" selected>
+              {{ ticket()?.estado }}
+            </mat-chip>
+          </mat-chip-listbox>
+        </div>
+        </mat-card-header>
+
+      <mat-card-content>
+        <div class="description-section">
+          <h4>Descripción de la Solicitud</h4>
+          <p>{{ ticket()?.descripcion }}</p>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="details-section">
+          <div class="details-column">
+            <div class="detail-item">
+              <strong>Solicitante</strong>
+              <span>{{ ticket()?.usuario_solicitante }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Técnico Asignado</strong>
+              <span>{{ ticket()?.tecnico_asignado || 'Pendiente' }}</span>
+            </div>
+          </div>
+
+          <div class="details-column">
+            <div class="detail-item">
+              <strong>Categoría</strong>
+              <span>{{ ticket()?.categoria || 'No asignada' }}</span>
+            </div>
+          </div>
+
+          <div class="details-column">
+            <div class="detail-item">
+              <strong>Fecha de Creación</strong>
+              <span>{{ ticket()?.fecha_creacion | date:'d/MMM/y, h:mm a' }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Fecha de Asignación</strong>
+              <span>{{ ticket()?.fecha_asignacion ? (ticket()?.fecha_asignacion | date:'d/MMM/y, h:mm a') : '-' }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Fecha de Resolución</strong>
+              <span>{{ ticket()?.fecha_resolucion ? (ticket()?.fecha_resolucion | date:'d/MMM/y, h:mm a') : '-' }}</span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions align="end">
+        <a mat-stroked-button color="primary" routerLink="/dashboard/tickets">Volver</a>
+      </mat-card-actions>
+    </mat-card>
+  }
+
+  @if (error()) {
+    <mat-card class="error-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>warning</mat-icon>
+        <mat-card-title>Error al Cargar el Ticket</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ error() }}</p>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <a mat-stroked-button routerLink="/dashboard/tickets">Volver</a>
+      </mat-card-actions>
+    </mat-card>
+  }
+</div>
