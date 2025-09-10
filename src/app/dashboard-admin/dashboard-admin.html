@@ -1,1 +1,54 @@
-<p>dashboard-admin works!</p>
+<mat-sidenav-container class="layout-container">
+  <mat-sidenav class="sidebar" mode="side" [opened]="menuAbierto">
+    <div class="logo-container">
+      <img src="assets/logoepa.png" alt="EPA" class="logo-img" />
+      <h3>Tablero de control</h3>
+      <h4>Versión: 1.0</h4>
+    </div>
+    <nav class="menu">
+      <div class="menu-item" routerLink="/dashboard-admin/inicio-admin" routerLinkActive="active">
+        <mat-icon>home</mat-icon> <span class="label">Inicio</span>
+      </div>
+      <div class="menu-item" routerLink="/dashboard-admin/tickets/gestionar" routerLinkActive="active">
+        <mat-icon>folder</mat-icon> <span class="label">Gestión de Tickets</span>
+      </div>
+      <div class="menu-item disabled">
+        <mat-icon>receipt_long</mat-icon> <span class="label">Inventario</span>
+      </div>
+      <div class="menu-item disabled">
+        <mat-icon>build</mat-icon> <span class="label">Base de conocimiento</span>
+      </div>
+    </nav>
+    
+    <mat-button-toggle class="cerrarsesion-btn" (click)="cerrarSesion()">
+      <mat-icon>logout</mat-icon>
+      <span class="label">Cerrar Sesión</span>
+    </mat-button-toggle>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="main-content">
+    <mat-toolbar color="primary" class="topbar">
+      Plataforma de Apoyo TIC - EPA
+    </mat-toolbar>
+    
+    <div class="content-wrapper">
+      <!-- Aquí se cargan todas las páginas hijas -->
+      <router-outlet></router-outlet>
+    </div>
+
+    <footer class="footer-horizontal">
+      <div class="footer-col izquierda">
+        © {{ currentYear }} Empresas Públicas de Armenia E.S.P.
+      </div>
+      <div class="footer-col centro">
+        Plataforma de Apoyo TIC - EPA <br>
+        <a (click)="abrirTerminos()" style="cursor: pointer;">Términos, Condiciones de uso y Aviso Legal.</a> 
+      </div>
+      <div class="footer-col derecha">
+        Contacto de soporte · 
+        <mat-icon inline>email</mat-icon><a href="mailto:redes.tic@epa.gov.co">redes.tic&#64;epa.gov.co</a>
+        <p><mat-icon inline>phone</mat-icon> Tel: (606) 741 17 80 Ext. 1512 - 1513</p>
+      </div>
+    </footer>
+  </mat-sidenav-content>
+</mat-sidenav-container>

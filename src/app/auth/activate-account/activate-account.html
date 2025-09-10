@@ -1,0 +1,164 @@
+<div class="activate-container">
+  <div class="activate-card">
+    
+    <!-- Formulario de activación (cuando no está activada) -->
+    <div *ngIf="!accountActivated">
+      <div class="header-section">
+        <div class="logo-container">
+          <mat-icon class="logo-icon">verified_user</mat-icon>
+        </div>
+        <h1 class="title">Activar Cuenta</h1>
+        <p class="subtitle" *ngIf="!autoActivationAttempted">
+          Ingresa tu email y el código de 6 dígitos que recibiste por correo electrónico.
+        </p>
+        <p class="subtitle" *ngIf="autoActivationAttempted">
+          Activando tu cuenta automáticamente...
+        </p>
+      </div>
+
+      <!-- Formulario manual (si no es activación automática) -->
+      <div class="form-section" *ngIf="!autoActivationAttempted">
+        <form (ngSubmit)="onSubmit()" #activateForm="ngForm">
+          
+          <!-- Email -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Correo Electrónico</mat-label>
+            <input 
+              matInput
+              type="email"
+              [(ngModel)]="email"
+              name="email"
+              required
+              email
+              placeholder="tu-email@epa.gov.co"
+              [disabled]="isLoading">
+            <mat-icon matSuffix>email</mat-icon>
+            <mat-error *ngIf="activateForm.submitted && !email">
+              El correo electrónico es requerido
+            </mat-error>
+            <mat-error *ngIf="activateForm.submitted && email && !isValidEmail(email)">
+              Ingresa un correo electrónico válido
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Código de activación -->
+          <mat-form-field appearance="outline" class="full-width" [ngClass]="{'focus-field': fromRegister}">
+            <mat-label>Código de Activación</mat-label>
+            <input 
+              matInput
+              type="text"
+              [(ngModel)]="codigo"
+              name="codigo"
+              required
+              maxlength="6"
+              placeholder="123456"
+              (input)="onCodigoInput($event)"
+              [disabled]="isLoading"
+              class="codigo-input"
+              #codigoInput>
+            <mat-icon matSuffix>pin</mat-icon>
+            <mat-hint *ngIf="!fromRegister">Código de 6 dígitos</mat-hint>
+            <mat-hint *ngIf="fromRegister">Ingresa el código que recibiste por email</mat-hint>
+            <mat-error *ngIf="activateForm.submitted && !codigo">
+              El código de activación es requerido
+            </mat-error>
+            <mat-error *ngIf="activateForm.submitted && codigo && codigo.length !== 6">
+              El código debe tener exactamente 6 dígitos
+            </mat-error>
+          </mat-form-field>
+
+          <div class="button-group">
+            <button 
+              mat-raised-button
+              type="submit"
+              class="activate-btn"
+              [disabled]="isLoading || activateForm.invalid">
+              <span *ngIf="!isLoading">
+                <mat-icon>verified_user</mat-icon>
+                Activar Cuenta
+              </span>
+              <span *ngIf="isLoading">
+                <mat-spinner diameter="20"></mat-spinner>
+                Activando...
+              </span>
+            </button>
+
+            <button 
+              mat-button
+              type="button"
+              class="resend-btn"
+              (click)="resendActivationCode()"
+              [disabled]="isLoading">
+              <mat-icon>refresh</mat-icon>
+              Reenviar Código
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Estado de carga automática -->
+      <div class="loading-section" *ngIf="autoActivationAttempted && isLoading">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p class="loading-text">Activando tu cuenta...</p>
+      </div>
+
+      <div class="footer-section">
+        <div class="footer-links">
+          <p class="footer-text">
+            ¿Ya tienes tu cuenta activada? 
+            <a routerLink="/login" class="login-link">Iniciar Sesión</a>
+          </p>
+          <p class="footer-text">
+            ¿No tienes cuenta? 
+            <a routerLink="/register" class="register-link">Registrarse</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Éxito -->
+    <div *ngIf="accountActivated" class="success-section">
+      <div class="success-icon">
+        <mat-icon>check_circle_outline</mat-icon>
+      </div>
+      <h1 class="success-title">¡Cuenta Activada!</h1>
+      <p class="success-message">
+        ¡Felicitaciones! Tu cuenta ha sido activada exitosamente.
+      </p>
+      <p class="success-submessage">
+        Ahora puedes iniciar sesión y disfrutar de todas las funcionalidades de la plataforma.
+      </p>
+      <p class="success-note">
+        Serás redirigido al login en unos segundos...
+      </p>
+      
+      <div class="success-actions">
+        <button 
+          mat-raised-button
+          class="login-now-btn"
+          (click)="goToLogin()">
+          <mat-icon>login</mat-icon>
+          Ir al Login Ahora
+        </button>
+      </div>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="info-section" *ngIf="!accountActivated && !autoActivationAttempted">
+      <mat-card class="info-card">
+        <mat-card-content>
+          <div class="info-header">
+            <mat-icon>info</mat-icon>
+            <h3>Información Importante</h3>
+          </div>
+          <ul class="info-list">
+            <li>El código de activación tiene una validez de 24 horas</li>
+            <li>Revisa tu carpeta de spam si no encuentras el email</li>
+            <li>Puedes solicitar un nuevo código si el actual ha expirado</li>
+            <li>Contacta al administrador si continúas teniendo problemas</li>
+          </ul>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

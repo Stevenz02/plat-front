@@ -1,0 +1,159 @@
+/* Colores Institucionales */
+:host {
+  --primary-color: #002d72;
+  --text-light: #ffffff;
+  --background-light: #f4f7fa;
+  --border-color: #e0e0e0;
+}
+
+.container-fluid {
+  background-color: var(--background-light);
+  min-height: calc(100vh - 64px);
+}
+
+/* Header de la página */
+.header-section {
+  margin-bottom: 2rem;
+}
+.header-section h1 {
+  color: var(--primary-color);
+  font-size: 2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 0.5rem;
+}
+.header-section p {
+  color: #666;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Estilo general para TODAS las tarjetas */
+.info-card, .templates-card, .form-card, .tips-card {
+  margin-bottom: 1.5rem;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  background-color: var(--text-light);
+}
+.info-card h3, .templates-card h3, .form-card h3, .tips-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Tarjeta de Información de Usuario */
+.user-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 0.5rem 1.5rem;
+  font-size: 0.9rem;
+}
+
+/* Tarjeta de Plantillas */
+.templates-card p {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 0;
+}
+.template-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.template-btn {
+  height: 40px;
+  font-weight: 500;
+}
+.template-btn.hardware {
+  border-color: #ff9800;
+  color: #ff9800;
+}
+.template-btn.hardware:hover {
+  background-color: rgba(255, 152, 0, 0.05);
+}
+.template-btn.software {
+  border-color: #2196f3;
+  color: #2196f3;
+}
+.template-btn.software:hover {
+  background-color: rgba(33, 150, 243, 0.05);
+}
+.template-btn.access {
+  border-color: #4caf50;
+  color: #4caf50;
+}
+.template-btn.access:hover {
+  background-color: rgba(76, 175, 80, 0.05);
+}
+
+
+/* Tarjeta del Formulario */
+.form-card form {
+  /* ESTA REGLA ORGANIZA LOS CAMPOS DEL FORMULARIO */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Añade espacio entre los campos */
+}
+.form-card textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+.main-actions {
+  display: flex;
+  gap: 1rem;
+}
+/* ESTA REGLA CENTRA EL ICONO Y TEXTO DEL BOTÓN */
+.submit-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+
+/* Tarjeta de Consejos */
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+.tip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.tip-item mat-icon {
+  color: var(--primary-color);
+  margin-top: 0.1rem;
+}
+.tip-item div {
+  flex: 1;
+}
+.tip-item strong {
+  color: #333;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.tip-item p {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0.25rem 0 0;
+}

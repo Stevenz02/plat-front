@@ -1,0 +1,222 @@
+.register-container {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.register-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 600px;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1) !important;
+  border-radius: 15px !important;
+  animation: slideIn 0.5s ease-out;
+}
+
+.register-card mat-card-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.register-card mat-card-title {
+  font-size: 1.8rem !important;
+  color: #333;
+  margin-bottom: 10px !important;
+  font-weight: 500;
+}
+
+.register-card mat-card-subtitle {
+  font-size: 1rem !important;
+  color: #666;
+}
+
+/* Formulario */
+.form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 5px;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.half-width {
+  flex: 1;
+  margin-bottom: 15px;
+}
+
+/* Estilos de Material Form Field */
+::ng-deep .mat-mdc-form-field {
+  width: 100%;
+}
+
+::ng-deep .mat-mdc-form-field-outline {
+  color: rgba(0,0,0,0.12) !important;
+}
+
+::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline {
+  color: #002d72 !important;
+}
+
+::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-label {
+  color: #002d72 !important;
+}
+
+/* Card de información */
+.info-card {
+  background-color: #e3f2fd !important;
+  padding: 15px !important;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px !important;
+  border: 1px solid #90caf9;
+}
+
+.info-card mat-icon {
+  color: #1976d2;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.info-card span {
+  color: #424242;
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+/* Botón de registro */
+.register-button {
+  height: 48px;
+  font-size: 1rem !important;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #667eea 0%, #002d72 100%) !important;
+  color: white !important;
+  transition: transform 0.2s ease;
+}
+
+.register-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.register-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.register-button mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.spinner-button {
+  margin: 0 auto;
+}
+
+/* Link de login */
+.login-link {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.login-link span {
+  color: #666;
+  margin-right: 5px;
+}
+
+.login-link a {
+  color: #002d72;
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.login-link a:hover {
+  color: #002d72;
+  text-decoration: underline;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .register-container {
+    flex-direction: column;
+  }
+
+  .register-right {
+    padding: 10px;
+  }
+
+  .register-card {
+    padding: 20px;
+    box-shadow: none !important;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .half-width {
+    width: 100%;
+  }
+}
+
+/* Estilos para SnackBar */
+::ng-deep .success-snackbar {
+  background: #4caf50 !important;
+  color: white !important;
+}
+
+::ng-deep .error-snackbar {
+  background: #f44336 !important;
+  color: white !important;
+}
+
+::ng-deep .mat-mdc-snack-bar-container {
+  margin-top: 70px !important;
+}

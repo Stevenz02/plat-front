@@ -1,1 +1,98 @@
-<p>crear-ticket works!</p>
+<div class="container-fluid p-4">
+  <div class="header-section">
+    <h1><mat-icon>add_circle_outline</mat-icon> Crear Nuevo Ticket de Soporte</h1>
+    <p>Completa el formulario para reportar un problema o solicitar asistencia técnica.</p>
+  </div>
+
+  <mat-card class="info-card">
+    <mat-card-content>
+      <h3><mat-icon>person</mat-icon> Información del Solicitante</h3>
+      <div class="user-details" *ngIf="currentUser">
+        <div><strong>Nombre:</strong> {{ currentUser.nombres }} {{ currentUser.apellidos }}</div>
+        <div><strong>Email:</strong> {{ currentUser.email }}</div>
+        <div><strong>Departamento:</strong> {{ currentUser.departamento }}</div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="templates-card">
+    <mat-card-content>
+      <h3><mat-icon>speed</mat-icon> Plantillas Rápidas (Opcional)</h3>
+      <p>Selecciona una plantilla para pre-llenar el formulario con información útil.</p>
+      <div class="template-buttons">
+        <button type="button" mat-stroked-button class="template-btn hardware" (click)="aplicarPlantilla('hardware')"><mat-icon>computer</mat-icon> Problema de Hardware</button>
+        <button type="button" mat-stroked-button class="template-btn software" (click)="aplicarPlantilla('software')"><mat-icon>apps</mat-icon> Problema de Software</button>
+        <button type="button" mat-stroked-button class="template-btn access" (click)="aplicarPlantilla('acceso')"><mat-icon>vpn_key</mat-icon> Solicitud de Acceso</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="form-card">
+    <mat-card-content>
+      <h3><mat-icon>edit_document</mat-icon> Detalles de la Solicitud</h3>
+      <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
+        
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Título del Problema</mat-label>
+          <input matInput formControlName="titulo" placeholder="Ej: No puedo imprimir desde mi PC" required>
+          <mat-hint align="end">{{ titulo?.value?.length || 0 }} / {{ maxTituloLength }}</mat-hint>
+          <mat-error *ngIf="titulo?.hasError('required')">El título es obligatorio.</mat-error>
+          <mat-error *ngIf="titulo?.hasError('maxlength')">El título no puede superar los {{ maxTituloLength }} caracteres.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Descripción Detallada</mat-label>
+          <textarea matInput formControlName="descripcion" rows="8" 
+                    placeholder="Describe el problema en detalle, incluyendo mensajes de error, qué estabas haciendo y qué has intentado para solucionarlo." required></textarea>
+          <mat-hint align="end">{{ descripcion?.value?.length || 0 }} / {{ maxDescripcionLength }}</mat-hint>
+          <mat-error *ngIf="descripcion?.hasError('required')">La descripción es obligatoria.</mat-error>
+          <mat-error *ngIf="descripcion?.hasError('minlength')">La descripción debe tener al menos {{ minDescripcionLength }} caracteres.</mat-error>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button type="button" mat-button (click)="cancelar()">Cancelar</button>
+          <div class="main-actions">
+            <button type="button" mat-stroked-button (click)="limpiarFormulario()" [disabled]="!ticketForm.dirty">Limpiar</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="isLoading || ticketForm.invalid">
+              <span *ngIf="!isLoading" class="submit-content">
+                <mat-icon>send</mat-icon> Crear Ticket
+              </span>
+              <span *ngIf="isLoading" class="submit-content">
+                <mat-spinner [diameter]="20"></mat-spinner> Creando...
+              </span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="tips-card">
+    <mat-card-content>
+      <h3><mat-icon>lightbulb</mat-icon> Consejos para un Mejor Soporte</h3>
+      <div class="tips-grid">
+          <div class="tip-item">
+            <mat-icon>description</mat-icon>
+            <div>
+              <strong>Sé específico</strong>
+              <p>Incluye detalles como mensajes de error, pasos realizados y cuándo ocurrió.</p>
+            </div>
+          </div>
+          <div class="tip-item">
+            <mat-icon>restart_alt</mat-icon>
+            <div>
+              <strong>Reinicia primero</strong>
+              <p>A veces, un simple reinicio del computador o de la aplicación puede solucionar el problema.</p>
+            </div>
+          </div>
+          <div class="tip-item">
+            <mat-icon>crisis_alert</mat-icon>
+            <div>
+              <strong>Describe el impacto</strong>
+              <p>Indica si el problema te impide totalmente trabajar para ayudarnos a priorizar.</p>
+            </div>
+          </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

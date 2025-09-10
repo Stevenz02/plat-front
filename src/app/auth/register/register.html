@@ -1,1 +1,178 @@
-<p>register works!</p>
+<div class="register-container">
+  <div class="register-right">
+    <mat-card class="register-card">
+      <mat-card-header>
+        <mat-card-title>Registro de Usuario</mat-card-title>
+        <mat-card-subtitle>Complete sus datos para crear una cuenta</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <form (ngSubmit)="onRegister()" #registerForm="ngForm">
+          <div class="form-row">
+            <!-- Nombres -->
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Nombres</mat-label>
+              <input 
+                matInput 
+                type="text" 
+                [(ngModel)]="userData.nombres" 
+                name="nombres" 
+                required
+                [disabled]="isLoading">
+              <mat-icon matPrefix>person</mat-icon>
+              <mat-error>Este campo es requerido</mat-error>
+            </mat-form-field>
+
+            <!-- Apellidos -->
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Apellidos</mat-label>
+              <input 
+                matInput 
+                type="text" 
+                [(ngModel)]="userData.apellidos" 
+                name="apellidos" 
+                required
+                [disabled]="isLoading">
+              <mat-icon matPrefix>person_outline</mat-icon>
+              <mat-error>Este campo es requerido</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Email -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Correo Electrónico</mat-label>
+            <input 
+              matInput 
+              type="email" 
+              [(ngModel)]="userData.email" 
+              name="email" 
+              required
+              email
+              [disabled]="isLoading">
+            <mat-icon matPrefix>email</mat-icon>
+            <mat-error>Ingrese un email válido</mat-error>
+          </mat-form-field>
+
+          <div class="form-row">
+            <!-- Teléfono -->
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Teléfono</mat-label>
+              <input 
+                matInput 
+                type="tel" 
+                [(ngModel)]="userData.telefono" 
+                name="telefono" 
+                required
+                pattern="[0-9]{10}"
+                [disabled]="isLoading">
+              <mat-icon matPrefix>phone</mat-icon>
+              <mat-error>Ingrese un número válido (10 dígitos)</mat-error>
+            </mat-form-field>
+
+            <!-- Departamento -->
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Departamento</mat-label>
+              <input 
+                matInput 
+                type="text" 
+                [(ngModel)]="userData.departamento" 
+                name="departamento" 
+                required
+                [disabled]="isLoading">
+              <mat-icon matPrefix>business</mat-icon>
+              <mat-error>Este campo es requerido</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Cargo -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Cargo</mat-label>
+            <input 
+              matInput 
+              type="text" 
+              [(ngModel)]="userData.cargo" 
+              name="cargo" 
+              required
+              [disabled]="isLoading">
+            <mat-icon matPrefix>work</mat-icon>
+            <mat-error>Este campo es requerido</mat-error>
+          </mat-form-field>
+
+          <!-- Password -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Contraseña</mat-label>
+            <input 
+              matInput 
+              [type]="hidePassword ? 'password' : 'text'"
+              [(ngModel)]="userData.password" 
+              name="password" 
+              required
+              minlength="8"
+              [disabled]="isLoading">
+            <mat-icon matPrefix>lock</mat-icon>
+            <button 
+              mat-icon-button 
+              matSuffix 
+              type="button"
+              (click)="hidePassword = !hidePassword">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error>La contraseña debe tener al menos 8 caracteres</mat-error>
+          </mat-form-field>
+
+          <!-- Confirmar Password -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Confirmar Contraseña</mat-label>
+            <input 
+              matInput 
+              [type]="hideConfirmPassword ? 'password' : 'text'"
+              [(ngModel)]="confirmPassword" 
+              name="confirmPassword" 
+              required
+              [disabled]="isLoading">
+            <mat-icon matPrefix>lock_outline</mat-icon>
+            <button 
+              mat-icon-button 
+              matSuffix 
+              type="button"
+              (click)="hideConfirmPassword = !hideConfirmPassword">
+              <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="confirmPassword !== userData.password">Las contraseñas no coinciden</mat-error>
+          </mat-form-field>
+
+          <!-- Información adicional -->
+          <mat-card class="info-card">
+            <mat-icon>info</mat-icon>
+            <span>Su cuenta será creada como <strong>Usuario</strong>. 
+            Recibirá un correo de confirmación para activar su cuenta.</span>
+          </mat-card>
+
+          <!-- Botón Registrar -->
+          <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit"
+            class="full-width register-button"
+            [disabled]="!registerForm.form.valid || isLoading || (userData.password !== confirmPassword)">
+            <mat-spinner 
+              *ngIf="isLoading" 
+              diameter="20" 
+              class="spinner-button">
+            </mat-spinner>
+            <span *ngIf="!isLoading">
+              <mat-icon>person_add</mat-icon>
+              Registrarse
+            </span>
+          </button>
+        </form>
+
+        <!-- Link a login -->
+        <div class="login-link">
+          <span>¿Ya tienes cuenta?</span>
+          <a routerLink="/login">Iniciar Sesión</a>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

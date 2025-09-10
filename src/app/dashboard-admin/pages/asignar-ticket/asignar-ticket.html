@@ -1,0 +1,90 @@
+<div class="container-fluid p-4">
+  <div class="loading-container" *ngIf="isLoading">
+    <mat-spinner color="primary"></mat-spinner>
+    <p class="mt-3">Cargando información...</p>
+  </div>
+
+  <mat-card class="assignment-card" *ngIf="!isLoading && ticket">
+    <mat-card-header class="card-header">
+      <mat-card-title>
+        Asignar Ticket #{{ ticket.numero_ticket }}
+      </mat-card-title>
+      <button mat-icon-button (click)="goBack()" class="close-button" aria-label="Volver a la lista">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-card-header>
+
+    <mat-card-content class="card-content">
+      <div class="ticket-details">
+        <h2>Detalles del Solicitante</h2>
+        <p><strong>Solicitante:</strong> {{ ticket.usuario_solicitante }}</p>
+        <p><strong>Email:</strong> {{ ticket.usuario_email }}</p>
+        <p><strong>Creado en:</strong> {{ ticketService.formatFecha(ticket.fecha_creacion) }}</p>
+
+        <mat-divider class="my-3"></mat-divider>
+
+        <h2>Detalles del Ticket</h2>
+        <h3>{{ ticket.titulo }}</h3>
+        <p class="ticket-description">{{ ticket.descripcion }}</p>
+      </div>
+
+      <div class="assignment-form">
+        <h2>Formulario de Asignación</h2>
+        <form [formGroup]="assignmentForm" (ngSubmit)="onSubmit()">
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Asignar a Técnico</mat-label>
+            <mat-select formControlName="tecnico_id" required>
+              <mat-option *ngFor="let tech of technicians" [value]="tech.id">
+                {{ tech.nombres }} {{ tech.apellidos }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="assignmentForm.get('tecnico_id')?.hasError('required')">
+              Debe seleccionar un técnico.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Categoría</mat-label>
+            <mat-select formControlName="categoria_id" required>
+              <mat-option *ngFor="let category of categories" [value]="category.id">
+                {{ category.nombre }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="assignmentForm.get('categoria_id')?.hasError('required')">
+              Debe seleccionar una categoría.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Prioridad</mat-label>
+            <mat-select formControlName="prioridad_id" required>
+              <mat-option *ngFor="let priority of priorities" [value]="priority.id">
+                {{ priority.nombre }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="assignmentForm.get('prioridad_id')?.hasError('required')">
+              Debe seleccionar una prioridad.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Comentario de Asignación (Opcional)</mat-label>
+            <textarea matInput formControlName="comentario_asignacion" rows="4"></textarea>
+          </mat-form-field>
+          
+          <mat-card-actions align="end">
+            <button type="button" mat-stroked-button (click)="goBack()">Cancelar</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitting">
+              <span *ngIf="!isSubmitting">Asignar Ticket</span>
+              <span *ngIf="isSubmitting" class="d-flex align-items-center">
+                Asignando...
+                <mat-spinner [diameter]="20" class="ms-2"></mat-spinner>
+              </span>
+            </button>
+          </mat-card-actions>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
