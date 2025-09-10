@@ -92,7 +92,8 @@ export interface ChangeStatusRequest {
 
 export interface Technician {
   id: number;
-  nombre: string;
+  nombres: string;
+  apellidos: string;   
   email: string;
   especialidad?: string;
   activo: boolean;
@@ -181,7 +182,7 @@ export class TicketService {
       params.activo = activo.toString();
     }
 
-    return this.http.get<CategoriesResponse>(`${this.apiUrl}/api/categorias`, { 
+    return this.http.get<CategoriesResponse>(`${this.apiUrl}/api/categoria`, { 
       headers, 
       params 
     });
@@ -190,7 +191,7 @@ export class TicketService {
   // Obtener una categoría específica por ID
   getCategoryById(categoryId: number): Observable<any> {
     const headers = this.authService.getAuthHeaders();
-    return this.http.get(`${this.apiUrl}/api/categorias/${categoryId}`, { headers });
+    return this.http.get(`${this.apiUrl}/api/categoria/${categoryId}`, { headers });
   }
 
   // Método auxiliar para obtener solo categorías activas
@@ -462,18 +463,10 @@ export class TicketService {
   }
 
   // Cambiar estado de un ticket
-  changeTicketStatus(ticketId: number, newStatus: number, comment?: string): Observable<any> {
+  changeTicketStatus(ticketId: number, data: ChangeStatusRequest): Observable<any> {
     const headers = this.authService.getAuthHeaders();
-    const body: any = {
-      nuevo_estado_id: newStatus
-    };
-    
-    if (comment) {
-      body.comentario_tecnico = comment;
-      body.motivo_cambio = "Ticket asignado y trabajo iniciado";
-    }
-
-    return this.http.patch(`${this.apiUrl}/api/tickets/${ticketId}/estado`, body, { headers });
+    // Simplemente pasamos el objeto 'data' completo que el componente nos envía.
+    return this.http.patch(`${this.apiUrl}/api/tickets/${ticketId}/estado`, data, { headers });
   }
 
   // Asignar ticket a técnico
