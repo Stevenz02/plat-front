@@ -1,247 +1,102 @@
-<div class="tickets-container">
-  <!-- Header con título y botón crear -->
-  <div class="header-section">
-    <div class="title-section">
-      <h1 class="page-title">
-        <mat-icon>confirmation_number</mat-icon>
-        Mis Tickets de Soporte
-      </h1>
-      <p class="page-subtitle">Gestiona y consulta el estado de tus tickets de soporte técnico</p>
-    </div>
-    
-    <div class="action-section">
-      <button 
-        mat-raised-button 
-        color="primary" 
-        class="crear-ticket-btn"
-        (click)="crearNuevoTicket()">
+<div class="container-fluid p-4">
+  <div class="card">
+    <div class="card-header">
+      <div class="header-content">
+        <h1>Mis Tickets de Soporte</h1>
+        <p>Consulta el estado y seguimiento de tus solicitudes.</p>
+      </div>
+      <button mat-raised-button color="primary" (click)="crearNuevoTicket()">
         <mat-icon>add</mat-icon>
-        Crear Nuevo Ticket
+        <span>Crear Nuevo Ticket</span>
       </button>
     </div>
-  </div>
 
-  <!-- Filtros y búsqueda -->
-  <mat-card class="filters-card">
-    <mat-card-content>
-      <div class="filters-container">
-        <!-- Búsqueda -->
-        <mat-form-field class="search-field" appearance="outline">
-          <mat-label>Buscar tickets</mat-label>
-          <input 
-            matInput 
-            [(ngModel)]="searchTerm"
-            (input)="onSearchChange()"
-            placeholder="Número de ticket, título, descripción...">
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-
-        <!-- Filtro por estado -->
-        <mat-form-field class="status-field" appearance="outline">
+    <div class="card-body">
+      <div class="filter-bar">
+        <mat-form-field appearance="outline" class="status-filter">
           <mat-label>Filtrar por estado</mat-label>
-          <mat-select 
-            [(value)]="selectedStatus"
-            (selectionChange)="onStatusChange()">
-            <mat-option 
-              *ngFor="let estado of estados" 
-              [value]="estado.value">
+          <mat-select [(ngModel)]="selectedStatus" (selectionChange)="onFilterChange()">
+            <mat-option *ngFor="let estado of estados" [value]="estado.value">
               {{ estado.label }}
             </mat-option>
           </mat-select>
-          <mat-icon matSuffix>filter_list</mat-icon>
         </mat-form-field>
-
-        <!-- Botones de acción -->
-        <div class="filter-actions">
-          <button 
-            mat-stroked-button 
-            (click)="clearFilters()"
-            [disabled]="!searchTerm && !selectedStatus">
-            <mat-icon>clear</mat-icon>
-            Limpiar Filtros
-          </button>
-          
-          <button 
-            mat-icon-button 
-            (click)="refreshTickets()"
-            matTooltip="Actualizar lista">
-            <mat-icon>refresh</mat-icon>
-          </button>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
-
-  <!-- Tabla de tickets -->
-  <mat-card class="table-card">
-    <mat-card-content>
-      
-      <!-- Indicador de carga -->
-      <div *ngIf="isLoading" class="loading-container">
-        <mat-spinner diameter="40"></mat-spinner>
-        <p>Cargando tickets...</p>
+        <button mat-stroked-button (click)="clearFilters()" [disabled]="selectedStatus === null">
+          Limpiar Filtro
+        </button>
       </div>
 
-      <!-- Tabla -->
-      <div *ngIf="!isLoading" class="table-container">
-        
-        <!-- Información de resultados -->
-        <div class="results-info" *ngIf="dataSource.data.length > 0">
-          <span class="results-text">
-            Mostrando {{ dataSource.data.length }} de {{ totalTickets }} tickets
-          </span>
-        </div>
+      <div class="loading-shade" *ngIf="isLoading">
+        <mat-spinner color="primary"></mat-spinner>
+      </div>
 
-        <!-- Estado vacío -->
-        <div *ngIf="dataSource.data.length === 0" class="empty-state">
-          <mat-icon class="empty-icon">inbox</mat-icon>
-          <h3>No se encontraron tickets</h3>
-          <p *ngIf="searchTerm || selectedStatus">
-            Intenta ajustar los filtros de búsqueda
-          </p>
-          <p *ngIf="!searchTerm && !selectedStatus">
-            Aún no has creado ningún ticket de soporte
-          </p>
-          <button 
-            mat-raised-button 
-            color="primary" 
-            (click)="crearNuevoTicket()"
-            *ngIf="!searchTerm && !selectedStatus">
-            <mat-icon>add</mat-icon>
-            Crear tu primer ticket
-          </button>
-        </div>
+      <div class="table-container mat-elevation-z8" [hidden]="isLoading">
+        <table mat-table [dataSource]="dataSource" matSort class="w-100">
 
-        <!-- Tabla de datos -->
-        <table 
-          mat-table 
-          [dataSource]="dataSource" 
-          matSort
-          class="tickets-table"
-          *ngIf="dataSource.data.length > 0">
-
-          <!-- Columna Número de Ticket -->
           <ng-container matColumnDef="numero_ticket">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>
-              <strong>Número</strong>
-            </th>
-            <td mat-cell *matCellDef="let ticket">
-              <span class="ticket-number">{{ ticket.numero_ticket }}</span>
-            </td>
+            <th mat-header-cell *matHeaderCellDef># Ticket</th>
+            <td mat-cell *matCellDef="let ticket" class="fw-bold">{{ ticket.numero_ticket }}</td>
           </ng-container>
 
-          <!-- Columna Título -->
           <ng-container matColumnDef="titulo">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>
-              <strong>Título</strong>
-            </th>
-            <td mat-cell *matCellDef="let ticket">
-              <div class="ticket-title">
-                <span 
-                  class="title-text" 
-                  [matTooltip]="ticket.titulo">
-                  {{ truncateText(ticket.titulo, 40) }}
-                </span>
-              </div>
-            </td>
+            <th mat-header-cell *matHeaderCellDef>Título</th>
+            <td mat-cell *matCellDef="let ticket">{{ ticket.titulo }}</td>
           </ng-container>
 
-<!-- REEMPLAZAR TODA LA SECCIÓN DE CATEGORÍA, PRIORIDAD Y ESTADO -->
+          <ng-container matColumnDef="categoria">
+            <th mat-header-cell *matHeaderCellDef>Categoría</th>
+            <td mat-cell *matCellDef="let ticket">{{ ticket.categoria || 'Sin Asignar' }}</td>
+          </ng-container>
 
-<!-- Columna Categoría -->
-<ng-container matColumnDef="categoria">
-  <th mat-header-cell *matHeaderCellDef mat-sort-header>
-    <strong>Categoría</strong>
-  </th>
-  <td mat-cell *matCellDef="let ticket">
-    <span class="categoria-chip">
-      {{ getCategoriaLabel(ticket.categoria) }}
-    </span>
-  </td>
-</ng-container>
-
-<!-- Columna Prioridad -->
-<ng-container matColumnDef="prioridad">
-  <th mat-header-cell *matHeaderCellDef mat-sort-header>
-    <strong>Prioridad</strong>
-  </th>
-  <td mat-cell *matCellDef="let ticket">
-    <mat-chip 
-      class="prioridad-chip"
-      [style.background-color]="getPrioridadColor(ticket)"
-      [style.color]="'white'">
-      {{ getPrioridadLabel(ticket.prioridad) }}
-    </mat-chip>
-  </td>
-</ng-container>
-
-<!-- Columna Estado -->
-<ng-container matColumnDef="estado">
-  <th mat-header-cell *matHeaderCellDef mat-sort-header>
-    <strong>Estado</strong>
-  </th>
-  <td mat-cell *matCellDef="let ticket">
-    <mat-chip 
-      class="estado-chip"
-      [style.background-color]="getEstadoColor(ticket)"
-      [style.color]="'white'">
-      {{ ticket.estado }}
-    </mat-chip>
-  </td>
-</ng-container>
-
-          <!-- Columna Fecha de Creación -->
-          <ng-container matColumnDef="fecha_creacion">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>
-              <strong>Fecha Creación</strong>
-            </th>
+          <ng-container matColumnDef="estado">
+            <th mat-header-cell *matHeaderCellDef>Estado</th>
             <td mat-cell *matCellDef="let ticket">
-              <span class="fecha-text">
-                {{ formatFecha(ticket.fecha_creacion) }}
+              <span class="status-badge" [style.background-color]="ticketService.getEstadoColor(ticket.estado, ticket.estado_color)">
+                {{ ticket.estado }}
               </span>
             </td>
           </ng-container>
 
-          <!-- Columna Acciones -->
+          <ng-container matColumnDef="fecha_creacion">
+            <th mat-header-cell *matHeaderCellDef>Creado en</th>
+            <td mat-cell *matCellDef="let ticket">{{ ticketService.formatFecha(ticket.fecha_creacion) }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="tecnico_asignado">
+            <th mat-header-cell *matHeaderCellDef>Asignado a</th>
+            <td mat-cell *matCellDef="let ticket">{{ ticket.tecnico_asignado || 'Pendiente' }}</td>
+          </ng-container>
+
           <ng-container matColumnDef="acciones">
-            <th mat-header-cell *matHeaderCellDef>
-              <strong>Acciones</strong>
-            </th>
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
             <td mat-cell *matCellDef="let ticket">
-              <div class="actions-container">
-                <button 
-                  mat-icon-button 
-                  color="primary"
-                  (click)="verDetalle(ticket)"
-                  matTooltip="Ver detalles del ticket">
-                  <mat-icon>visibility</mat-icon>
-                </button>
-              </div>
+              <button mat-icon-button color="primary" (click)="verDetalle(ticket.id)" matTooltip="Ver detalles del ticket">
+                <mat-icon>visibility</mat-icon>
+              </button>
             </td>
           </ng-container>
 
-          <!-- Headers y filas -->
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr 
-            mat-row 
-            *matRowDef="let row; columns: displayedColumns;"
-            class="ticket-row"
-            (click)="verDetalle(row)">
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell text-center" [attr.colspan]="displayedColumns.length">
+              <div class="empty-state">
+                <h3>No hay tickets para mostrar</h3>
+                <p>{{ selectedStatus ? 'Prueba cambiando el filtro o limpiándolo.' : '¡Anímate a crear tu primera solicitud!' }}</p>
+              </div>
+            </td>
           </tr>
         </table>
 
-        <!-- Paginador -->
-        <mat-paginator
-          *ngIf="dataSource.data.length > 0"
-          [length]="totalTickets"
-          [pageSize]="pageSize"
-          [pageSizeOptions]="[5, 10, 25, 50]"
-          [pageIndex]="currentPage - 1"
-          (page)="onPageChange($event)"
-          showFirstLastButtons
-          class="tickets-paginator">
+        <mat-paginator 
+            [length]="totalTickets"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[5, 10, 25, 100]"
+            (page)="handlePageEvent($event)"
+            aria-label="Seleccionar página de tickets">
         </mat-paginator>
       </div>
-    </mat-card-content>
-  </mat-card>
+    </div>
+  </div>
 </div>

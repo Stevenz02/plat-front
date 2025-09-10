@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MATERIAL_IMPORTS } from '../../../material.imports';
 
 @Component({
-  selector: 'app-inicio',
+  selector: 'app-inicio-admin',
   standalone: true,
   imports: [
     CommonModule,

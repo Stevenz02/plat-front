@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 
@@ -91,7 +92,8 @@ export interface ChangeStatusRequest {
 
 export interface Technician {
   id: number;
-  nombre: string;
+  nombres: string;
+  apellidos: string;   
   email: string;
   especialidad?: string;
   activo: boolean;
@@ -105,6 +107,58 @@ export interface Equipment {
   activo: boolean;
 }
 
+// Categorías
+export interface Category {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  activo: boolean;
+  fecha_creacion: string;
+}
+export interface CategoriesResponse {
+  success: boolean;
+  data: Category[];
+}
+export interface CategoryResponse {
+    success: boolean;
+    data: Category;
+}
+
+// Estados de Ticket
+export interface TicketState {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  es_final: boolean;
+  orden: number;
+  activo: boolean;
+}
+
+export interface TicketStatesResponse {
+  success: boolean;
+  data: TicketState[];
+}
+export interface TicketStateResponse {
+    success: boolean;
+    data: TicketState;
+}
+
+// Prioridades
+export interface Priority {
+  id: number;
+  nombre: string;
+  nivel: number;
+  color: string;
+  descripcion: string;
+  activo: boolean;
+}
+
+export interface PrioritiesResponse {
+  success: boolean;
+  message: string;
+  data: Priority[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -115,6 +169,144 @@ export class TicketService {
     private http: HttpClient,
     private authService: AuthService
   ) {}
+
+    // ========== CATEGORÍAS ==========
+
+  // Obtener todas las categorías disponibles
+  getCategories(activo: boolean = true): Observable<CategoriesResponse> {
+    const headers = this.authService.getAuthHeaders();
+    
+    const params: any = {};
+    
+    if (activo !== undefined) {
+      params.activo = activo.toString();
+    }
+
+    return this.http.get<CategoriesResponse>(`${this.apiUrl}/api/categoria`, { 
+      headers, 
+      params 
+    });
+  }
+
+  // Obtener una categoría específica por ID
+  getCategoryById(categoryId: number): Observable<any> {
+    const headers = this.authService.getAuthHeaders();
+    return this.http.get(`${this.apiUrl}/api/categoria/${categoryId}`, { headers });
+  }
+
+  // Método auxiliar para obtener solo categorías activas
+  getActiveCategories(): Observable<Category[]> {
+    return this.getCategories(true).pipe(
+      map(response => {
+        if (response.success && response.data) {
+          return response.data.sort((a, b) => a.nombre.localeCompare(b.nombre));
+        }
+        return [];
+      })
+    );
+  }
+
+
+  // ========== ESTADOS DE TICKET ==========
+  // Obtener todos los estados de ticket
+  getTicketStates(activo: boolean = true, es_final?: boolean, limit: number = 50, offset: number = 0): Observable<TicketStatesResponse> {
+    const headers = this.authService.getAuthHeaders();
+    
+    const params: any = {
+      limit: limit.toString(),
+      offset: offset.toString()
+    };
+    
+    if (activo !== undefined) {
+      params.activo = activo.toString();
+    }
+    
+    if (es_final !== undefined) {
+      params.es_final = es_final.toString();
+    }
+
+    return this.http.get<TicketStatesResponse>(`${this.apiUrl}/api/estados-ticket`, { 
+      headers, 
+      params 
+    });
+  }
+
+  // Obtener un estado específico por ID
+  getTicketStateById(stateId: number): Observable<any> {
+    const headers = this.authService.getAuthHeaders();
+    return this.http.get(`${this.apiUrl}/api/estados-ticket/${stateId}`, { headers });
+  }
+
+  // Método auxiliar para obtener solo estados activos
+  getActiveTicketStates(): Observable<TicketStatesResponse> {
+    return this.getTicketStates(true, undefined, 50, 0);
+  }
+
+  // Método auxiliar para obtener estados finales (cerrados/resueltos)
+  getFinalTicketStates(): Observable<TicketState[]> {
+    return this.getTicketStates(true, true).pipe(
+      map(response => {
+        if (response.success && response.data) {
+          return response.data.sort((a, b) => a.orden - b.orden);
+        }
+        return [];
+      })
+    );
+  }
+
+  // Obtener todas las prioridades disponibles
+  getPriorities(activo: boolean = true, limit: number = 10, offset: number = 0): Observable<PrioritiesResponse> {
+    const headers = this.authService.getAuthHeaders();
+    
+    const params: any = {
+      limit: limit.toString(),
+      offset: offset.toString()
+    };
+    
+    // Solo agregar el filtro activo si se especifica
+    if (activo !== undefined) {
+      params.activo = activo.toString();
+    }
+
+    return this.http.get<PrioritiesResponse>(`${this.apiUrl}/api/prioridades`, { 
+      headers, 
+      params 
+    });
+  }
+
+  // Obtener una prioridad específica por ID
+  getPriorityById(priorityId: number): Observable<any> {
+    const headers = this.authService.getAuthHeaders();
+    return this.http.get(`${this.apiUrl}/api/prioridades/${priorityId}`, { headers });
+  }
+
+  // Método auxiliar para obtener solo prioridades activas (más común)
+  getActivePriorities(): Observable<PrioritiesResponse> {
+    return this.getPriorities(true, 50, 0); // Obtener hasta 50 prioridades activas
+  }
+
+  // Método auxiliar para obtener prioridades ordenadas por nivel (alta, media, baja)
+  getPrioritiesOrderedByLevel(): Observable<Priority[]> {
+    return this.getActivePriorities().pipe(
+      map(response => {
+        if (response.success && response.data) {
+          // Ordenar por nivel (asumiendo que nivel más alto = mayor prioridad)
+          return response.data.sort((a, b) => b.nivel - a.nivel);
+        }
+        return [];
+      })
+    );
+  }
+
+  // Método para obtener el color por nivel de prioridad (útil si manejas niveles numéricos)
+  getPriorityColorByLevel(nivel: number): string {
+    switch (nivel) {
+      case 3: return '#f44336'; // Alta - Rojo
+      case 2: return '#ff9800'; // Media - Naranja  
+      case 1: return '#4caf50'; // Baja - Verde
+      default: return '#757575'; // Gris por defecto
+    }
+  }
 
   // Crear un nuevo ticket
   createTicket(ticketData: CreateTicketRequest): Observable<TicketResponse> {
@@ -153,106 +345,86 @@ export class TicketService {
     return this.http.get(`${this.apiUrl}/api/tickets/${ticketId}`, { headers });
   }
 
-  // Actualizar un ticket (para futuras funcionalidades)
-  updateTicket(ticketId: number, ticketData: Partial<CreateTicketRequest>): Observable<any> {
+  // Filtrar tickets por estado
+  getTicketsByStatus(status: string, page: number = 1, limit: number = 10): Observable<TicketsListResponse> {
     const headers = this.authService.getAuthHeaders();
-    return this.http.put(`${this.apiUrl}/api/tickets/${ticketId}`, ticketData, { headers });
+    
+    // Necesitas usar el estado_id según tu BD
+    let estado_id: string = '';
+    switch (status.toLowerCase()) {
+      case 'pendiente': estado_id = '1'; break;
+      case 'en progreso': estado_id = '2'; break;
+      case 'resuelto': estado_id = '3'; break;
+      case 'cerrado': estado_id = '4'; break;
+    }
+    
+    const params = {
+      page: page.toString(),
+      limit: limit.toString(),
+      estado_id: estado_id
+    };
+
+    return this.http.get<TicketsListResponse>(`${this.apiUrl}/api/tickets`, { 
+      headers, 
+      params 
+    });
   }
-
-  // Obtener categorías disponibles (para futuro uso)
-  getCategories(): Observable<any> {
-    const headers = this.authService.getAuthHeaders();
-    return this.http.get(`${this.apiUrl}/api/categorias`, { headers });
-  }
-
-  // Obtener prioridades disponibles (para futuro uso)
-  getPriorities(): Observable<any> {
-    const headers = this.authService.getAuthHeaders();
-    return this.http.get(`${this.apiUrl}/api/prioridades`, { headers });
-  }
-
-  // Obtener equipos disponibles (para futuro uso)
-  getEquipment(): Observable<any> {
-    const headers = this.authService.getAuthHeaders();
-    return this.http.get(`${this.apiUrl}/api/equipos`, { headers });
-  }
-
-// Filtrar tickets por estado - CORREGIDO
-getTicketsByStatus(status: string, page: number = 1, limit: number = 10): Observable<TicketsListResponse> {
-  const headers = this.authService.getAuthHeaders();
-  
-  // Necesitas usar el estado_id según tu BD
-  let estado_id: string = '';
-  switch (status.toLowerCase()) {
-    case 'pendiente': estado_id = '1'; break;
-    case 'en progreso': estado_id = '2'; break;
-    case 'resuelto': estado_id = '3'; break;
-    case 'cerrado': estado_id = '4'; break;
-  }
-  
-  const params = {
-    page: page.toString(),
-    limit: limit.toString(),
-    estado_id: estado_id
-  };
-
-  return this.http.get<TicketsListResponse>(`${this.apiUrl}/api/tickets`, { 
-    headers, 
-    params 
-  });
-}
-
-// Buscar tickets - ACTUALIZAR cuando sepas qué parámetro usar para búsqueda
-searchTickets(searchTerm: string, page: number = 1, limit: number = 10): Observable<TicketsListResponse> {
-  const headers = this.authService.getAuthHeaders();
-  const params = {
-    page: page.toString(),
-    limit: limit.toString(),
-    // Necesitarías saber cómo se llama el parámetro de búsqueda en tu API
-    // Por ejemplo: 'titulo' o 'buscar' o 'q'
-    titulo: searchTerm  // Ajustar según tu API
-  };
-
-  return this.http.get<TicketsListResponse>(`${this.apiUrl}/api/tickets`, { 
-    headers, 
-    params 
-  });
-}
 
   // Métodos de utilidad
-// Actualizar las firmas para aceptar null
-getEstadoColor(estado: string, estadoColor?: string | null): string {
-  // Si viene el color del backend, usarlo; si no, usar fallback
-  if (estadoColor) {
-    return estadoColor;
+  getPrioridadColor(prioridad: string | null, prioridadColor?: string | null): string {
+    // Si viene el color del backend, usarlo prioritariamente
+    if (prioridadColor) {
+      return prioridadColor;
+    }
+    
+    // Fallback para compatibilidad (mantener el código existente)
+    if (!prioridad) return '#757575';
+    
+    switch (prioridad.toLowerCase()) {
+      case 'alta': return '#f44336';
+      case 'media': return '#ff9800'; 
+      case 'baja': return '#4caf50';
+      default: return '#757575';
+    }
   }
-  
-  // Fallback para compatibilidad
-  switch (estado.toLowerCase()) {
-    case 'pendiente': return '#FFA500';
-    case 'en progreso': return '#2196f3';
-    case 'resuelto': return '#4caf50';
-    case 'cerrado': return '#9e9e9e';
-    default: return '#757575';
-  }
-}
 
-getPrioridadColor(prioridad: string | null, prioridadColor?: string | null): string {
-  // Si viene el color del backend, usarlo; si no, usar fallback
-  if (prioridadColor) {
-    return prioridadColor;
+  // ========== MÉTODOS AUXILIARES MEJORADOS ==========
+
+  // Actualizar el método getEstadoColor para usar datos reales
+  getEstadoColor(estado: string, estadoColor?: string | null): string {
+    // Si viene el color del backend, usarlo prioritariamente
+    if (estadoColor) {
+      return estadoColor;
+    }
+    
+    // Fallback mejorado basado en los estados reales
+    switch (estado.toLowerCase()) {
+      case 'pendiente': return '#FFA500';
+      case 'en progreso': return '#2196f3';
+      case 'resuelto': return '#4caf50';
+      case 'cerrado': return '#9e9e9e';
+      default: return '#757575';
+    }
   }
-  
-  // Fallback para compatibilidad
-  if (!prioridad) return '#757575';
-  
-  switch (prioridad.toLowerCase()) {
-    case 'alta': return '#f44336';
-    case 'media': return '#ff9800';
-    case 'baja': return '#4caf50';
-    default: return '#757575';
+
+  // Determinar si un estado es final
+  isStateClosedOrResolved(estadoNombre: string): boolean {
+    const finalStates = ['cerrado', 'resuelto'];
+    return finalStates.includes(estadoNombre.toLowerCase());
   }
-}
+
+  // Obtener el siguiente estado lógico (útil para workflows)
+  getNextLogicalState(currentStateId: number, states: TicketState[]): TicketState | null {
+    const currentState = states.find(s => s.id === currentStateId);
+    if (!currentState) return null;
+    
+    // Lógica simple: siguiente por orden
+    const nextState = states
+      .filter(s => s.orden > currentState.orden && s.activo)
+      .sort((a, b) => a.orden - b.orden)[0];
+      
+    return nextState || null;
+  }
 
   formatFecha(fecha: string): string {
     if (!fecha) return 'N/A';
@@ -267,100 +439,74 @@ getPrioridadColor(prioridad: string | null, prioridadColor?: string | null): str
     });
   }
 
-  // Obtener estadísticas básicas de tickets del usuario
-  getMyTicketStats(): Observable<any> {
+    // Obtener TODOS los tickets (para administrador/técnico)
+  getAllTickets(page: number = 1, limit: number = 10, filters?: any): Observable<TicketsListResponse> {
     const headers = this.authService.getAuthHeaders();
-    return this.http.get(`${this.apiUrl}/api/tickets/mis-tickets/estadisticas`, { headers });
+    let params: any = {
+      page: page.toString(),
+      limit: limit.toString()
+    };
+
+    // Agregar filtros opcionales
+    if (filters) {
+      if (filters.estado_id) params.estado_id = filters.estado_id;
+      if (filters.categoria_id) params.categoria_id = filters.categoria_id;
+      if (filters.prioridad_id) params.prioridad_id = filters.prioridad_id;
+      if (filters.fecha_desde) params.fecha_desde = filters.fecha_desde;
+      if (filters.fecha_hasta) params.fecha_hasta = filters.fecha_hasta;
+    }
+
+    return this.http.get<TicketsListResponse>(`${this.apiUrl}/api/tickets`, { 
+      headers, 
+      params 
+    });
   }
 
-  // Obtener TODOS los tickets (para administrador/técnico)
-getAllTickets(page: number = 1, limit: number = 10, filters?: any): Observable<TicketsListResponse> {
-  const headers = this.authService.getAuthHeaders();
-  let params: any = {
-    page: page.toString(),
-    limit: limit.toString()
-  };
-
-  // Agregar filtros opcionales
-  if (filters) {
-    if (filters.estado_id) params.estado_id = filters.estado_id;
-    if (filters.categoria_id) params.categoria_id = filters.categoria_id;
-    if (filters.prioridad_id) params.prioridad_id = filters.prioridad_id;
-    if (filters.fecha_desde) params.fecha_desde = filters.fecha_desde;
-    if (filters.fecha_hasta) params.fecha_hasta = filters.fecha_hasta;
+  // Cambiar estado de un ticket
+  changeTicketStatus(ticketId: number, data: ChangeStatusRequest): Observable<any> {
+    const headers = this.authService.getAuthHeaders();
+    // Simplemente pasamos el objeto 'data' completo que el componente nos envía.
+    return this.http.patch(`${this.apiUrl}/api/tickets/${ticketId}/estado`, data, { headers });
   }
 
-  return this.http.get<TicketsListResponse>(`${this.apiUrl}/api/tickets`, { 
-    headers, 
-    params 
-  });
-}
-
-// Cambiar estado de un ticket
-changeTicketStatus(ticketId: number, newStatus: number, comment?: string): Observable<any> {
-  const headers = this.authService.getAuthHeaders();
-  const body: any = {
-    nuevo_estado_id: newStatus
-  };
-  
-  if (comment) {
-    body.comentario_tecnico = comment;
-    body.motivo_cambio = "Ticket asignado y trabajo iniciado";
+  // Asignar ticket a técnico
+  assignTicket(ticketId: number, assignmentData: {
+    tecnico_id: number;
+    categoria_id: number;
+    prioridad_id: number;
+    equipo_afectado_id?: number;
+    comentario_asignacion?: string;
+  }): Observable<any> {
+    const headers = this.authService.getAuthHeaders();
+    
+    return this.http.patch(`${this.apiUrl}/api/tickets/${ticketId}/asignar`, assignmentData, { headers });
   }
 
-  return this.http.patch(`${this.apiUrl}/api/tickets/${ticketId}/estado`, body, { headers });
-}
+  // Obtener técnicos disponibles - USANDO ENDPOINT REAL
+  getTechnicians(): Observable<any> {
+    const headers = this.authService.getAuthHeaders();
+    
+    const params = { 
+      rol_id: '2',        // Técnicos tienen rol_id = 2
+      activo: 'true',     // Solo técnicos activos
+      limit: '50'         // Límite suficiente
+    };
+    
+    return this.http.get(`${this.apiUrl}/api/usuarios`, { headers, params });
+  }
 
-// Asignar ticket a técnico
-assignTicket(ticketId: number, assignmentData: {
-  tecnico_id: number;
-  categoria_id: number;
-  prioridad_id: number;
-  equipo_afectado_id?: number;
-  comentario_asignacion?: string;
-}): Observable<any> {
-  const headers = this.authService.getAuthHeaders();
-  
-  return this.http.patch(`${this.apiUrl}/api/tickets/${ticketId}/asignar`, assignmentData, { headers });
-}
+  // Estados para administrador (incluye más opciones)
+  getEstadosParaAdmin() {
+    return [
+      { id: 1, nombre: 'Pendiente', color: '#FFA500' },
+      { id: 2, nombre: 'En Progreso', color: '#2196f3' },
+      { id: 3, nombre: 'Resuelto', color: '#4caf50' },
+      { id: 4, nombre: 'Cerrado', color: '#9e9e9e' }
+    ];
+  }
 
-// Obtener técnicos disponibles - USANDO ENDPOINT REAL
-getTechnicians(): Observable<any> {
-  const headers = this.authService.getAuthHeaders();
-  
-  const params = { 
-    rol_id: '2',        // Técnicos tienen rol_id = 2
-    activo: 'true',     // Solo técnicos activos
-    limit: '50'         // Límite suficiente
-  };
-  
-  return this.http.get(`${this.apiUrl}/api/usuarios`, { headers, params });
-}
-
-// Obtener equipos para asignación
-getEquipmentForAssignment(): Observable<any> {
-  const headers = this.authService.getAuthHeaders();
-  return this.http.get(`${this.apiUrl}/api/equipos`, { headers });
-}
-
-// Estados para administrador (incluye más opciones)
-getEstadosParaAdmin() {
-  return [
-    { id: 1, nombre: 'Pendiente', color: '#FFA500' },
-    { id: 2, nombre: 'En Progreso', color: '#2196f3' },
-    { id: 3, nombre: 'Resuelto', color: '#4caf50' },
-    { id: 4, nombre: 'Cerrado', color: '#9e9e9e' }
-  ];
-}
-
-// Determinar si el usuario puede gestionar tickets
-canManageTickets(): boolean {
-  return this.authService.isAdminOrTechnician();
-}
-
-// Obtener estadísticas globales (para admin)
-getGlobalTicketStats(): Observable<any> {
-  const headers = this.authService.getAuthHeaders();
-  return this.http.get(`${this.apiUrl}/api/tickets/estadisticas/globales`, { headers });
-}
+  // Determinar si el usuario puede gestionar tickets
+  canManageTickets(): boolean {
+    return this.authService.isAdminOrTechnician();
+  }
 }

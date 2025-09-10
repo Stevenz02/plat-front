@@ -1,0 +1,129 @@
+/* Colores Institucionales */
+:host {
+  --primary-color: #002d72;
+  --text-light: #ffffff;
+  --background-light: #f4f7fa;
+  --border-color: #e0e0e0;
+}
+
+.container-fluid {
+  background-color: var(--background-light);
+  min-height: calc(100vh - 64px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color);
+  margin-top: 5rem;
+}
+
+.status-change-card {
+  width: 90%;
+  max-width: 1300px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Encabezado */
+.card-header {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mat-mdc-card-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.close-button {
+  color: var(--text-light);
+}
+
+/* Contenido de la tarjeta en 2 columnas */
+.card-content {
+  padding: 32px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+/* Columna de detalles */
+.ticket-details {
+  border-right: 1px solid var(--border-color);
+  padding-right: 40px;
+}
+
+.ticket-details h2, .status-change-form h2 {
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 8px;
+}
+
+.ticket-details p {
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.ticket-description {
+  background-color: #f9f9f9;
+  border-left: 4px solid var(--border-color);
+  padding: 16px;
+  white-space: pre-wrap;
+  font-family: monospace;
+}
+
+/* Insignia de estado */
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  color: var(--text-light);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* Formulario */
+.status-change-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-card-actions {
+  padding: 0;
+  margin-top: 16px;
+}
+
+/* Media Query para responsividad en PC */
+@media (max-width: 1024px) {
+  .card-content {
+    grid-template-columns: 1fr;
+  }
+
+  .ticket-details {
+    border-right: none;
+    padding-right: 0;
+    margin-bottom: 32px;
+  }
+}
