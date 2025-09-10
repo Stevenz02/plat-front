@@ -1,91 +1,76 @@
 <div class="login-container">
-  <!-- Lado izquierdo con imagen/logo -->
-  <div class="login-left">
-    <div class="logo-container">
-      <img src="assets/logoepa.png" alt="EPA Logo">
-      <h1>PLAT-EPA</h1>
-    </div>
-  </div>
+  <mat-card class="login-form-card">
+    <mat-card-header class="login-header">
+      <img src="assets/logoepa.png" alt="EPA Logo" class="login-logo">
+      <mat-card-title>PLAT-EPA</mat-card-title>
+      <mat-card-subtitle>Plataforma de Apoyo TIC</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+        <!-- Email -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Correo Electrónico</mat-label>
+          <input 
+            matInput 
+            type="email" 
+            [(ngModel)]="credentials.email" 
+            name="email" 
+            required
+            email
+            [disabled]="isLoading">
+          <mat-icon matPrefix>alternate_email</mat-icon>
+        </mat-form-field>
 
-  <!-- Lado derecho con formulario -->
-  <div class="login-right">
-    <mat-card class="login-card">
-      <mat-card-header>
-        <mat-card-title>Iniciar Sesión</mat-card-title>
-        <mat-card-subtitle>Plataforma de Apoyo TIC EPA</mat-card-subtitle>
-      </mat-card-header>
-      
-      <mat-card-content>
-        <form (ngSubmit)="onLogin()" #loginForm="ngForm">
-          <!-- Email -->
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Correo Electrónico</mat-label>
-            <input 
-              matInput 
-              type="email" 
-              [(ngModel)]="credentials.email" 
-              name="email" 
-              required
-              email
-              [disabled]="isLoading">
-            <mat-icon matPrefix>email</mat-icon>
-            <mat-error>Ingrese un email válido</mat-error>
-          </mat-form-field>
-
-          <!-- Password -->
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Contraseña</mat-label>
-            <input 
-              matInput 
-              [type]="hidePassword ? 'password' : 'text'"
-              [(ngModel)]="credentials.password" 
-              name="password" 
-              required
-              [disabled]="isLoading">
-            <mat-icon matPrefix>lock</mat-icon>
-            <button 
-              mat-icon-button 
-              matSuffix 
-              type="button"
-              (click)="hidePassword = !hidePassword">
-              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-            </button>
-            <mat-error>La contraseña es requerida</mat-error>
-          </mat-form-field>
-
-          <!-- Recordarme y Olvidé contraseña -->
-          <div class="remember-forgot">
-            <mat-checkbox [(ngModel)]="rememberMe" name="rememberMe">
-              Recordarme
-            </mat-checkbox>
-            <a routerLink="/forgot-password" class="forgot-link">¿Olvidaste tu contraseña?</a>
-          </div>
-
-          <!-- Botón Login -->
+        <!-- Password -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contraseña</mat-label>
+          <input 
+            matInput 
+            [type]="hidePassword ? 'password' : 'text'"
+            [(ngModel)]="credentials.password" 
+            name="password" 
+            required
+            [disabled]="isLoading">
+          <mat-icon matPrefix>lock</mat-icon>
           <button 
-            mat-raised-button 
-            color="primary" 
-            type="submit"
-            class="full-width login-button"
-            [disabled]="!loginForm.form.valid || isLoading">
-            <mat-spinner 
-              *ngIf="isLoading" 
-              diameter="20" 
-              class="spinner-button">
-            </mat-spinner>
-            <span *ngIf="!isLoading">
-              <mat-icon>login</mat-icon>
-              Iniciar Sesión
-            </span>
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            (click)="hidePassword = !hidePassword">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
-        </form>
+        </mat-form-field>
 
-        <!-- Link a registro -->
-        <div class="register-link">
-          <span>¿No tienes cuenta?</span>
-          <a routerLink="/register">Registrarse</a>
+        <!-- Olvidé contraseña (alineado a la derecha) -->
+        <div class="forgot-password-container">
+          <a routerLink="/forgot-password" class="forgot-link">¿Olvidaste tu contraseña?</a>
         </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
+
+        <!-- Botón Login -->
+        <button 
+          mat-raised-button 
+          color="primary" 
+          type="submit"
+          class="full-width login-button"
+          [disabled]="!loginForm.form.valid || isLoading">
+          <mat-spinner 
+            *ngIf="isLoading" 
+            diameter="24"
+            color="accent">
+          </mat-spinner>
+          <span *ngIf="!isLoading" class="login-button-text">
+            <mat-icon>login</mat-icon>
+            <span>Iniciar Sesión</span>
+          </span>
+        </button>
+      </form>
+
+      <!-- Link a registro -->
+      <div class="register-link">
+        <span>¿No tienes cuenta?</span>
+        <a routerLink="/register">Regístrate aquí</a>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>

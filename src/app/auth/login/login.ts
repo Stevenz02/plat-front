@@ -24,7 +24,6 @@ export class LoginComponent {
     password: ''
   };
   
-  rememberMe: boolean = false;
   hidePassword: boolean = true;
   isLoading: boolean = false;
 
@@ -41,10 +40,8 @@ export class LoginComponent {
       next: (response) => {
         this.isLoading = false;
         
-        // Obtener el usuario actual para verificar el rol
         const user = this.authService.getCurrentUser();
         
-        // Mostrar mensaje de éxito
         this.snackBar.open(
           `¡Bienvenido ${user?.nombres || 'Usuario'}!`, 
           'Cerrar', 
@@ -54,10 +51,8 @@ export class LoginComponent {
           }
         );
 
-        // Actualizar actividad
         this.authService.updateActivity();
 
-        // Redirigir usando el método del AuthService
         setTimeout(() => {
           const returnUrl = this.authService.getReturnUrl();
           this.router.navigateByUrl(returnUrl);
@@ -66,7 +61,6 @@ export class LoginComponent {
       error: (error) => {
         this.isLoading = false;
         
-        // Manejar errores específicos
         let errorMessage = 'Error al iniciar sesión';
         
         if (error.status === 401) {
