@@ -263,14 +263,14 @@ login(credentials: { email: string; password: string }): Observable<any> {
 
   // Recuperar contraseña - generar token
 forgotPassword(email: string): Observable<any> {
-  return this.http.post(`${this.apiUrl}/api/usuarios/recuperar-contrasena`, { 
+  return this.http.post(`${this.apiUrl}/api/usuarios/recuperar-password`, { 
     email: email 
   });
 }
 
 // Restablecer contraseña con token
 resetPassword(token: string, newPassword: string): Observable<any> {
-  return this.http.post(`${this.apiUrl}/api/usuarios/restablecer-contrasena`, {
+  return this.http.post(`${this.apiUrl}/api/usuarios/restablecer-password`, {
     token: token,
     passwordNueva: newPassword
   });
