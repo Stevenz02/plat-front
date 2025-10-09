@@ -15,6 +15,11 @@ import { GestionarTicketsComponent } from './dashboard-admin/pages/gestionar-tic
 import { AsignarTicketComponent } from './dashboard-admin/pages/asignar-ticket/asignar-ticket';
 import { CambiarEstadoTicketComponent } from './dashboard-admin/pages/cambiar-estado-ticket/cambiar-estado-ticket';
 import { DetalleTicketComponent } from './dashboard-admin/pages/detalle-ticket/detalle-ticket';
+import { GestionarInventarioComponent } from './dashboard-admin/pages/inventario/gestionar-inventario/gestionar-inventario';
+import { CrearEquipoComponent } from './dashboard-admin/pages/inventario/crear-equipo/crear-equipo';
+import { DetalleEquipoComponent } from './dashboard-admin/pages/inventario/detalle-equipo/detalle-equipo';
+import { EditarEquipoComponent } from './dashboard-admin/pages/inventario/editar-equipo/editar-equipo';
+
 
 // Importar guards
 import { AuthGuard } from './guards/auth.guard';
@@ -75,7 +80,11 @@ export const routes: Routes = [
       { path: 'tickets/gestionar', component: GestionarTicketsComponent },
       { path: 'tickets/asignar/:id', component: AsignarTicketComponent },
       { path: 'tickets/cambiar-estado/:id', component: CambiarEstadoTicketComponent },
-      { path: 'tickets/:id', component: DetalleTicketComponent }
+      { path: 'tickets/:id', component: DetalleTicketComponent },
+      { path: 'inventario/gestionar', component: GestionarInventarioComponent, data: { roles: ['admin'] } },
+      { path: 'inventario/crear', component: CrearEquipoComponent, data: { roles: ['admin'] } },
+      { path: 'inventario/detalle/:id', component: DetalleEquipoComponent, data: { roles: ['admin'] } },
+      { path: 'inventario/editar/:id', component: EditarEquipoComponent, data: { roles: ['admin'] } }
     ]
   },
 
