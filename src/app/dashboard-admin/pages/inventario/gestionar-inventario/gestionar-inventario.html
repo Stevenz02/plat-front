@@ -1,0 +1,72 @@
+<div class="container-fluid p-4">
+  <div class="card">
+    <div class="card-header">
+      <h1>Gestión de Inventario</h1>
+      <p>Administra los equipos tecnológicos de la entidad.</p>
+    </div>
+    <div class="card-body">
+      <div class="loading-shade" *ngIf="isLoading">
+        <mat-spinner color="primary"></mat-spinner>
+      </div>
+
+      <div [hidden]="isLoading">
+        <div class="toolbar-container">
+          <button mat-raised-button color="primary" (click)="crearEquipo()">
+            <mat-icon>add</mat-icon>
+            Registrar Nuevo Equipo
+          </button>
+          
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Buscar en inventario...</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Ej: Impresora, PC-001, etc.">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="table-container mat-elevation-z8">
+          <table mat-table [dataSource]="dataSource" matSort class="w-100">
+
+            <ng-container matColumnDef="codigo_inventario">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> # Inventario </th>
+              <td mat-cell *matCellDef="let equipo"> {{equipo.codigo_inventario}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="nombre">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+              <td mat-cell *matCellDef="let equipo"> {{equipo.nombre}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="descripcion">
+              <th mat-header-cell *matHeaderCellDef> Descripción </th>
+              <td mat-cell *matCellDef="let equipo"> {{equipo.descripcion}} </td>
+            </ng-container>
+            
+            <ng-container matColumnDef="usuario_asignado">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Usuario Asignado </th>
+              <td mat-cell *matCellDef="let equipo"> {{equipo.usuario_asignado_id || 'Sin asignar'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="acciones">
+              <th mat-header-cell *matHeaderCellDef> Acciones </th>
+              <td mat-cell *matCellDef="let equipo" class="actions-cell">
+                <button mat-icon-button color="primary" (click)="verDetalle(equipo.id)" matTooltip="Ver detalles">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell text-center" [attr.colspan]="displayedColumns.length">
+                No se encontraron equipos que coincidan con la búsqueda.
+              </td>
+            </tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[10, 25, 100]" showFirstLastButtons></mat-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
