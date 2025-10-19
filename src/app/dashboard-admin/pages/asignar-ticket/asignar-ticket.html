@@ -69,6 +69,16 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Asociar Equipo (Opcional)</mat-label>
+            <mat-select formControlName="equipo_id">
+              <mat-option [value]="null">-- Ninguno --</mat-option>
+              <mat-option *ngFor="let equipo of equipos" [value]="equipo.id">
+                {{ equipo.nombre }} ({{ equipo.codigo_inventario }})
+              </mat-option>
+            </mat-select>
+            </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-100">
             <mat-label>Comentario de Asignación (Opcional)</mat-label>
             <textarea matInput formControlName="comentario_asignacion" rows="4"></textarea>
           </mat-form-field>

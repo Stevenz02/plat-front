@@ -19,6 +19,7 @@ import { GestionarInventarioComponent } from './dashboard-admin/pages/inventario
 import { CrearEquipoComponent } from './dashboard-admin/pages/inventario/crear-equipo/crear-equipo';
 import { DetalleEquipoComponent } from './dashboard-admin/pages/inventario/detalle-equipo/detalle-equipo';
 import { EditarEquipoComponent } from './dashboard-admin/pages/inventario/editar-equipo/editar-equipo';
+import { AsignarUsuarioEquipoComponent } from './dashboard-admin/pages/inventario/asignar-usuario-equipo/asignar-usuario-equipo';
 
 
 // Importar guards
@@ -81,10 +82,11 @@ export const routes: Routes = [
       { path: 'tickets/asignar/:id', component: AsignarTicketComponent },
       { path: 'tickets/cambiar-estado/:id', component: CambiarEstadoTicketComponent },
       { path: 'tickets/:id', component: DetalleTicketComponent },
-      { path: 'inventario/gestionar', component: GestionarInventarioComponent, data: { roles: ['admin'] } },
+      { path: 'inventario/gestionar', component: GestionarInventarioComponent, data: { roles: ['admin', 'tecnico'] } },
       { path: 'inventario/crear', component: CrearEquipoComponent, data: { roles: ['admin'] } },
-      { path: 'inventario/detalle/:id', component: DetalleEquipoComponent, data: { roles: ['admin'] } },
-      { path: 'inventario/editar/:id', component: EditarEquipoComponent, data: { roles: ['admin'] } }
+      { path: 'inventario/detalle/:id', component: DetalleEquipoComponent, data: { roles: ['admin', 'tecnico'] } },
+      { path: 'inventario/editar/:id', component: EditarEquipoComponent, data: { roles: ['admin', 'tecnico'] } },
+      { path: 'inventario/:id/asignar-usuario', component: AsignarUsuarioEquipoComponent, data: { roles: ['admin', 'tecnico'] } }
     ]
   },
 

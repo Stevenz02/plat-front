@@ -200,6 +200,26 @@ export interface PrioritiesResponse {
   data: Priority[];
 }
 
+//asociar equipo
+export interface AsociarEquipoRequest {
+  equipo_id: number;
+  descripcion: string; // Descripción del motivo o problema
+  accion_realizada?: string;
+}
+
+export interface AsociarEquipoResponse {
+    success: boolean;
+    message: string;
+    data: {
+      ticket_id: number;
+      equipo_id: number;
+      nombre_equipo: string;
+      descripcion: string;
+      accion_realizada?: string;
+      fecha_registro: string;
+    };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -347,6 +367,15 @@ export class TicketService {
       case 1: return '#4caf50'; // Baja - Verde
       default: return '#757575'; // Gris por defecto
     }
+  }
+
+  /**
+   * Asocia un equipo del inventario a un ticket existente.
+   * Llama a: POST /api/tickets/{id}/asignar-equipo
+   */
+  asociarEquipo(ticketId: number, data: AsociarEquipoRequest): Observable<AsociarEquipoResponse> {
+    const headers = this.authService.getAuthHeaders();
+    return this.http.post<AsociarEquipoResponse>(`${this.apiUrl}/api/tickets/${ticketId}/asignar-equipo`, data, { headers });
   }
 
   // Crear un nuevo ticket
