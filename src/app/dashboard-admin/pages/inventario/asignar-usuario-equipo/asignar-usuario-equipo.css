@@ -1,0 +1,97 @@
+:host {
+  --primary-color: #002d72;
+  --text-light: #ffffff;
+  --background-light: #f4f7fa;
+  --border-color: #e0e0e0;
+}
+
+.container-fluid {
+  background-color: var(--background-light);
+  min-height: calc(100vh - 64px);
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color);
+  margin-top: 5rem;
+}
+
+.assign-card {
+  width: 90%;
+  max-width: 900px; /* Ancho adecuado para un formulario de asignación */
+  margin: 0 auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.card-header {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mat-mdc-card-title {
+  font-size: 1.3rem; /* Ajustar tamaño si es largo */
+  font-weight: 500;
+}
+
+.close-button {
+  color: var(--text-light);
+}
+
+.card-content {
+  padding: 32px;
+  display: grid;
+  /* Podrías usar 2 columnas si quieres mostrar más detalles del equipo */
+  grid-template-columns: 1fr; /* O 1fr 1fr; */
+  gap: 30px;
+}
+
+.equipo-details h2, .assignment-form h2 {
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 8px;
+  font-size: 1.2rem;
+}
+
+.equipo-details p {
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.assignment-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-card-actions {
+  padding: 0;
+  margin-top: 24px; /* Más espacio antes de los botones */
+}
+
+/* Ajustes responsivos si usas 2 columnas */
+@media (max-width: 768px) {
+  .card-content {
+    grid-template-columns: 1fr;
+  }
+  .equipo-details {
+     margin-bottom: 30px;
+     padding-bottom: 20px;
+     border-bottom: 1px solid var(--border-color); /* Separador en móvil */
+  }
+}
