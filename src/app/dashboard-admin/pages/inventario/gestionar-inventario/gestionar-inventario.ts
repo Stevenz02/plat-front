@@ -77,6 +77,10 @@ export class GestionarInventarioComponent implements OnInit {
   verDetalle(id: number): void {
     this.router.navigate(['/dashboard-admin/inventario/detalle', id]);
   }
+
+  irAAsignarUsuario(equipo: Equipo): void {
+    this.router.navigate(['/dashboard-admin/inventario', equipo.id, 'asignar-usuario']);
+  }
   
   // AÑADIDO: Método para mostrar notificaciones de error
   private showError(message: string): void {

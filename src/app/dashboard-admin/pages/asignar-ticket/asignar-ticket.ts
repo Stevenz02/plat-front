@@ -3,13 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { forkJoin } from 'rxjs';
-
-// Importa el array de módulos de Material
+import { forkJoin, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { MATERIAL_IMPORTS } from '../../../material.imports';
-
-// Tus servicios e interfaces
-import { TicketService, Ticket, Technician, Category, Priority } from '../../../services/ticket.service';
+import { TicketService, Ticket, Technician, Category, Priority, AsociarEquipoRequest } from '../../../services/ticket.service';
+import { InventoryService, Equipo } from '../../../services/inventory.service';
 
 @Component({
   selector: 'app-asignar-ticket',
@@ -29,6 +27,7 @@ export class AsignarTicketComponent implements OnInit {
   technicians: Technician[] = [];
   categories: Category[] = [];
   priorities: Priority[] = [];
+  equipos: Equipo[] = [];
 
   isLoading = true;
   isSubmitting = false;
@@ -38,7 +37,8 @@ export class AsignarTicketComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    public ticketService: TicketService, // Público para usar métodos en la plantilla
+    public ticketService: TicketService,
+    private inventoryService: InventoryService,
     private snackBar: MatSnackBar
   ) {}
 
@@ -57,7 +57,8 @@ export class AsignarTicketComponent implements OnInit {
       tecnico_id: ['', [Validators.required]],
       categoria_id: ['', [Validators.required]],
       prioridad_id: ['', [Validators.required]],
-      comentario_asignacion: ['']
+      comentario_asignacion: [''],
+      equipo_id: [null]
     });
 
     this.loadInitialData();
@@ -72,18 +73,17 @@ export class AsignarTicketComponent implements OnInit {
       ticket: this.ticketService.getTicketById(this.ticketId),
       technicians: this.ticketService.getTechnicians(),
       categories: this.ticketService.getActiveCategories(),
-      priorities: this.ticketService.getPrioritiesOrderedByLevel()
+      priorities: this.ticketService.getPrioritiesOrderedByLevel(),
+      equipos: this.inventoryService.getEquipos()
     }).subscribe({
       next: (data) => {
         // La API de ticket por ID devuelve { success: true, data: Ticket }
         this.ticket = data.ticket.data.ticket;
-        
         // La API de técnicos devuelve { success: true, data: { usuarios: Technician[] } }
         this.technicians = data.technicians.data; 
-        
         this.categories = data.categories;
         this.priorities = data.priorities;
-        
+        this.equipos = data.equipos.success ? data.equipos.data : [];
         this.isLoading = false;
       },
       error: (err) => {
@@ -94,8 +94,8 @@ export class AsignarTicketComponent implements OnInit {
     });
   }
 
-  /**
-   * Procesa el envío del formulario.
+/**
+   * Procesa el envío del formulario: asigna técnico y asocia equipo si se seleccionó.
    */
   onSubmit(): void {
     if (this.assignmentForm.invalid) {
@@ -104,22 +104,59 @@ export class AsignarTicketComponent implements OnInit {
     }
 
     this.isSubmitting = true;
-    const assignmentData = this.assignmentForm.value;
+    const formValue = this.assignmentForm.value;
 
-    this.ticketService.assignTicket(this.ticketId, assignmentData).subscribe({
-      next: () => {
-        this.snackBar.open('Ticket asignado correctamente', 'Éxito', { 
-          duration: 3000,
-          panelClass: ['snackbar-success'] 
+    // Datos para la asignación del técnico (PUT /api/tickets/{id}/asignar)
+    const assignmentData = {
+      tecnico_id: formValue.tecnico_id,
+      categoria_id: formValue.categoria_id,
+      prioridad_id: formValue.prioridad_id,
+      comentario_asignacion: formValue.comentario_asignacion
+    };
+
+    // 1. Asignar el ticket al técnico
+    this.ticketService.assignTicket(this.ticketId, assignmentData).pipe(
+      // 2. Después de asignar, si se seleccionó un equipo, lo asociamos
+      switchMap((assignResponse) => {
+        // Verifica si la asignación fue exitosa antes de continuar (opcional pero recomendado)
+        // if (!assignResponse || !assignResponse.success) {
+        //    throw new Error('Fallo al asignar el técnico.');
+        // }
+
+        if (formValue.equipo_id) {
+          // Datos para asociar el equipo (POST /api/tickets/{id}/asignar-equipo)
+          const equipoData: AsociarEquipoRequest = {
+            equipo_id: formValue.equipo_id,
+            // Puedes poner una descripción genérica o tomarla de algún campo si lo añades
+            descripcion: `Equipo asociado al ticket #${this.ticket?.numero_ticket} durante la asignación.`
+            // accion_realizada: '' // Podrías añadir un campo para esto si es relevante al asignar
+          };
+          return this.ticketService.asociarEquipo(this.ticketId, equipoData);
+        }
+        // Si no se seleccionó equipo, retornamos un observable que emite 'null' y completa.
+        return of(null);
+      })
+    ).subscribe({
+      next: (associateResponse) => {
+        // Comprobar si hubo respuesta de asociar equipo (si no, fue null)
+        const successMessage = formValue.equipo_id && associateResponse
+          ? 'Ticket asignado y equipo asociado correctamente.'
+          : 'Ticket asignado correctamente.';
+
+        this.snackBar.open(successMessage, 'Éxito', {
+          duration: 4000,
+          panelClass: ['success-snackbar']
         });
         this.router.navigate(['/dashboard-admin/tickets/gestionar']);
       },
       error: (err) => {
-        console.error("Error al asignar el ticket:", err);
+        console.error("Error en el proceso de asignación:", err);
         this.isSubmitting = false;
-        this.snackBar.open('Hubo un error al asignar el ticket. Por favor, inténtelo de nuevo.', 'Error', { 
-          duration: 5000,
-          panelClass: ['snackbar-error']
+        // Muestra un mensaje de error más específico si es posible
+        const errorMessage = err.error?.message || 'Hubo un error al asignar el ticket o asociar el equipo.';
+        this.snackBar.open(errorMessage, 'Error', {
+          duration: 6000,
+          panelClass: ['error-snackbar']
         });
       }
     });

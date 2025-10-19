@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
@@ -76,11 +76,52 @@ export interface Ubicacion {
   nombre: string;
 }
 
+export interface AsignarUsuarioRequest {
+  usuario_nuevo_id: number;
+  observaciones?: string;
+}
+
+export interface AsignarUsuarioResponse {
+  success: boolean;
+  message: string;
+  data: {
+    equipo_id: number;
+    nombre_equipo: string;
+    usuario_nuevo_id: number;
+    nombre_usuario: string; // Nombre del usuario asignado
+    fecha_cambio: string;
+    observaciones?: string;
+  };
+}
+
+// Interfaz para la respuesta de la API de usuarios
+export interface Usuario {
+  id: number;
+  email: string;
+  nombres: string;
+  apellidos: string;
+  telefono: string;
+  departamento: string;
+  cargo: string;
+  rol_id: number;
+  rol_nombre: string;
+  activo: boolean;
+  ultimo_acceso: string | null;
+  fecha_creacion: string;
+  fecha_actualizacion: string;
+}
+
+export interface UsuariosListResponse {
+  success: boolean;
+  data: Usuario[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class InventoryService {
   private apiUrl = `${environment.apiUrl}/api/equipo`;
+  private usuariosApiUrl = `${environment.apiUrl}/api/usuarios`; // URL para usuarios
 
   constructor(
     private http: HttpClient,
@@ -170,5 +211,26 @@ export class InventoryService {
   updateEquipo(id: number, equipoData: Partial<CreateEquipoRequest>): Observable<any> {
     const headers = this.authService.getAuthHeaders();
     return this.http.put(`${this.apiUrl}/${id}`, equipoData, { headers });
+  }
+
+  // --- NUEVOS MÉTODOS PARA ASIGNACIÓN ---
+
+  /**
+   * Asigna un equipo a un usuario.
+   * Llama a: PUT /api/equipo/{id}/asignar-usuario
+   */
+  asignarUsuario(id: number, data: AsignarUsuarioRequest): Observable<AsignarUsuarioResponse> {
+    const headers = this.authService.getAuthHeaders();
+    return this.http.put<AsignarUsuarioResponse>(`${this.apiUrl}/${id}/asignar-usuario`, data, { headers });
+  }
+
+  /**
+   * Obtiene una lista de usuarios activos para asignarles equipos.
+   * Llama a: GET /api/usuarios?activo=true
+   */
+  getUsuariosActivos(): Observable<UsuariosListResponse> {
+    const headers = this.authService.getAuthHeaders();
+    const params = new HttpParams().set('activo', 'true').set('limit', '500'); // Obtener hasta 500 usuarios activos
+    return this.http.get<UsuariosListResponse>(this.usuariosApiUrl, { headers, params });
   }
 }

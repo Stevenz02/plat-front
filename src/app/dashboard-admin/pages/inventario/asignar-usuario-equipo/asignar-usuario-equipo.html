@@ -1,0 +1,60 @@
+<div class="container-fluid p-4">
+  <div class="loading-container" *ngIf="isLoading">
+    <mat-spinner color="primary"></mat-spinner>
+    <p class="mt-3">Cargando información del equipo...</p>
+  </div>
+
+  <mat-card class="assign-card" *ngIf="!isLoading && equipo">
+    <mat-card-header class="card-header">
+      <mat-card-title>
+        Asignar Usuario a Equipo: {{ equipo.nombre }} (#{{ equipo.codigo_inventario }})
+      </mat-card-title>
+      <button mat-icon-button (click)="cancel()" class="close-button" aria-label="Volver al inventario">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-card-header>
+
+    <mat-card-content class="card-content">
+      <div class="equipo-details">
+        <h2>Detalles del Equipo</h2>
+        <p><strong>Modelo:</strong> {{ equipo.modelo }}</p>
+        <p><strong>Serie:</strong> {{ equipo.numero_serie }}</p>
+        <p><strong>Usuario Actual:</strong> {{ equipo.usuario_asignado_id ? 'Asignado (ID: ' + equipo.usuario_asignado_id + ')' : 'Sin asignar' }}</p>
+      </div>
+
+      <div class="assignment-form">
+        <h2>Seleccionar Usuario</h2>
+        <form [formGroup]="assignForm" (ngSubmit)="onSubmit()">
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Usuario a Asignar</mat-label>
+            <mat-select formControlName="usuario_nuevo_id" required>
+              <mat-option *ngFor="let user of (usuarios$ | async)" [value]="user.id">
+                {{ user.nombres }} {{ user.apellidos }} ({{ user.email }})
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="assignForm.get('usuario_nuevo_id')?.hasError('required')">
+              Debe seleccionar un usuario.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Observaciones (Opcional)</mat-label>
+            <textarea matInput formControlName="observaciones" rows="4" placeholder="Ej: Motivo de la asignación"></textarea>
+          </mat-form-field>
+
+          <mat-card-actions align="end">
+            <button type="button" mat-stroked-button (click)="cancel()">Cancelar</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitting || assignForm.invalid">
+              <span *ngIf="!isSubmitting">Asignar Equipo</span>
+              <span *ngIf="isSubmitting" class="d-flex align-items-center">
+                Asignando...
+                <mat-spinner [diameter]="20" class="ms-2"></mat-spinner>
+              </span>
+            </button>
+          </mat-card-actions>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
