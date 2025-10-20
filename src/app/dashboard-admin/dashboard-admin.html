@@ -1,60 +1,87 @@
-<!-- La propiedad [autosize]="true" es clave para que el contenido se adapte -->
-<mat-sidenav-container class="layout-container" [autosize]="true">
-  
-  <mat-sidenav class="sidebar" mode="side" [opened]="true" [class.menu-colapsado]="!menuAbierto">
-    <div class="logo-container">
-      <img src="assets/logoepa.png" alt="EPA" class="logo-img" />
-      <div class="logo-text">
-        <h3>Tablero de control</h3>
-        <h4>Versión: 1.0</h4>
-      </div>
-    </div>
-    <nav class="menu">
-      <div class="menu-item" routerLink="/dashboard-admin/inicio-admin" routerLinkActive="active" matTooltip="Inicio" [matTooltipDisabled]="menuAbierto">
-        <mat-icon>home</mat-icon> <span class="label">Inicio</span>
-      </div>
-      <div class="menu-item" routerLink="/dashboard-admin/tickets/gestionar" routerLinkActive="active" matTooltip="Gestión de Tickets" [matTooltipDisabled]="menuAbierto">
-        <mat-icon>folder</mat-icon> <span class="label">Tickets</span>
-      </div>
-      <div class="menu-item" routerLink="/dashboard-admin/inventario/gestionar" routerLinkActive="active" matTooltip="Inventario" [matTooltipDisabled]="menuAbierto">
-        <mat-icon>receipt_long</mat-icon> <span class="label">Inventario</span>
-      </div>
-      <div class="menu-item disabled" matTooltip="Base de conocimiento (en desarrollo)" [matTooltipDisabled]="menuAbierto">
-        <mat-icon>build</mat-icon> <span class="label">Conocimiento</span>
-      </div>
-    </nav>
+<!-- Este div envuelve toda la vista y aplica dinámicamente la clase del tema -->
+<div class="themed-container" [ngClass]="currentTheme">
+  <mat-sidenav-container class="layout-container" [autosize]="true">
     
-    <button mat-flat-button class="cerrarsesion-btn" (click)="cerrarSesion()" matTooltip="Cerrar Sesión" [matTooltipDisabled]="menuAbierto">
-      <mat-icon>logout</mat-icon>
-      <span class="label">Cerrar Sesión</span>
-    </button>
-  </mat-sidenav>
-
-  <mat-sidenav-content class="main-content">
-    <mat-toolbar color="primary" class="topbar">
-      <button mat-icon-button (click)="toggleMenu()">
-        <mat-icon>menu</mat-icon>
+    <mat-sidenav class="sidebar" mode="side" [opened]="true" [class.menu-colapsado]="!menuAbierto">
+      <div class="logo-container">
+        <img src="assets/logoepa.png" alt="Logo de EPA" class="logo-img" />
+        <div class="logo-text">
+          <h3>Tablero de control</h3>
+          <h4>Versión: 1.0</h4>
+        </div>
+      </div>
+      <nav class="menu">
+        <div class="menu-item" routerLink="/dashboard-admin/inicio-admin" routerLinkActive="active" matTooltip="Inicio" [matTooltipDisabled]="menuAbierto">
+          <mat-icon>home</mat-icon> <span class="label">Inicio</span>
+        </div>
+        <div class="menu-item" routerLink="/dashboard-admin/tickets/gestionar" routerLinkActive="active" matTooltip="Gestión de Tickets" [matTooltipDisabled]="menuAbierto">
+          <mat-icon>folder</mat-icon> <span class="label">Tickets</span>
+        </div>
+        <div class="menu-item" routerLink="/dashboard-admin/inventario/gestionar" routerLinkActive="active" matTooltip="Inventario" [matTooltipDisabled]="menuAbierto">
+          <mat-icon>receipt_long</mat-icon> <span class="label">Inventario</span>
+        </div>
+        <div class="menu-item disabled" matTooltip="Base de conocimiento (en desarrollo)" [matTooltipDisabled]="menuAbierto">
+          <mat-icon>build</mat-icon> <span class="label">Conocimiento</span>
+        </div>
+      </nav>
+      
+      <button mat-flat-button class="cerrarsesion-btn" (click)="cerrarSesion()" matTooltip="Cerrar Sesión" [matTooltipDisabled]="menuAbierto">
+        <mat-icon>logout</mat-icon>
+        <span class="label">Cerrar Sesión</span>
       </button>
-      <span>Plataforma de Apoyo TIC - EPA</span>
-    </mat-toolbar>
-    
-    <div class="content-wrapper">
-      <router-outlet></router-outlet>
-    </div>
+    </mat-sidenav>
 
-    <footer class="footer-horizontal">
-      <div class="footer-col izquierda">
-        © {{ currentYear }} Empresas Públicas de Armenia E.S.P.
+    <mat-sidenav-content class="main-content">
+      <mat-toolbar color="primary" class="topbar">
+        <button mat-icon-button (click)="toggleMenu()" aria-label="Alternar menú lateral">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span>Plataforma de Apoyo TIC - EPA</span>
+
+        <span class="spacer" style="flex: 1 1 auto;"></span>
+
+        <!-- CONTROLES DE ACCESIBILIDAD -->
+        <button mat-icon-button (click)="ajustarFuente(-1)" aria-label="Disminuir tamaño de fuente" matTooltip="Disminuir letra">
+          <mat-icon>text_decrease</mat-icon>
+        </button>
+        <button mat-icon-button (click)="ajustarFuente(1)" aria-label="Aumentar tamaño de fuente" matTooltip="Aumentar letra">
+          <mat-icon>text_increase</mat-icon>
+        </button>
+        
+        <button mat-icon-button (click)="cambiarTema('theme-light')" aria-label="Cambiar a tema claro" matTooltip="Tema Claro">
+          <mat-icon>light_mode</mat-icon>
+        </button>
+        <button mat-icon-button (click)="cambiarTema('theme-dark')" aria-label="Cambiar a tema oscuro" matTooltip="Tema Oscuro">
+          <mat-icon>dark_mode</mat-icon>
+        </button>
+        <button mat-icon-button (click)="cambiarTema('theme-high-contrast')" aria-label="Cambiar a tema de alto contraste" matTooltip="Alto Contraste">
+          <mat-icon>contrast</mat-icon>
+        </button>
+        <!-- NUEVO BOTÓN -->
+        <button mat-icon-button (click)="toggleGrayscale()" [color]="isGrayscale ? 'accent' : ''" aria-label="Activar/desactivar modo escala de grises" matTooltip="Modo Escala de Grises">
+          <mat-icon>invert_colors</mat-icon>
+        </button>
+        
+      </mat-toolbar>
+      
+      <div class="content-wrapper">
+        <router-outlet></router-outlet>
       </div>
-      <div class="footer-col centro">
-        Plataforma de Apoyo TIC - EPA <br>
-        <a (click)="abrirTerminos()" style="cursor: pointer;">Términos, Condiciones de uso y Aviso Legal.</a> 
-      </div>
-      <div class="footer-col derecha">
-        Contacto de soporte · 
-        <mat-icon inline>email</mat-icon><a href="mailto:redes.tic@epa.gov.co">redes.tic&#64;epa.gov.co</a>
-        <p><mat-icon inline>phone</mat-icon> Tel: (606) 741 17 80 Ext. 1512 - 1513</p>
-      </div>
-    </footer>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+
+      <footer class="footer-horizontal">
+        <div class="footer-col izquierda">
+          © {{ currentYear }} Empresas Públicas de Armenia E.S.P.
+        </div>
+        <div class="footer-col centro">
+          Plataforma de Apoyo TIC - EPA <br>
+          <a (click)="abrirTerminos()" style="cursor: pointer;">Términos, Condiciones de uso y Aviso Legal.</a> 
+        </div>
+        <div class="footer-col derecha">
+          Contacto de soporte · 
+          <mat-icon inline>email</mat-icon><a href="mailto:redes.tic@epa.gov.co">redes.tic&#64;epa.gov.co</a>
+          <p><mat-icon inline>phone</mat-icon> Tel: (606) 741 17 80 Ext. 1512 - 1513</p>
+        </div>
+      </footer>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

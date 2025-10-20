@@ -9,15 +9,15 @@
 .detail-container { padding: 24px; }
 .detail-card { max-width: 1200px; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-radius: 8px; }
 .spinner-container { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; gap: 1rem; }
-.error-card { max-width: 800px; }
+.error-card { max-width: 800px; margin: 2rem auto; } /* Centrar error card */
 
-/* --- Cabecera Mejorada --- */
+/* --- Cabecera --- */
 .header-content mat-card-title {
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--app-primary-blue);
   line-height: 1.2;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */ /* Quitado para legibilidad */
   margin-bottom: 4px;
 }
 .header-content mat-card-subtitle {
@@ -25,32 +25,32 @@
   color: var(--app-text-muted);
 }
 
-/* --- NUEVO GRID DE CONTENIDO --- */
+/* --- Grid de Contenido --- */
 .details-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr; /* Columna izquierda más ancha */
-  gap: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Más adaptable */
+  gap: 24px 32px; /* Espacio vertical y horizontal */
   padding: 24px 0;
 }
 
-.main-details {
+.main-details, .secondary-details {
   display: flex;
   flex-direction: column;
-  gap: 28px;
-  border-right: 1px solid #e0e0e0;
-  padding-right: 32px;
+  gap: 20px; /* Espacio reducido entre items */
 }
 
-.secondary-details {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
+/* Quitar borde si es una sola columna en móvil */
+@media (min-width: 768px) {
+  .main-details {
+    border-right: 1px solid #e0e0e0;
+    padding-right: 32px;
+  }
 }
 
 .detail-item strong {
   color: var(--app-primary-blue);
   font-weight: 600;
-  margin-bottom: 8px;
+  margin-bottom: 6px; /* Espacio reducido */
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -59,18 +59,152 @@
 
 .detail-item span, .detail-item .value {
   color: var(--app-text-color);
-  font-size: 1rem;
-  white-space: pre-wrap; /* Para respetar saltos de línea en descripciones */
+  font-size: 0.95rem; /* Ligeramente más pequeño */
+  white-space: pre-wrap;
+  line-height: 1.5; /* Mejorar espaciado de línea */
 }
 
-/* Estilo para la lista de especificaciones */
 .spec-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem; /* Espacio reducido */
+}
+.spec-list span {
+  font-size: 0.9rem; /* Especificaciones un poco más pequeñas */
+}
+.spec-list strong {
+    display: inline; /* Que CPU:, RAM: estén en línea */
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    text-transform: none;
+    letter-spacing: normal;
 }
 
-mat-card-actions { 
+/* --- Estilos para la sección de historial --- */
+.section-divider {
+  margin: 32px 0;
+  border-top-color: #dcdcdc; /* Un gris un poco más visible */
+}
+
+.history-section {
+  padding-top: 24px;
+}
+
+.section-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--app-primary-blue);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 12px;
+}
+.section-title mat-icon {
+  color: var(--app-secondary-blue);
+}
+
+.timeline {
+  position: relative;
+  padding-left: 40px; /* Espacio para la línea y puntos */
+  border-left: 2px solid #e0e0e0; /* Línea vertical */
+  margin-left: 8px; /* Pequeño margen izquierdo */
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 24px;
+  padding: 8px 0;
+}
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -49px; /* Centrar el punto en la línea */
+  top: 12px; /* Ajustar verticalmente */
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--app-secondary-blue);
+  border: 3px solid white;
+  box-shadow: 0 0 0 2px var(--app-secondary-blue); /* Borde exterior */
+}
+
+.timeline-content {
+  background-color: #f9fafb; /* Fondo ligeramente diferente */
+  padding: 16px;
+  border-radius: 6px;
+  border: 1px solid #eee;
+  position: relative; /* Para pseudo-elemento si se necesita */
+}
+
+.history-type {
+  display: inline-block;
+  font-weight: bold;
+  color: var(--app-primary-blue);
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.history-description {
+  margin: 0 0 10px 0;
+  color: var(--app-text-color);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.history-action {
+  margin: 10px 0;
+  padding: 8px 12px;
+  background-color: #e3f2fd; /* Azul claro */
+  border-left: 3px solid var(--app-secondary-blue);
+  font-size: 0.9rem;
+  color: #333;
+}
+.history-action strong {
+  color: var(--app-primary-blue);
+  margin-right: 4px;
+}
+
+.history-footer {
+  margin-top: 12px;
+  font-size: 0.8rem;
+  color: var(--app-text-muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px; /* Espacio vertical y horizontal */
+}
+
+.history-user, .history-date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.history-footer mat-icon {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+  vertical-align: middle; /* Mejor alineación */
+}
+
+.no-history {
+  color: var(--app-text-muted);
+  font-style: italic;
+  padding: 24px 16px;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  margin-top: 16px;
+}
+
+mat-card-actions {
   padding: 16px 24px;
   border-top: 1px solid #e0e0e0;
 }
