@@ -9,6 +9,8 @@ import { InicioComponent } from './dashboard/pages/inicio/inicio';
 import { MisTicketsComponent } from './dashboard/pages/mis-tickets/mis-tickets';
 import { CrearTicketComponent } from './dashboard/pages/crear-ticket/crear-ticket';
 import { DetalleTicketUsuarioComponent } from './dashboard/pages/detalle-ticket-usuario/detalle-ticket-usuario';
+import { MisEquiposComponent } from './dashboard/pages/mis-equipos/mis-equipos';
+import { DetalleEquipoUsuarioComponent } from './dashboard/pages/detalle-equipo-usuario/detalle-equipo-usuario';
 import { DashboardAdminComponent } from './dashboard-admin/dashboard-admin';
 import { InicioAdminComponent } from './dashboard-admin/pages/inicio-admin/inicio-admin';
 import { GestionarTicketsComponent } from './dashboard-admin/pages/gestionar-tickets/gestionar-tickets';
@@ -67,7 +69,9 @@ export const routes: Routes = [
       { path: 'inicio', component: InicioComponent },
       { path: 'tickets', component: MisTicketsComponent },
       { path: 'tickets/crear', component: CrearTicketComponent },
-      { path: 'tickets/:id', component: DetalleTicketUsuarioComponent }
+      { path: 'tickets/:id', component: DetalleTicketUsuarioComponent },
+      { path: 'inventario', component: MisEquiposComponent },
+      { path: 'inventario/:id', component: DetalleEquipoUsuarioComponent }
     ]
   },
   { 
