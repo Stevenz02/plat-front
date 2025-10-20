@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Inject, OnInit, Renderer2 } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -10,6 +10,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthService } from '../services/auth.service';
 import { MATERIAL_IMPORTS } from '../material.imports';
 import { TerminosDialogComponent } from '../shared/dialogs/terminos-dialog/terminos';
+
+type Theme = 'theme-light' | 'theme-dark' | 'theme-high-contrast';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,11 +29,40 @@ import { TerminosDialogComponent } from '../shared/dialogs/terminos-dialog/termi
   templateUrl: './dashboard-admin.html',
   styleUrls: ['./dashboard-admin.css']
 })
-export class DashboardAdminComponent {
+export class DashboardAdminComponent implements OnInit {
   menuAbierto = true;
   currentYear = new Date().getFullYear();
 
-  constructor(private authService: AuthService, private router: Router, private dialog: MatDialog) {}
+  private currentScaleFactor = 1;
+  private readonly SCALE_STEP = 0.1;
+  private readonly MAX_SCALE = 1.5;
+  private readonly MIN_SCALE = 0.8;
+  public currentTheme: Theme = 'theme-light';
+  public isGrayscale = false; // NUEVA PROPIEDAD
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private dialog: MatDialog,
+    private renderer: Renderer2,
+    @Inject(DOCUMENT) private document: Document
+    ) {}
+
+  ngOnInit(): void {
+    const savedTheme = localStorage.getItem('appTheme') as Theme;
+    this.aplicarTema(savedTheme || 'theme-light');
+
+    const savedScale = localStorage.getItem('fontScale');
+    if (savedScale) {
+        this.currentScaleFactor = parseFloat(savedScale);
+        this.renderer.setStyle(this.document.documentElement, '--font-scale-factor', this.currentScaleFactor);
+    }
+
+    const savedGrayscale = localStorage.getItem('grayscale') === 'true';
+    if (savedGrayscale) {
+      this.toggleGrayscale();
+    }
+  }
 
   toggleMenu() {
     this.menuAbierto = !this.menuAbierto;
@@ -54,4 +85,34 @@ export class DashboardAdminComponent {
       width: '600px'
     });
   }
+
+  ajustarFuente(incremento: number): void {
+    const newScaleFactor = this.currentScaleFactor + incremento * this.SCALE_STEP;
+    if (newScaleFactor >= this.MIN_SCALE && newScaleFactor <= this.MAX_SCALE) {
+      this.currentScaleFactor = newScaleFactor;
+      this.renderer.setStyle(this.document.documentElement, '--font-scale-factor', this.currentScaleFactor);
+      localStorage.setItem('fontScale', this.currentScaleFactor.toString());
+    }
+  }
+
+  cambiarTema(tema: Theme): void {
+    this.aplicarTema(tema);
+    localStorage.setItem('appTheme', tema);
+  }
+
+  private aplicarTema(tema: Theme): void {
+    this.currentTheme = tema;
+  }
+
+  // NUEVO MÉTODO para escala de grises
+  toggleGrayscale(): void {
+    this.isGrayscale = !this.isGrayscale;
+    if (this.isGrayscale) {
+      this.renderer.addClass(this.document.body, 'grayscale');
+    } else {
+      this.renderer.removeClass(this.document.body, 'grayscale');
+    }
+    localStorage.setItem('grayscale', String(this.isGrayscale));
+  }
 }
+

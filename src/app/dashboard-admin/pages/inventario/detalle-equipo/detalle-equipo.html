@@ -16,9 +16,7 @@
       </mat-card-header>
 
       <mat-card-content>
-        <!-- NUEVA ESTRUCTURA DE GRID -->
         <div class="details-grid">
-          <!-- Columna Izquierda (Principal) -->
           <div class="main-details">
             <div class="detail-item">
               <strong>Descripción</strong>
@@ -37,16 +35,14 @@
               <span class="value">{{ eq.observaciones || 'Sin observaciones' }}</span>
             </div>
           </div>
-          
-          <!-- Columna Derecha (Secundaria) -->
+
           <div class="secondary-details">
             <div class="detail-item">
               <strong>Especificaciones</strong>
               <div class="spec-list">
-                <!-- CORRECCIÓN: Se quita el encadenamiento opcional (?) -->
-                <span><strong>CPU:</strong> {{ eq.especificaciones.cpu || 'N/A' }}</span>
-                <span><strong>RAM:</strong> {{ eq.especificaciones.ram || 'N/A' }}</span>
-                <span><strong>Storage:</strong> {{ eq.especificaciones.storage || 'N/A' }}</span>
+                 <span><strong>CPU:</strong> {{ eq.especificaciones?.cpu || 'N/A' }}</span>
+                <span><strong>RAM:</strong> {{ eq.especificaciones?.ram || 'N/A' }}</span>
+                <span><strong>Storage:</strong> {{ eq.especificaciones?.storage || 'N/A' }}</span>
               </div>
             </div>
             <div class="detail-item">
@@ -65,20 +61,55 @@
               <strong>Ubicación</strong>
               <span class="value">{{ getNombreDesdeId(ubicaciones, eq.ubicacion_id) }}</span>
             </div>
+
+            <div class="detail-item">
+              <strong>Usuario Asignado</strong>
+              <span class="value">{{ eq.nombre_usuario_asignado || (eq.nombre_usuario_asignado ? 'ID: ' + eq.usuario_asignado_id : 'Sin asignar') }}</span>
+            </div>
+
           </div>
-        </div>
-      </mat-card-content>
-      
+        </div> <mat-divider class="section-divider"></mat-divider>
+        <div class="history-section">
+          <h3 class="section-title">
+            <mat-icon>history</mat-icon> Historial del Equipo
+          </h3>
+          @if (historial().length > 0) {
+            <div class="timeline">
+              @for (evento of historial(); track evento.id) {
+                <div class="timeline-item">
+                  <div class="timeline-dot"></div>
+                  <div class="timeline-content">
+                    <span class="history-type">{{ evento.tipo_cambio }}</span>
+                    <p class="history-description">{{ evento.descripcion }}</p>
+                    @if (evento.accion_realizada) {
+                      <p class="history-action"><strong>Solución/Acción:</strong> {{ evento.accion_realizada }}</p>
+                    }
+                    <div class="history-footer">
+                      <span class="history-user"><mat-icon inline>person</mat-icon> {{ evento.usuario_responsable }}</span>
+                      <span class="history-date"><mat-icon inline>calendar_today</mat-icon> {{ evento.fecha_cambio | date:'dd/MMM/yyyy, h:mm a' }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else if (!isLoading()) {
+            <p class="no-history">Este equipo no tiene eventos registrados en su historial.</p>
+          }
+        </div> </mat-card-content>
+
       <mat-card-actions align="end">
         <button mat-stroked-button (click)="goBack()">Volver</button>
-        <!-- Próximamente: botón para editar -->
+        <button mat-raised-button color="primary" (click)="editarEquipo()">
+          <mat-icon>edit</mat-icon>
+          Editar Equipo
+        </button>
       </mat-card-actions>
     </mat-card>
   }
 
-  @if (error()) {
+  @if (error() && !isLoading()) {
     <mat-card class="error-card">
-      <mat-card-header>
+       <mat-card-header>
         <mat-icon mat-card-avatar>warning</mat-icon>
         <mat-card-title>Error al Cargar</mat-card-title>
       </mat-card-header>
@@ -87,10 +118,6 @@
       </mat-card-content>
        <mat-card-actions align="end">
         <button mat-stroked-button (click)="goBack()">Volver</button>
-        <button mat-raised-button color="primary" (click)="editarEquipo()">
-          <mat-icon>edit</mat-icon>
-          Editar Equipo
-        </button>
       </mat-card-actions>
     </mat-card>
   }

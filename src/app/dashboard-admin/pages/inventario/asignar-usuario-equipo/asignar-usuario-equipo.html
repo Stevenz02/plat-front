@@ -19,7 +19,7 @@
         <h2>Detalles del Equipo</h2>
         <p><strong>Modelo:</strong> {{ equipo.modelo }}</p>
         <p><strong>Serie:</strong> {{ equipo.numero_serie }}</p>
-        <p><strong>Usuario Actual:</strong> {{ equipo.usuario_asignado_id ? 'Asignado (ID: ' + equipo.usuario_asignado_id + ')' : 'Sin asignar' }}</p>
+        <p><strong>Usuario Actual:</strong> {{ equipo.nombre_usuario_asignado ? 'Asignado (' + equipo.nombre_usuario_asignado + ')' : 'Sin asignar' }}</p>
       </div>
 
       <div class="assignment-form">
