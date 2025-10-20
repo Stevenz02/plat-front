@@ -1,39 +1,160 @@
+/* src/styles.css */
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-.success-snackbar {
-  background: #4caf50 !important;
-  color: white !important;
+/* --- VARIABLES DE ACCESIBILIDAD Y TEMA CLARO (POR DEFECTO) --- */
+:root {
+  /* Variables de Color (Tema Claro) */
+  --background-color: #f4f7fa;
+  --text-color: #333;
+  --card-background: #ffffff;
+  --primary-color: #002d72;
+  --accent-color: #0d47a1;
+  --border-color: #e0e0e0;
+  --toolbar-bg: #09356e;
+  --toolbar-text: #ffffff;
+  /* Añadimos versión RGB para opacidad */
+  --text-color-rgb: 51, 51, 51;
+
+  /* Variables de Fuente */
+  --font-size-base: 16px; /* Tamaño normal por defecto */
+  --font-scale-factor: 1; /* Factor de escala inicial */
+  --font-size-small: calc(var(--font-size-base) * 0.85 * var(--font-scale-factor));
+  --font-size-normal: calc(var(--font-size-base) * 1 * var(--font-scale-factor));
+  --font-size-large: calc(var(--font-size-base) * 1.2 * var(--font-scale-factor));
+  --font-size-xl: calc(var(--font-size-base) * 1.5 * var(--font-scale-factor));
 }
 
-.success-snackbar button {
-  color: white !important;
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  height: 100%;
+  background-color: var(--background-color); /* Color base */
+  color: var(--text-color); /* Color base */
+  font-size: var(--font-size-normal) !important; /* Tamaño base REFORZADO */
+  transition: background-color 0.3s, color 0.3s;
 }
 
-.error-snackbar {
-  background: #f44336 !important;
-  color: white !important;
+/* Contenedor que SÍ tendrá temas */
+.themed-container {
+  height: 100%;
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
-.error-snackbar button {
-  color: white !important;
+/* --- TEMA OSCURO --- */
+.themed-container.theme-dark {
+  --background-color: #121212;
+  --text-color: #e0e0e0;
+  --card-background: #1e1e1e;
+  --primary-color: #a3d4ff;
+  --accent-color: #bbdefb;
+  --border-color: #424242;
+  --toolbar-bg: #1e1e1e;
+  --toolbar-text: #e0e0e0;
+  --text-color-rgb: 224, 224, 224; /* RGB para tema oscuro */
 }
 
-/* Estilos para modales con MatDialog */
-.custom-dialog-container .mat-mdc-dialog-container {
-  border-radius: 12px !important;
-  padding: 0 !important;
-  overflow: hidden !important;
+/* --- TEMA ALTO CONTRASTE --- */
+.themed-container.theme-high-contrast {
+   --background-color: #000000;
+   --text-color: #ffffff;
+   --card-background: #000000;
+   --primary-color: #ffff00; /* Amarillo */
+   --accent-color: #00ffff;  /* Cian */
+   --border-color: #ffffff;
+   --toolbar-bg: #000000;
+   --toolbar-text: #ffff00; /* Texto amarillo en toolbar */
+   --text-color-rgb: 255, 255, 255; /* RGB para alto contraste */
 }
 
-.custom-dialog-container .mat-mdc-dialog-content {
-  padding: 0 !important;
-  margin: 0 !important;
+/* --- ESCALA DE GRISES --- */
+body.grayscale .themed-container {
+  filter: grayscale(100%);
+  -webkit-filter: grayscale(100%);
 }
 
-/* Overlay personalizado */
-.cdk-overlay-dark-backdrop {
-  background: rgba(30, 58, 138, 0.6) !important;
+/* --- APLICACIÓN DE ESTILOS DE TEMAS AL CONTENEDOR --- */
+.themed-container mat-card,
+.themed-container .card {
+  background-color: var(--card-background) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color);
 }
+
+.themed-container .topbar {
+  background-color: var(--toolbar-bg) !important;
+  color: var(--toolbar-text) !important;
+}
+
+/* Ajustes específicos para alto contraste DENTRO del contenedor */
+.themed-container.theme-high-contrast a,
+.themed-container.theme-high-contrast .mat-mdc-button.mat-stroked-button {
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+.themed-container.theme-high-contrast .mat-mdc-button.mat-primary,
+.themed-container.theme-high-contrast .mat-mdc-raised-button.mat-primary {
+    background-color: var(--primary-color) !important;
+    color: #000000 !important; /* Texto negro sobre amarillo */
+}
+.themed-container.theme-high-contrast .mat-mdc-icon-button,
+.themed-container.theme-high-contrast .mat-icon {
+  color: var(--toolbar-text);
+}
+.themed-container.theme-high-contrast .mat-mdc-button.mat-warn,
+.themed-container.theme-high-contrast .mat-mdc-raised-button.mat-warn {
+  background-color: #FF0000 !important; /* Rojo para warn */
+  color: #000000 !important;
+}
+
+/* --- APLICACIÓN GLOBAL DE TAMAÑOS DE FUENTE (Reforzado) --- */
+.themed-container h1, .themed-container .mat-mdc-card-title { font-size: var(--font-size-xl) !important; }
+.themed-container h2, .themed-container h3 { font-size: var(--font-size-large) !important; }
+.themed-container p,
+.themed-container td,
+.themed-container li,
+.themed-container button, /* Estilo general para botones */
+.themed-container input,
+.themed-container mat-label,
+.themed-container span,
+.themed-container div,
+.themed-container a,
+.themed-container .mat-mdc-cell,
+.themed-container .mat-mdc-header-cell,
+.themed-container .mat-mdc-form-field, /* Asegurar que el form field herede */
+.themed-container .mat-mdc-option { /* Para opciones de select */
+  font-size: var(--font-size-normal) !important;
+}
+.themed-container small,
+.themed-container mat-hint,
+.themed-container .mat-mdc-card-subtitle,
+.themed-container .mat-mdc-form-field-hint,
+.themed-container .mat-mdc-paginator-page-size-label,
+.themed-container .mat-mdc-tooltip { /* Tooltips */
+  font-size: var(--font-size-small) !important;
+}
+/* Estilo específico para botones de Material Design */
+.themed-container .mat-mdc-button-base {
+  font-size: inherit !important; /* Forzar herencia del contenedor */
+}
+/* Evitar que los iconos escalen con el texto */
+.themed-container mat-icon,
+.themed-container .mat-icon {
+ font-size: 24px !important; /* Tamaño fijo deseado para iconos */
+ line-height: 1 !important;
+ height: 24px !important;
+ width: 24px !important;
+ /* Podrías necesitar ajustar otros estilos si los iconos se desalinean */
+ vertical-align: middle; /* Intenta alinear verticalmente */
+}
+
+/* --- Estilos originales de SnackBar, Dialog, Overlay --- */
+.success-snackbar { background: #4caf50 !important; color: white !important; }
+.success-snackbar button { color: white !important; }
+.error-snackbar { background: #f44336 !important; color: white !important; }
+.error-snackbar button { color: white !important; }
+.custom-dialog-container .mat-mdc-dialog-container { border-radius: 12px !important; padding: 0 !important; overflow: hidden !important; }
+.custom-dialog-container .mat-mdc-dialog-content { padding: 0 !important; margin: 0 !important; }
+.cdk-overlay-dark-backdrop { background: rgba(30, 58, 138, 0.6) !important; }

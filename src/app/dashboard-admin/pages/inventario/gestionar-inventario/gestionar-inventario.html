@@ -43,7 +43,7 @@
             
             <ng-container matColumnDef="usuario_asignado">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Usuario Asignado </th>
-              <td mat-cell *matCellDef="let equipo"> {{equipo.usuario_asignado_id || 'Sin asignar'}} </td>
+              <td mat-cell *matCellDef="let equipo"> {{equipo.nombre_usuario_asignado || 'Sin asignar'}} </td>
             </ng-container>
 
             <ng-container matColumnDef="acciones">

@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 
+// --- Interfaz Equipo ACTUALIZADA ---
 export interface Equipo {
   id: number;
   codigo_inventario: string;
@@ -14,19 +15,22 @@ export interface Equipo {
   modelo: string;
   numero_serie: string;
   especificaciones: {
-    cpu: string;
-    ram: string;
-    storage: string;
-  };
+    cpu: string | null; // Hacerlos opcionales o nullables si pueden venir vacíos
+    ram: string | null;
+    storage: string | null;
+  } | null; // El objeto especificaciones también podría ser nulo
   estado_id: number;
   ubicacion_id: number;
   usuario_asignado_id: number | null;
-  fecha_adquisicion: string;
-  fecha_garantia: string | null;
-  valor_compra: number;
-  proveedor: string;
-  observaciones: string;
-  // Podríamos añadir más campos si la API los devuelve (ej. nombre del usuario, etc.)
+  nombre_usuario_asignado?: string | null; // <-- CAMBIO: Añadido (opcional)
+  correo_usuario_asignado?: string | null; // <-- CAMBIO: Añadido (opcional)
+  fecha_adquisicion: string | null; // Puede ser null
+  fecha_garantia?: string | null; // Hacer opcional si no siempre viene
+  valor_compra: number | null; // Puede ser null
+  proveedor: string | null; // Puede ser null
+  observaciones: string | null; // Puede ser null
+  fecha_creacion?: string; // Hacer opcional si no siempre viene
+  fecha_actualizacion?: string; // Hacer opcional si no siempre viene
 }
 
 // Para la creación de un equipo (POST /api/equipo)
@@ -116,12 +120,47 @@ export interface UsuariosListResponse {
   data: Usuario[];
 }
 
+// --- NUEVA INTERFAZ para una entrada del historial ---
+export interface HistorialEquipoEntry {
+  id: number;
+  equipo_id: number;
+  fecha_cambio: string; 
+  tipo_cambio: string;
+  descripcion: string; // Contiene el # Ticket si aplica
+  accion_realizada: string | null; // La solución del técnico
+  usuario_responsable: string;
+  ticket_id: number | null;
+}
+
+// --- NUEVA INTERFAZ para la respuesta completa del historial ---
+export interface HistorialEquipoResponse {
+  success: boolean;
+  data: HistorialEquipoEntry[];
+  pagination?: { 
+    total_items: number;
+    items_returned: number;
+    limit: number;
+    offset: number;
+    has_more: boolean;
+  };
+  filters_applied?: any; 
+  message?: string; // Para mensajes de error
+}
+
+// --- Interfaz para la respuesta de getEquipoById
+export interface EquipoDetailResponse {
+    success: boolean;
+    data: Equipo;
+    message?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class InventoryService {
   private apiUrl = `${environment.apiUrl}/api/equipo`;
   private usuariosApiUrl = `${environment.apiUrl}/api/usuarios`; // URL para usuarios
+  private historialApiUrl = `${environment.apiUrl}/api/historialEquipo`;
 
   constructor(
     private http: HttpClient,
@@ -140,9 +179,9 @@ export class InventoryService {
   /**
    * Obtiene un equipo específico por su ID.
    */
-  getEquipoById(id: number): Observable<{ success: boolean, data: Equipo }> {
+  getEquipoById(id: number): Observable<EquipoDetailResponse> {
     const headers = this.authService.getAuthHeaders();
-    return this.http.get<{ success: boolean, data: Equipo }>(`${this.apiUrl}/${id}`, { headers });
+    return this.http.get<EquipoDetailResponse>(`${this.apiUrl}/${id}`, { headers });
   }
 
   /**
@@ -232,5 +271,25 @@ export class InventoryService {
     const headers = this.authService.getAuthHeaders();
     const params = new HttpParams().set('activo', 'true').set('limit', '500'); // Obtener hasta 500 usuarios activos
     return this.http.get<UsuariosListResponse>(this.usuariosApiUrl, { headers, params });
+  }
+
+  // --- NUEVO MÉTODO para obtener el historial ---
+  /**
+   * Obtiene el historial de eventos para un equipo específico.
+   * Llama a: GET /api/historialEquipo/{id}/historial
+   * @param equipoId El ID del equipo.
+   * @param filters Filtros opcionales (tipo_cambio, fecha_desde, etc.)
+   */
+  getHistorialEquipo(equipoId: number, filters: any = {}): Observable<HistorialEquipoResponse> {
+    const headers = this.authService.getAuthHeaders();
+    let params = new HttpParams();
+    // Añadir filtros opcionales a los parámetros
+    Object.keys(filters).forEach(key => {
+      if (filters[key] !== null && filters[key] !== undefined) {
+        params = params.set(key, filters[key].toString());
+      }
+    });
+
+    return this.http.get<HistorialEquipoResponse>(`${this.historialApiUrl}/${equipoId}/historial`, { headers, params });
   }
 }
