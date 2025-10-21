@@ -120,31 +120,40 @@ export interface UsuariosListResponse {
   data: Usuario[];
 }
 
-// --- NUEVA INTERFAZ para una entrada del historial ---
+// --- Interfaz HistorialEquipoEntry ACTUALIZADA ---
 export interface HistorialEquipoEntry {
   id: number;
   equipo_id: number;
-  fecha_cambio: string; 
   tipo_cambio: string;
-  descripcion: string; // Contiene el # Ticket si aplica
-  accion_realizada: string | null; // La solución del técnico
-  usuario_responsable: string;
-  ticket_id: number | null;
+  estado_anterior_nombre?: string | null; // Nombre del estado anterior
+  estado_nuevo_nombre?: string | null;     // Nombre del estado nuevo
+  usuario_anterior_nombre?: string | null; // Nombre completo usuario anterior
+  usuario_anterior_email?: string | null;  // Email usuario anterior
+  usuario_nuevo_nombre?: string | null;    // Nombre completo usuario nuevo
+  usuario_nuevo_email?: string | null;     // Email usuario nuevo
+  ubicacion_anterior_nombre?: string | null; // Nombre ubicación anterior
+  ubicacion_nueva_nombre?: string | null;    // Nombre ubicación nueva
+  usuario_responsable_nombre?: string | null; // Nombre completo responsable
+  usuario_responsable_email?: string | null;  // Email responsable
+  observaciones: string | null; // Aquí puede venir descripción o solución
+  fecha_cambio: string;
+  ticket_id?: number | null; // Si el backend lo añade para eventos de ticket
+  accion_realizada?: string | null;
 }
 
-// --- NUEVA INTERFAZ para la respuesta completa del historial ---
+// --- Interfaz HistorialEquipoResponse ---
 export interface HistorialEquipoResponse {
   success: boolean;
   data: HistorialEquipoEntry[];
-  pagination?: { 
+  pagination?: {
     total_items: number;
     items_returned: number;
     limit: number;
     offset: number;
     has_more: boolean;
   };
-  filters_applied?: any; 
-  message?: string; // Para mensajes de error
+  filters_applied?: any;
+  message?: string;
 }
 
 // --- Interfaz para la respuesta de getEquipoById

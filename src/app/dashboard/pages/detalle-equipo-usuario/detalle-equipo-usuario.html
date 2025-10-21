@@ -1,1 +1,90 @@
-<p>detalle-equipo-usuario works!</p>
+<div class="detail-container">
+  @if (isLoading()) {
+    <div class="spinner-container">
+      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+      <p>Cargando detalles del equipo...</p>
+    </div>
+  }
+
+  @if (equipo(); as eq) {
+    <mat-card class="detail-card">
+      <mat-card-header class="card-header">
+        <div class="header-content">
+          <mat-card-title>{{ eq.nombre }}</mat-card-title>
+          <mat-card-subtitle># Inventario: {{ eq.codigo_inventario }}</mat-card-subtitle>
+        </div>
+        <mat-chip-listbox class="status-chip">
+           <mat-chip selected>{{ getNombreDesdeId(estadosEquipo, eq.estado_id) }}</mat-chip>
+        </mat-chip-listbox>
+      </mat-card-header>
+
+      <mat-card-content class="card-content">
+        <div class="details-grid">
+          <div class="main-details">
+            <div class="detail-item">
+              <strong>Descripción</strong>
+              <span class="value">{{ eq.descripcion || 'No especificada' }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Número de Serie</strong>
+              <span class="value">{{ eq.numero_serie }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Modelo</strong>
+              <span class="value">{{ eq.modelo }}</span>
+            </div>
+             <div class="detail-item">
+              <strong>Observaciones</strong>
+              <span class="value">{{ eq.observaciones || 'Sin observaciones' }}</span>
+            </div>
+          </div>
+
+          <div class="secondary-details">
+            <div class="detail-item">
+              <strong>Especificaciones</strong>
+              <div class="spec-list">
+                 <span><strong>CPU:</strong> {{ eq.especificaciones?.cpu || 'N/A' }}</span>
+                <span><strong>RAM:</strong> {{ eq.especificaciones?.ram || 'N/A' }}</span>
+                <span><strong>Storage:</strong> {{ eq.especificaciones?.storage || 'N/A' }}</span>
+              </div>
+            </div>
+            <div class="detail-item">
+              <strong>Tipo de Equipo</strong>
+              <span class="value">{{ getNombreDesdeId(tiposEquipo, eq.tipo_equipo_id) }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Marca</strong>
+              <span class="value">{{ getNombreDesdeId(marcas, eq.marca_id) }}</span>
+            </div>
+            <div class="detail-item">
+              <strong>Ubicación</strong>
+              <span class="value">{{ getNombreDesdeId(ubicaciones, eq.ubicacion_id) }}</span>
+            </div>
+             <div class="detail-item">
+              <strong>Fecha de Adquisición</strong>
+              <span class="value">{{ eq.fecha_adquisicion ? (eq.fecha_adquisicion | date:'dd/MMM/yyyy') : 'N/A' }}</span>
+            </div>
+          </div>
+        </div> </mat-card-content>
+
+      <mat-card-actions align="end">
+        <button mat-stroked-button color="primary" (click)="goBack()">Volver a Mis Equipos</button>
+      </mat-card-actions>
+    </mat-card>
+  }
+
+  @if (error() && !isLoading()) {
+    <mat-card class="error-card">
+       <mat-card-header>
+        <mat-icon mat-card-avatar>warning</mat-icon>
+        <mat-card-title>Error al Cargar</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ error() }}</p>
+      </mat-card-content>
+       <mat-card-actions align="end">
+        <button mat-stroked-button (click)="goBack()">Volver</button>
+      </mat-card-actions>
+    </mat-card>
+  }
+</div>

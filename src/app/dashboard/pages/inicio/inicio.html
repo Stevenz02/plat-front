@@ -16,17 +16,17 @@
       </mat-card-actions>
     </mat-card>
 
-    <!-- Módulo en desarrollo -->
-    <mat-card class="modulo en-desarrollo">
+    <!-- Módulo disponible -->
+    <mat-card class="modulo disponible" (click)="irAModulo('/inventario')">
       <mat-card-content>
         <div class="modulo-icono">
-          <mat-icon class="large-icon disabled-icon">inventory</mat-icon>
+          <mat-icon class="large-icon">inventory</mat-icon>
         </div>
         <h3>Inventario</h3>
-        <p>Módulo actualmente en desarrollo.</p>
+        <p>Consulte sus equipos asignados.</p>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-raised-button disabled class="modulo-btn">En desarrollo</button>
+        <button mat-raised-button color="primary" class="modulo-btn">Acceder</button>
       </mat-card-actions>
     </mat-card>
 

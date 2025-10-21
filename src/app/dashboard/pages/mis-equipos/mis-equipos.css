@@ -1,0 +1,96 @@
+/* Puedes copiar estilos base de mis-tickets.css y adaptarlos */
+:host {
+  --primary-color: #002d72;
+  --accent-color: #0d47a1;
+  --text-light: #ffffff;
+  --background-light: #f4f7fa;
+  --border-color: #e0e0e0;
+}
+
+.container-fluid {
+  background-color: var(--background-light);
+  min-height: calc(100vh - 64px);
+}
+
+.equipos-card {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  background-color: var(--text-light);
+}
+
+.card-header {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  padding: 16px 24px;
+}
+
+.card-header .mat-mdc-card-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+.card-header .mat-mdc-card-subtitle {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.card-content {
+  padding: 24px;
+  position: relative;
+}
+
+.loading-shade {
+  position: absolute;
+  inset: 0; /* Abarca todo el card-content */
+  background: rgba(255, 255, 255, 0.85);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-container {
+  overflow-x: auto; /* Permite scroll horizontal en tablas anchas */
+  border-radius: 4px;
+  border: 1px solid var(--border-color); /* Borde sutil */
+}
+
+.mat-mdc-header-cell {
+  background-color: #eef2f7 !important; /* Un gris azulado claro */
+  color: var(--primary-color) !important;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.mat-mdc-cell {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.9rem;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  background-color: #f9fafb;
+}
+
+.mat-mdc-row:last-child .mat-mdc-cell {
+    border-bottom: none;
+}
+
+.actions-cell {
+  white-space: nowrap; /* Evita que los botones se partan */
+}
+.actions-cell button {
+  margin: 0 4px;
+}
+
+.mat-mdc-paginator {
+  background-color: transparent;
+  border-top: 1px solid var(--border-color);
+}
+
+.filter-field { /* Estilo para el campo de búsqueda */
+    max-width: 400px;
+    margin-left: auto; /* Lo alinea a la derecha si hay espacio */
+}
