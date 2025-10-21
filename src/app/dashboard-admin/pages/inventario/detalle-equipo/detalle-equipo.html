@@ -30,12 +30,11 @@
               <strong>Modelo</strong>
               <span class="value">{{ eq.modelo }}</span>
             </div>
-            <div class="detail-item">
+             <div class="detail-item">
               <strong>Observaciones</strong>
               <span class="value">{{ eq.observaciones || 'Sin observaciones' }}</span>
             </div>
           </div>
-
           <div class="secondary-details">
             <div class="detail-item">
               <strong>Especificaciones</strong>
@@ -61,14 +60,14 @@
               <strong>Ubicación</strong>
               <span class="value">{{ getNombreDesdeId(ubicaciones, eq.ubicacion_id) }}</span>
             </div>
-
             <div class="detail-item">
               <strong>Usuario Asignado</strong>
-              <span class="value">{{ eq.nombre_usuario_asignado || (eq.nombre_usuario_asignado ? 'ID: ' + eq.usuario_asignado_id : 'Sin asignar') }}</span>
+              <span class="value">{{ eq.nombre_usuario_asignado || 'Sin asignar' }}</span>
             </div>
-
           </div>
-        </div> <mat-divider class="section-divider"></mat-divider>
+        </div>
+
+        <mat-divider class="section-divider"></mat-divider>
         <div class="history-section">
           <h3 class="section-title">
             <mat-icon>history</mat-icon> Historial del Equipo
@@ -80,19 +79,52 @@
                   <div class="timeline-dot"></div>
                   <div class="timeline-content">
                     <span class="history-type">{{ evento.tipo_cambio }}</span>
-                    <p class="history-description">{{ evento.descripcion }}</p>
-                    @if (evento.accion_realizada) {
-                      <p class="history-action"><strong>Solución/Acción:</strong> {{ evento.accion_realizada }}</p>
+
+                    @if (evento.observaciones) {
+                      <p class="history-description">{{ evento.observaciones }}</p>
                     }
+
+                    @if (evento.tipo_cambio === 'Cambio de usuario' || evento.tipo_cambio === 'Asignación de usuario') {
+                      <p class="history-detail-assign">
+                        @if (evento.usuario_anterior_nombre) {
+                          <span><strong>Usuario Anterior:</strong> {{ evento.usuario_anterior_nombre }}<br></span>
+                        }
+                        <strong>Usuario Nuevo:</strong> {{ evento.usuario_nuevo_nombre || 'N/A' }}
+                      </p>
+                    } @else if (evento.tipo_cambio === 'Cambio de estado') {
+                       <p class="history-detail-state">
+                        @if (evento.estado_anterior_nombre) {
+                          <span><strong>Estado Anterior:</strong> {{ evento.estado_anterior_nombre }}<br></span>
+                        }
+                        <strong>Estado Nuevo:</strong> {{ evento.estado_nuevo_nombre || 'N/A' }}
+                      </p>
+                    } @else if (evento.tipo_cambio === 'Cambio de ubicación') {
+                       <p class="history-detail-location">
+                         @if (evento.ubicacion_anterior_nombre) {
+                          <span><strong>Ubicación Anterior:</strong> {{ evento.ubicacion_anterior_nombre }}<br></span>
+                         }
+                        <strong>Ubicación Nueva:</strong> {{ evento.ubicacion_nueva_nombre || 'N/A' }}
+                      </p>
+                    }
+                     @if (evento.accion_realizada) {
+                      <p class="history-action"><strong>Acción/Solución:</strong> {{ evento.accion_realizada }}</p>
+                    }
+
+
                     <div class="history-footer">
-                      <span class="history-user"><mat-icon inline>person</mat-icon> {{ evento.usuario_responsable }}</span>
+                      <span class="history-user"><mat-icon inline>person</mat-icon> {{ evento.usuario_responsable_nombre || 'Sistema' }}</span>
                       <span class="history-date"><mat-icon inline>calendar_today</mat-icon> {{ evento.fecha_cambio | date:'dd/MMM/yyyy, h:mm a' }}</span>
+                      @if (evento.ticket_id) {
+                        <span class="history-ticket-link">
+                          <a [routerLink]="['/dashboard-admin/tickets', evento.ticket_id]" matTooltip="Ver ticket {{evento.ticket_id}}">
+                            <mat-icon inline>link</mat-icon> Ticket #{{evento.ticket_id}}
+                          </a>
+                        </span>
+                      }
                     </div>
                   </div>
                 </div>
-              }
-            </div>
-          } @else if (!isLoading()) {
+              } </div> } @else if (!isLoading()) {
             <p class="no-history">Este equipo no tiene eventos registrados en su historial.</p>
           }
         </div> </mat-card-content>

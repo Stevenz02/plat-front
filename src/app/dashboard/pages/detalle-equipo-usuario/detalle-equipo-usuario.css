@@ -1,0 +1,94 @@
+/* Puedes copiar estilos base de detalle-equipo.css y simplificarlos */
+:host {
+  --app-primary-blue: #002d72;
+  --app-secondary-blue: #1976d2;
+  --app-light-gray: #f5f5f5;
+  --app-text-color: #333;
+  --app-text-muted: #6c757d;
+}
+
+.detail-container { padding: 24px; }
+.detail-card { max-width: 1000px; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-radius: 8px; }
+.spinner-container { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; gap: 1rem; }
+.error-card { max-width: 600px; margin: 2rem auto; }
+
+/* --- Cabecera --- */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Alinea arriba */
+  padding-bottom: 16px;
+  background-color: #f8f9fa; /* Fondo suave para la cabecera */
+  border-bottom: 1px solid #e0e0e0;
+}
+.header-content .mat-mdc-card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--app-primary-blue);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+.header-content .mat-mdc-card-subtitle {
+  font-size: 1rem;
+  color: var(--app-text-muted);
+}
+.status-chip mat-chip {
+  background-color: var(--app-secondary-blue); /* Color base para estado */
+  color: white !important;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 0.8rem;
+}
+
+/* --- Grid de Contenido --- */
+.card-content { padding: 24px; }
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px 32px;
+}
+
+.main-details, .secondary-details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detail-item strong {
+  color: var(--app-primary-blue);
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  display: block;
+}
+
+.detail-item span, .detail-item .value {
+  color: var(--app-text-color);
+  font-size: 0.95rem;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.spec-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.spec-list span {
+  font-size: 0.9rem;
+}
+.spec-list strong {
+    display: inline;
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+mat-card-actions {
+  padding: 16px 24px;
+  border-top: 1px solid #e0e0e0;
+}
