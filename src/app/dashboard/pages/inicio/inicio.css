@@ -1,16 +1,17 @@
-/* Estilos del Dashboard de inicio */
+/* src/app/dashboard/pages/inicio/inicio.css - CORREGIDO */
+
 .home-container {
-  background-color: transparent;
+  background-color: transparent; /* Hereda del .themed-container */
   height: 100%;
   overflow-y: auto;
 }
 
 .titulo {
   text-align: center;
-  color: #002d72;
+  color: var(--primary-color); /* Usa variable */
   font-weight: 700;
   margin-bottom: 2rem;
-  font-size: 2rem;
+  font-size: var(--font-size-xl); /* Usa variable */
 }
 
 .modulos-grid {
@@ -21,17 +22,19 @@
   margin-top: 2rem;
 }
 
-/* Cards de módulos con Material Design */
 .modulo {
   width: 300px;
   text-align: center;
   transition: all 0.3s ease;
   cursor: pointer;
+  /* Fondo y color de texto son manejados por .themed-container mat-card en styles.css */
+  border: 1px solid var(--border-color); /* Añadir borde con variable */
 }
 
 .modulo:hover:not(.en-desarrollo) {
   transform: translateY(-8px);
-  box-shadow: 0 8px 25px rgba(0, 45, 114, 0.15) !important;
+  /* Sombra usa variable para opacidad */
+  box-shadow: 0 8px 25px rgba(var(--text-color-rgb, 0, 0, 0), 0.15) !important;
 }
 
 .modulo mat-card-content {
@@ -51,26 +54,27 @@
 }
 
 .large-icon {
-  font-size: 3rem;
+  font-size: 3rem; /* Tamaño fijo para icono */
   width: 3rem;
   height: 3rem;
-  color: #002d72;
+  color: var(--primary-color); /* Usa variable */
 }
 
 .disabled-icon {
-  color: #aaa !important;
+  color: #aaa !important; /* Mantenemos un color fijo claro para deshabilitado */
 }
 
 .modulo h3 {
   margin: 0.5rem 0;
-  color: #002d72;
-  font-size: 1.2rem;
+  color: var(--primary-color); /* Usa variable */
+  font-size: var(--font-size-large); /* Usa variable */
   font-weight: 600;
 }
 
 .modulo p {
-  font-size: 0.95rem;
-  color: #666;
+  font-size: var(--font-size-normal); /* Usa variable */
+  color: var(--text-color); /* Usa variable */
+  opacity: 0.8;
   margin-bottom: 1rem;
   line-height: 1.4;
 }
@@ -79,12 +83,14 @@
   min-width: 120px !important;
   border-radius: 6px !important;
   font-weight: 500 !important;
+  font-size: var(--font-size-normal) !important; /* Usa variable */
+  /* Los colores de mat-raised-button color="primary" vienen del tema */
 }
 
-/* Estados de módulos en desarrollo */
 .en-desarrollo {
   opacity: 0.7;
   cursor: default !important;
+  border-color: rgba(var(--text-color-rgb, 0, 0, 0), 0.3); /* Borde más tenue */
 }
 
 .en-desarrollo:hover {
@@ -93,38 +99,26 @@
 }
 
 .en-desarrollo h3 {
-  color: #666;
+  color: var(--text-color); /* Usa variable */
+  opacity: 0.6;
 }
 
-/* Responsive para módulos */
+/* Responsive (sin cambios de variables) */
 @media (max-width: 768px) {
   .modulos-grid {
     flex-direction: column;
     align-items: center;
   }
-  
   .modulo {
     width: 100%;
     max-width: 350px;
   }
 }
 
-/* Animaciones */
+/* Animaciones (sin cambios) */
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
-.modulo {
-  animation: fadeInUp 0.6s ease forwards;
-}
-
-.modulo:nth-child(2) {
-  animation-delay: 0.1s;
-}
+.modulo { animation: fadeInUp 0.6s ease forwards; }
+.modulo:nth-child(2) { animation-delay: 0.1s; }

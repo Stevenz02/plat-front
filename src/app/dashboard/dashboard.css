@@ -1,6 +1,11 @@
 /* Estilos base del layout */
 html, body { height: 100%; margin: 0; font-family: 'Roboto', sans-serif; }
-.layout-container { height: 100vh; background-color: #f9faff; }
+
+/* Aplica colores y fondos del tema actual */
+.layout-container {
+  height: 100vh;
+  background-color: var(--background-color);
+}
 .main-content {
   display: flex;
   flex-direction: column;
@@ -9,12 +14,13 @@ html, body { height: 100%; margin: 0; font-family: 'Roboto', sans-serif; }
 
 /* Sidebar */
 .sidebar {
-  background-color: #ffffff;
+  background-color: var(--card-background); /* Usa variable de tema */
+  color: var(--text-color); /* Usa variable de tema */
   width: 220px;
   display: flex;
   flex-direction: column;
-  padding: 1rem 0.5rem;
-  border-right: 1px solid #e0e0e0;
+  padding: 1rem 0.5rem; /* Rem es relativo al tamaño base, se ajustará */
+  border-right: 1px solid var(--border-color); /* Usa variable de tema */
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -22,14 +28,14 @@ html, body { height: 100%; margin: 0; font-family: 'Roboto', sans-serif; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 1rem;
-  margin-bottom: 1rem;
+  padding: 0 1rem; /* Rem se ajustará */
+  margin-bottom: 1rem; /* Rem se ajustará */
 }
 
 .logo-img {
-  width: 160px;
+  width: 160px; /* Tamaño fijo está bien aquí */
   height: auto;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem; /* Rem se ajustará */
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -41,51 +47,54 @@ html, body { height: 100%; margin: 0; font-family: 'Roboto', sans-serif; }
   overflow: hidden;
 }
 
-.logo-text h3 { font-size: 1rem; color: #002d72; margin: 0.5rem 0 0.25rem; }
-.logo-text h4 { font-size: 0.8rem; color: #666; margin: 0; }
+/* Usar variables de fuente */
+.logo-text h3 {
+  font-size: var(--font-size-normal);
+  color: var(--primary-color);
+  margin: 0.5rem 0 0.25rem; /* Rem se ajustará */
+}
+.logo-text h4 {
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  margin: 0;
+}
 
 /* Menu de navegación */
-.menu { flex-grow: 1; margin-top: 1rem; }
+.menu { flex-grow: 1; margin-top: 1rem; } /* Rem se ajustará */
 .menu-item {
   display: flex;
   align-items: center;
-  padding: 0.8rem 1rem;
+  padding: 0.8rem 1rem; /* Rem se ajustará */
   cursor: pointer;
-  border-radius: 8px;
-  color: #002d72;
+  border-radius: 8px; /* Px está bien para bordes */
+  color: var(--primary-color);
   font-weight: 500;
   transition: all 0.2s ease;
-  margin: 0 0.5rem 0.5rem 0.5rem;
+  margin: 0 0.5rem 0.5rem 0.5rem; /* Rem se ajustará */
   overflow: hidden;
+  font-size: var(--font-size-normal); /* Usa variable */
 }
 
-/* Buena práctica: Se evita que el ícono se "aplaste" o encoja */
-.menu-item mat-icon {
-  flex-shrink: 0;
+.menu-item:hover:not(.disabled) {
+  background-color: rgba(var(--text-color-rgb, 0, 0, 0), 0.05);
 }
-
-.menu-item:hover:not(.disabled) { background-color: #f0f4ff; }
-.menu-item.active { background-color: #002d72; color: white; }
+.menu-item.active { background-color: var(--primary-color); color: var(--card-background); }
 .menu-item.disabled { color: #aaa; cursor: not-allowed; }
-
-.menu-item.disabled mat-icon {
-  color: #aaa;
-}
+.menu-item.disabled mat-icon { color: #aaa; }
 
 .menu-item .label {
-  margin-left: 1rem;
+  margin-left: 1rem; /* Rem se ajustará */
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* Botón cerrar sesión */
 .cerrarsesion-btn {
   background-color: #e53935 !important;
   color: white !important;
-  margin: 0 1rem 0.5rem 1rem !important;
-  border-radius: 8px !important;
+  margin: 0 1rem 0.5rem 1rem !important; /* Rem se ajustará */
+  border-radius: 8px !important; /* Px está bien */
   font-weight: 500 !important;
+  font-size: var(--font-size-normal) !important; /* Usa variable */
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -93,67 +102,46 @@ html, body { height: 100%; margin: 0; font-family: 'Roboto', sans-serif; }
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .cerrarsesion-btn:hover { background-color: #c62828 !important; }
-.cerrarsesion-btn mat-icon { margin-right: 0.5rem; flex-shrink: 0; /* Protección también para este ícono */ }
+.cerrarsesion-btn mat-icon { margin-right: 0.5rem; } /* Rem se ajustará */
 
 /* --- ESTILOS PARA MENÚ COLAPSADO --- */
-.sidebar.menu-colapsado { width: 80px; }
-.sidebar.menu-colapsado .logo-img { width: 48px; }
-
-.sidebar.menu-colapsado .logo-text {
-  opacity: 0;
-  visibility: hidden;
-  height: 0;
-}
-
-.sidebar.menu-colapsado .menu-item { justify-content: center; padding: 0.8rem; }
+.sidebar.menu-colapsado { width: 80px; } /* Px está bien para layout */
+.sidebar.menu-colapsado .logo-img { width: 48px; } /* Px está bien */
+.sidebar.menu-colapsado .logo-text { opacity: 0; visibility: hidden; height: 0; }
+.sidebar.menu-colapsado .menu-item { justify-content: center; padding: 0.8rem; } /* Rem se ajustará */
 .sidebar.menu-colapsado .label { display: none; }
-
 .sidebar.menu-colapsado .cerrarsesion-btn {
-  width: 48px !important;
-  min-width: 48px !important;
-  height: 48px;
-  border-radius: 50% !important;
-  margin: 0 auto 0.5rem auto !important;
-  padding: 0 !important;
+  width: 48px !important; min-width: 48px !important; height: 48px; /* Px está bien */
+  border-radius: 50% !important; margin: 0 auto 0.5rem auto !important; padding: 0 !important;
 }
-.sidebar.menu-colapsado .cerrarsesion-btn mat-icon {
-  margin: 0 !important;
-}
+.sidebar.menu-colapsado .cerrarsesion-btn mat-icon { margin: 0 !important; }
 /* --- FIN ESTILOS COLAPSADO --- */
 
 /* Topbar y Contenido */
 .topbar {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  background-color: #09356e !important;
-  color: white !important;
-  font-weight: 600;
-  padding: 0.5rem 1.5rem;
+  display: flex; align-items: center; gap: 1rem; /* Rem se ajustará */
+  font-weight: 600; padding: 0.5rem 1.5rem; /* Rem se ajustará */
 }
-.content-wrapper { flex: 1; padding: 1.5rem; overflow-y: auto; }
+.content-wrapper { flex: 1; padding: 1.5rem; overflow-y: auto; } /* Rem se ajustará */
 
 /* Footer */
 .footer-horizontal {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #002d72;
-  color: white;
-  padding: 0.8rem 1.5rem;
-  font-size: 0.85rem;
+  display: flex; justify-content: space-between; align-items: center;
+  background-color: var(--primary-color); color: var(--card-background);
+  padding: 0.8rem 1.5rem; /* Rem se ajustará */
+  font-size: var(--font-size-small); /* Usa variable */
   flex-wrap: wrap;
 }
-.footer-col { flex: 1; padding: 0.2rem 0.5rem; }
+.footer-col { flex: 1; padding: 0.2rem 0.5rem; } /* Rem se ajustará */
 .footer-col.izquierda { text-align: left; }
 .footer-col.centro { text-align: center; }
 .footer-col.derecha { text-align: right; }
-.footer-horizontal a { color: #a3d4ff; text-decoration: none; margin: 0 4px; }
-.footer-horizontal a:hover { text-decoration: underline; color: #ffffff; }
-.footer-col mat-icon { vertical-align: middle; font-size: 16px; margin-right: 4px; }
-.footer-col p { margin: 0.2rem 0; }
+.footer-horizontal a { color: var(--accent-color); text-decoration: none; margin: 0 4px; } /* Px está bien */
+.footer-horizontal a:hover { text-decoration: underline; color: var(--card-background); }
+.footer-col mat-icon { vertical-align: middle; font-size: 16px; margin-right: 4px; } /* Px fijo para icono */
+.footer-col p { margin: 0.2rem 0; font-size: inherit; } /* Rem se ajustará */
 
 @media (max-width: 768px) {
-  .footer-horizontal { flex-direction: column; text-align: center; gap: 0.5rem; }
+  .footer-horizontal { flex-direction: column; text-align: center; gap: 0.5rem; } /* Rem se ajustará */
   .footer-col { text-align: center !important; }
 }
