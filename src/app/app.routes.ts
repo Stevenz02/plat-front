@@ -11,6 +11,7 @@ import { CrearTicketComponent } from './dashboard/pages/crear-ticket/crear-ticke
 import { DetalleTicketUsuarioComponent } from './dashboard/pages/detalle-ticket-usuario/detalle-ticket-usuario';
 import { MisEquiposComponent } from './dashboard/pages/mis-equipos/mis-equipos';
 import { DetalleEquipoUsuarioComponent } from './dashboard/pages/detalle-equipo-usuario/detalle-equipo-usuario';
+import { GestionarPerfilComponent } from './dashboard/pages/gestionar-perfil/gestionar-perfil';
 import { DashboardAdminComponent } from './dashboard-admin/dashboard-admin';
 import { InicioAdminComponent } from './dashboard-admin/pages/inicio-admin/inicio-admin';
 import { GestionarTicketsComponent } from './dashboard-admin/pages/gestionar-tickets/gestionar-tickets';
@@ -22,6 +23,8 @@ import { CrearEquipoComponent } from './dashboard-admin/pages/inventario/crear-e
 import { DetalleEquipoComponent } from './dashboard-admin/pages/inventario/detalle-equipo/detalle-equipo';
 import { EditarEquipoComponent } from './dashboard-admin/pages/inventario/editar-equipo/editar-equipo';
 import { AsignarUsuarioEquipoComponent } from './dashboard-admin/pages/inventario/asignar-usuario-equipo/asignar-usuario-equipo';
+import { GestionarUsuariosComponent } from './dashboard-admin/pages/gestionar-usuarios/gestionar-usuarios';
+import { EditarUsuarioAdminComponent } from './dashboard-admin/pages/editar-usuario-admin/editar-usuario-admin';
 
 
 // Importar guards
@@ -71,7 +74,8 @@ export const routes: Routes = [
       { path: 'tickets/crear', component: CrearTicketComponent },
       { path: 'tickets/:id', component: DetalleTicketUsuarioComponent },
       { path: 'inventario', component: MisEquiposComponent },
-      { path: 'inventario/:id', component: DetalleEquipoUsuarioComponent }
+      { path: 'inventario/:id', component: DetalleEquipoUsuarioComponent },
+      { path: 'perfil', component: GestionarPerfilComponent }
     ]
   },
   { 
@@ -90,7 +94,9 @@ export const routes: Routes = [
       { path: 'inventario/crear', component: CrearEquipoComponent, data: { roles: ['admin'] } },
       { path: 'inventario/detalle/:id', component: DetalleEquipoComponent, data: { roles: ['admin', 'tecnico'] } },
       { path: 'inventario/editar/:id', component: EditarEquipoComponent, data: { roles: ['admin', 'tecnico'] } },
-      { path: 'inventario/:id/asignar-usuario', component: AsignarUsuarioEquipoComponent, data: { roles: ['admin', 'tecnico'] } }
+      { path: 'inventario/:id/asignar-usuario', component: AsignarUsuarioEquipoComponent, data: { roles: ['admin', 'tecnico'] } },
+      { path: 'usuarios', component: GestionarUsuariosComponent, data: { roles: ['admin'] } },
+      { path: 'usuarios/editar/:id', component: EditarUsuarioAdminComponent, data: { roles: ['admin'] } }
     ]
   },
 

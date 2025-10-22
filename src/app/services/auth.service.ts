@@ -1,14 +1,26 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, BehaviorSubject, tap, throwError } from 'rxjs';
+import { Observable, BehaviorSubject, tap, throwError, map } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
+
+// Interfaz para la actualización
+export interface UpdateUserRequest {
+  nombres: string;
+  apellidos: string;
+  telefono: string;
+  departamento: string;
+  cargo: string;
+  rol_id?: number; // Opcional, solo para admin
+  activo?: boolean; // Opcional, solo para admin
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private apiUrl = environment.apiUrl;
+  private usuariosApiUrl = `${this.apiUrl}/api/usuarios`;
   private tokenKey = 'authToken';
   private refreshTokenKey = 'refreshToken';
   private userKey = 'userData';
@@ -173,7 +185,13 @@ login(credentials: { email: string; password: string }): Observable<any> {
   getCurrentUser(): any {
     const userStr = localStorage.getItem(this.userKey);
     if (userStr) {
-      return JSON.parse(userStr);
+      try {
+        return JSON.parse(userStr);
+      } catch (e) {
+        console.error("Error parsing user data from localStorage", e);
+        this.logoutLocal(); // Limpiar sesión si los datos están corruptos
+        return null;
+      }
     }
     return null;
   }
@@ -299,4 +317,44 @@ getDefaultDashboard(): string {
     return '/dashboard';
   }
 }
+
+// Actualizar información del usuario
+  updateUser(id: number, userData: UpdateUserRequest): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.put(`${this.usuariosApiUrl}/${id}`, userData, { headers }).pipe(
+      tap((response: any) => {
+        // Si la actualización fue exitosa y es el usuario actual, actualiza localStorage
+        const currentUser = this.getCurrentUser();
+        if (response.success && currentUser && currentUser.id === id) {
+          const updatedUserData = { ...currentUser, ...userData };
+          // Asegúrate de no sobrescribir rol_id o activo si no vienen en userData (para el perfil de usuario)
+          if (userData.rol_id === undefined) delete updatedUserData.rol_id;
+          if (userData.activo === undefined) delete updatedUserData.activo;
+          localStorage.setItem(this.userKey, JSON.stringify(updatedUserData));
+        }
+      })
+    );
+  }
+
+  // Dar de baja lógica al usuario 
+  deactivateAccount(id: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.patch(`${this.usuariosApiUrl}/${id}/baja`, {}, { headers });
+  }
+
+   // Obtener todos los usuarios
+   getAllUsers(params: any = {}): Observable<any> {
+     const headers = this.getAuthHeaders();
+     // Añadir límite alto por defecto si no se especifica
+     if (!params.limit) {
+       params.limit = '500'; // O un número adecuado
+     }
+     return this.http.get<any>(this.usuariosApiUrl, { headers, params });
+   }
+
+   // Obtener un usuario por ID 
+   getUserById(id: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<any>(`${this.usuariosApiUrl}/${id}`, { headers });
+   }
 }

@@ -43,5 +43,19 @@
         <button mat-raised-button disabled class="modulo-btn">En desarrollo</button>
       </mat-card-actions>
     </mat-card>
+
+        <!-- Módulo disponible -->
+    <mat-card class="modulo disponible" (click)="irAModulo('/usuarios')">
+      <mat-card-content>
+        <div class="modulo-icono">
+          <mat-icon class="large-icon">group</mat-icon>
+        </div>
+        <h3>Gestionar Usuarios</h3>
+        <p>Administra los usuarios de la entidad.</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" class="modulo-btn">Acceder</button>
+      </mat-card-actions>
+    </mat-card>
   </div>
 </div>

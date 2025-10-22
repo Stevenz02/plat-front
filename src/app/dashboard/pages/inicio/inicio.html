@@ -43,5 +43,19 @@
         <button mat-raised-button disabled class="modulo-btn">En desarrollo</button>
       </mat-card-actions>
     </mat-card>
+
+        <!-- Módulo disponible -->
+    <mat-card class="modulo disponible" (click)="irAModulo('/perfil')">
+      <mat-card-content>
+        <div class="modulo-icono">
+          <mat-icon class="large-icon">manage_accounts</mat-icon>
+        </div>
+        <h3>Perfil</h3>
+        <p>Edite su perfil.</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" class="modulo-btn">Acceder</button>
+      </mat-card-actions>
+    </mat-card>
   </div>
 </div>
