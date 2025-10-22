@@ -1,0 +1,85 @@
+<div class="container-fluid p-4">
+  <div class="loading-container" *ngIf="isLoading">
+    <mat-spinner color="primary"></mat-spinner>
+    <p class="mt-3">Cargando datos del usuario...</p>
+  </div>
+
+  <mat-card class="edit-user-card" *ngIf="!isLoading && userData">
+    <mat-card-header class="card-header">
+      <mat-card-title>
+        Editar Usuario: {{ userData.nombres }} {{ userData.apellidos }}
+      </mat-card-title>
+      <button mat-icon-button (click)="goBack()" class="close-button" aria-label="Volver a la lista">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p class="email-info"><strong>Email (no editable):</strong> {{ userData?.email }}</p>
+
+      <form [formGroup]="editUserForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <div class="form-column">
+            <mat-form-field appearance="outline">
+              <mat-label>Nombres</mat-label>
+              <input matInput formControlName="nombres" required>
+              <mat-error>Nombres requeridos</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Apellidos</mat-label>
+              <input matInput formControlName="apellidos" required>
+              <mat-error>Apellidos requeridos</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Teléfono</mat-label>
+              <input matInput formControlName="telefono" required pattern="[0-9]{10}">
+              <mat-error *ngIf="editUserForm.get('telefono')?.hasError('required')">Teléfono requerido</mat-error>
+              <mat-error *ngIf="editUserForm.get('telefono')?.hasError('pattern')">Debe ser un número de 10 dígitos</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-column">
+             <mat-form-field appearance="outline">
+              <mat-label>Departamento</mat-label>
+              <input matInput formControlName="departamento" required>
+              <mat-error>Departamento requerido</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Cargo</mat-label>
+              <input matInput formControlName="cargo" required>
+              <mat-error>Cargo requerido</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Rol</mat-label>
+              <mat-select formControlName="rol_id" required>
+                <mat-option *ngFor="let rol of roles" [value]="rol.id">
+                  {{ rol.nombre }}
+                </mat-option>
+              </mat-select>
+              <mat-error>Rol requerido</mat-error>
+            </mat-form-field>
+
+            <div class="toggle-section">
+              <mat-slide-toggle formControlName="activo" color="primary">
+                Usuario Activo
+              </mat-slide-toggle>
+              <mat-hint>Desactivar impedirá que el usuario inicie sesión.</mat-hint>
+           </div>
+          </div>
+        </div>
+
+        <mat-card-actions align="end">
+          <button type="button" mat-stroked-button (click)="goBack()">Cancelar</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="editUserForm.invalid || isSubmitting">
+            <span *ngIf="!isSubmitting">Guardar Cambios</span>
+            <span *ngIf="isSubmitting"><mat-spinner diameter="20"></mat-spinner> Guardando...</span>
+          </button>
+        </mat-card-actions>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

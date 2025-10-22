@@ -1,0 +1,107 @@
+/* src/app/dashboard/pages/gestionar-perfil/gestionar-perfil.css */
+:host {
+  --warn-color: #f44336;
+  --warn-contrast: white;
+}
+
+.header-section {
+  margin-bottom: 2rem;
+}
+.header-section h1 {
+  color: var(--primary-color);
+  font-size: 2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 0.5rem;
+}
+.header-section p {
+  color: #666;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Más espacio para el formulario */
+  gap: 2rem;
+}
+
+.profile-card, .deactivate-card {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  background-color: var(--card-background);
+}
+
+.profile-card mat-card-header, .deactivate-card mat-card-header {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+.profile-card mat-card-title, .deactivate-card mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.email-info {
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  color: #555;
+  background-color: #f0f0f0;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+
+.form-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem; /* Menos margen entre filas */
+}
+
+.full-width { width: 100%; }
+.half-width { flex: 1; }
+
+mat-card-actions button mat-spinner {
+  margin-right: 8px;
+}
+
+.deactivate-card mat-card-title {
+  color: var(--warn-color);
+}
+.deactivate-card mat-card-content p {
+  margin-bottom: 1rem;
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+.deactivate-card mat-card-content strong {
+  color: var(--warn-color);
+  font-weight: bold;
+}
+.deactivate-card mat-card-actions {
+    justify-content: center;
+    padding-top: 1rem;
+}
+
+
+/* Responsive */
+@media (max-width: 992px) {
+  .profile-grid {
+    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+  }
+}
+
+@media (max-width: 576px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  .half-width {
+    margin-bottom: 1rem; /* Añadir espacio vertical en móvil */
+  }
+}

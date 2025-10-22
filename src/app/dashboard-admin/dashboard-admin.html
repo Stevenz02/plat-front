@@ -23,6 +23,9 @@
         <div class="menu-item disabled" matTooltip="Base de conocimiento (en desarrollo)" [matTooltipDisabled]="menuAbierto">
           <mat-icon>build</mat-icon> <span class="label">Conocimiento</span>
         </div>
+        <div class="menu-item" routerLink="/dashboard-admin/usuarios" routerLinkActive="active" matTooltip="Gestionar Usuarios" [matTooltipDisabled]="menuAbierto">
+          <mat-icon>group</mat-icon> <span class="label">Usuarios</span>
+        </div>
       </nav>
       
       <button mat-flat-button class="cerrarsesion-btn" (click)="cerrarSesion()" matTooltip="Cerrar Sesión" [matTooltipDisabled]="menuAbierto">
