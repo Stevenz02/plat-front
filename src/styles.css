@@ -1,5 +1,5 @@
 /* src/styles.css */
-/* You can add global styles to this file, and also import other style files */
+/* Puedes añadir estilos globales a este archivo e importar otros */
 
 html, body { height: 100%; }
 
@@ -14,6 +14,9 @@ html, body { height: 100%; }
   --border-color: #e0e0e0;
   --toolbar-bg: #09356e;
   --toolbar-text: #ffffff;
+  --background-color-rgb: 244, 247, 250; /* RGB para #f4f7fa */
+  --card-background-rgb: 255, 255, 255; /* RGB para #ffffff */
+  --primary-color-rgb: 0, 45, 114; /* RGB para #002d72 */
   /* Añadimos versión RGB para opacidad */
   --text-color-rgb: 51, 51, 51;
 
@@ -53,6 +56,9 @@ body {
   --border-color: #424242;
   --toolbar-bg: #1e1e1e;
   --toolbar-text: #e0e0e0;
+  --background-color-rgb: 18, 18, 18; /* RGB para #121212 */
+  --card-background-rgb: 30, 30, 30; /* RGB para #1e1e1e */
+  --primary-color-rgb: 163, 212, 255; /* RGB para #a3d4ff */
   --text-color-rgb: 224, 224, 224; /* RGB para tema oscuro */
 }
 
@@ -66,6 +72,9 @@ body {
    --border-color: #ffffff;
    --toolbar-bg: #000000;
    --toolbar-text: #ffff00; /* Texto amarillo en toolbar */
+   --background-color-rgb: 0, 0, 0; /* RGB para #000000 */
+   --card-background-rgb: 0, 0, 0; /* RGB para #000000 */
+   --primary-color-rgb: 255, 255, 0; /* RGB para #ffff00 */
    --text-color-rgb: 255, 255, 255; /* RGB para alto contraste */
 }
 
@@ -88,6 +97,79 @@ body.grayscale .themed-container {
   color: var(--toolbar-text) !important;
 }
 
+/* === ESTILOS PARA TABLAS DE MATERIAL DENTRO DEL CONTENEDOR === */
+.themed-container .mat-mdc-table {
+  background-color: var(--card-background); /* Fondo de la tabla usa el del card */
+}
+
+.themed-container .mat-mdc-header-row {
+   background-color: var(--toolbar-bg); /* Fondo del encabezado como el toolbar */
+}
+
+.themed-container .mat-mdc-header-cell {
+  color: var(--toolbar-text) !important; /* Texto del encabezado como el toolbar */
+  /* Quitamos background-color aquí, se aplica a la fila (mat-mdc-header-row) */
+}
+
+.themed-container .mat-mdc-cell {
+  color: var(--text-color) !important; /* Color del texto de las celdas */
+  border-bottom-color: var(--border-color) !important; /* Color del borde inferior */
+}
+
+.themed-container .mat-mdc-row:hover .mat-mdc-cell {
+  background-color: rgba(var(--text-color-rgb), 0.05) !important; /* Hover sutil basado en el color de texto */
+}
+
+.themed-container .mat-mdc-row:last-child .mat-mdc-cell {
+  border-bottom-color: transparent !important; /* Sin borde en la última fila */
+}
+
+/* Estado "Sin datos" */
+.themed-container .mat-mdc-no-data-row .mat-mdc-cell {
+    color: rgba(var(--text-color-rgb), 0.6) !important; /* Texto atenuado */
+    text-align: center;
+}
+
+/* Paginador */
+.themed-container .mat-mdc-paginator {
+  background-color: var(--card-background) !important; /* Fondo del paginator como el card */
+  color: var(--text-color) !important; /* Texto del paginator */
+  border-top: 1px solid var(--border-color) !important; /* Borde superior */
+}
+/* Color de texto e iconos dentro del paginador */
+.themed-container .mat-mdc-paginator .mat-mdc-select-value,
+.themed-container .mat-mdc-paginator .mat-mdc-paginator-range-label,
+.themed-container .mat-mdc-paginator .mat-mdc-select-arrow,
+.themed-container .mat-mdc-paginator .mat-mdc-icon-button {
+  color: var(--text-color) !important;
+}
+/* Fondo del panel desplegable del paginador */
+/* Es necesario apuntar al panel global que se añade al body */
+.mat-mdc-select-panel.mat-mdc-select-panel-dark {
+    background: var(--card-background); /* Fondo oscuro para panel en tema oscuro */
+}
+/* Forzamos el fondo según el tema del contenedor */
+.themed-container.theme-dark .mat-mdc-select-panel {
+    background: var(--card-background);
+}
+.themed-container.theme-high-contrast .mat-mdc-select-panel {
+    background: var(--background-color); /* Fondo negro en HC */
+    border: 1px solid var(--border-color); /* Borde blanco en HC */
+}
+/* Opciones dentro del panel */
+.themed-container .mat-mdc-option {
+    color: var(--text-color); /* Color de las opciones */
+}
+.themed-container .mat-mdc-option.mat-mdc-option-active { /* Estilo de opción activa/hover */
+    background: rgba(var(--text-color-rgb), 0.08);
+}
+.themed-container .mat-mdc-option.mat-selected:not(.mat-option-disabled) {
+    color: var(--primary-color); /* Color de la opción seleccionada */
+    background: rgba(var(--primary-color-rgb), 0.1); /* Fondo sutil para seleccionada */
+}
+
+/* === FIN ESTILOS PARA TABLAS === */
+
 /* Ajustes específicos para alto contraste DENTRO del contenedor */
 .themed-container.theme-high-contrast a,
 .themed-container.theme-high-contrast .mat-mdc-button.mat-stroked-button {
@@ -101,13 +183,95 @@ body.grayscale .themed-container {
 }
 .themed-container.theme-high-contrast .mat-mdc-icon-button,
 .themed-container.theme-high-contrast .mat-icon {
-  color: var(--toolbar-text);
+  color: var(--toolbar-text); /* Amarillo por defecto en HC para iconos sueltos */
+}
+/* Iconos dentro de botones ya heredan, pero podemos forzar si es necesario */
+.themed-container.theme-high-contrast .mat-mdc-button.mat-primary .mat-icon {
+   color: #000000 !important; /* Negro sobre amarillo */
 }
 .themed-container.theme-high-contrast .mat-mdc-button.mat-warn,
 .themed-container.theme-high-contrast .mat-mdc-raised-button.mat-warn {
   background-color: #FF0000 !important; /* Rojo para warn */
-  color: #000000 !important;
+  color: #000000 !important; /* Texto negro */
 }
+.themed-container.theme-high-contrast .mat-mdc-button.mat-warn .mat-icon {
+   color: #000000 !important; /* Icono negro sobre rojo */
+}
+
+/* === AJUSTES ESPECÍFICOS PARA ALTO CONTRASTE EN TABLAS === */
+.themed-container.theme-high-contrast .mat-mdc-header-row {
+    background-color: var(--background-color) !important; /* Fondo negro */
+}
+.themed-container.theme-high-contrast .mat-mdc-header-cell {
+    color: var(--primary-color) !important; /* Texto amarillo */
+    border-bottom: 1px solid var(--border-color); /* Borde blanco */
+}
+.themed-container.theme-high-contrast .mat-mdc-cell {
+    color: var(--text-color) !important; /* Texto blanco */
+    border-bottom-color: var(--border-color) !important; /* Borde blanco */
+}
+.themed-container.theme-high-contrast .mat-mdc-row:hover .mat-mdc-cell {
+    background-color: var(--accent-color) !important; /* Fondo hover cian */
+    color: var(--background-color) !important; /* Texto negro */
+}
+.themed-container.theme-high-contrast .mat-mdc-paginator {
+    background-color: var(--background-color) !important; /* Fondo negro */
+    color: var(--primary-color) !important; /* Texto amarillo */
+    border-top-color: var(--border-color) !important; /* Borde blanco */
+}
+.themed-container.theme-high-contrast .mat-mdc-paginator .mat-mdc-select-value,
+.themed-container.theme-high-contrast .mat-mdc-paginator .mat-mdc-paginator-range-label,
+.themed-container.theme-high-contrast .mat-mdc-paginator .mat-mdc-select-arrow {
+  color: var(--primary-color) !important; /* Amarillo */
+}
+.themed-container.theme-high-contrast .mat-mdc-paginator .mat-mdc-icon-button {
+    color: var(--accent-color) !important; /* Iconos cian */
+}
+.themed-container.theme-high-contrast .mat-mdc-option {
+    color: var(--primary-color) !important; /* Opciones amarillo */
+}
+.themed-container.theme-high-contrast .mat-mdc-option.mat-mdc-option-active { /* Hover HC */
+     background-color: var(--accent-color) !important;
+     color: var(--background-color) !important; /* Texto negro */
+}
+.themed-container.theme-high-contrast .mat-mdc-option.mat-selected:not(.mat-option-disabled) {
+    color: var(--accent-color) !important; /* Selección cian */
+    background-color: rgba(var(--accent-color-rgb), 0.2) !important; /* Fondo sutil cian */
+}
+
+/* Ajuste Badges HC */
+.themed-container.theme-high-contrast .status-badge,
+.themed-container.theme-high-contrast .priority-badge {
+    color: black !important; /* Texto negro sobre fondos dinámicos */
+    border: 1px solid white; /* Borde para visibilidad */
+}
+/* Ajuste Botones Acción HC */
+.themed-container.theme-high-contrast .actions-cell .mat-mdc-icon-button {
+    color: var(--accent-color) !important; /* Iconos cian en acciones */
+}
+.themed-container.theme-high-contrast .btn-manage-ticket {
+    border-color: var(--accent-color) !important;
+    color: var(--accent-color) !important;
+}
+.themed-container.theme-high-contrast .btn-manage-ticket:hover {
+    background-color: var(--accent-color) !important;
+    color: black !important;
+}
+/* Ajuste Filtro HC */
+.themed-container.theme-high-contrast .filter-bar .mat-mdc-form-field .mdc-notched-outline > * {
+    border-color: var(--primary-color) !important; /* Borde amarillo */
+}
+.themed-container.theme-high-contrast .filter-bar .mat-mdc-form-field .mat-mdc-floating-label,
+.themed-container.theme-high-contrast .filter-bar .mat-mdc-form-field .mat-mdc-select-value,
+.themed-container.theme-high-contrast .filter-bar .mat-mdc-form-field .mat-mdc-select-arrow {
+    color: var(--primary-color) !important; /* Texto amarillo */
+}
+.themed-container.theme-high-contrast .filter-bar .mat-stroked-button {
+    color: var(--primary-color) !important; /* Botón limpiar filtro amarillo */
+    border-color: var(--primary-color) !important;
+}
+
+/* === FIN AJUSTES ALTO CONTRASTE TABLAS === */
 
 /* --- APLICACIÓN GLOBAL DE TAMAÑOS DE FUENTE (Reforzado) --- */
 .themed-container h1, .themed-container .mat-mdc-card-title { font-size: var(--font-size-xl) !important; }
@@ -124,7 +288,9 @@ body.grayscale .themed-container {
 .themed-container .mat-mdc-cell,
 .themed-container .mat-mdc-header-cell,
 .themed-container .mat-mdc-form-field, /* Asegurar que el form field herede */
-.themed-container .mat-mdc-option { /* Para opciones de select */
+.themed-container .mat-mdc-option, /* Para opciones de select */
+.themed-container .mat-mdc-select-value, /* Texto dentro del select */
+.themed-container .mat-mdc-paginator-range-label { /* Texto del paginador */
   font-size: var(--font-size-normal) !important;
 }
 .themed-container small,
@@ -158,3 +324,18 @@ body.grayscale .themed-container {
 .custom-dialog-container .mat-mdc-dialog-container { border-radius: 12px !important; padding: 0 !important; overflow: hidden !important; }
 .custom-dialog-container .mat-mdc-dialog-content { padding: 0 !important; margin: 0 !important; }
 .cdk-overlay-dark-backdrop { background: rgba(30, 58, 138, 0.6) !important; }
+
+/* Corrección adicional para panel de select en overlay */
+.cdk-overlay-pane {
+  /* Asegura que el panel use las variables del tema si es posible */
+  /* Esto puede ser complejo, pero intentamos con el fondo del card */
+  /* background-color: var(--card-background); */ /* Comentado - puede causar problemas si no se aplica selectivamente */
+}
+/* Estilo específico para panel de select cuando el body tiene la clase del tema */
+body.theme-dark .cdk-overlay-pane .mat-mdc-select-panel {
+  background: #1e1e1e; /* Fondo específico para tema oscuro */
+}
+body.theme-high-contrast .cdk-overlay-pane .mat-mdc-select-panel {
+  background: #000000; /* Fondo específico para HC */
+  border: 1px solid #ffffff;
+}

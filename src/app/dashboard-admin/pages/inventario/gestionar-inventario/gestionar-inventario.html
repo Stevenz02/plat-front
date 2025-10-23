@@ -15,10 +15,10 @@
             <mat-icon>add</mat-icon>
             Registrar Nuevo Equipo
           </button>
-          
+
           <mat-form-field appearance="outline" class="filter-field">
             <mat-label>Buscar en inventario...</mat-label>
-            <input matInput (keyup)="applyFilter($event)" placeholder="Ej: Impresora, PC-001, etc.">
+            <input matInput (keyup)="applyFilter($event)" placeholder="Ej: Impresora, PC-001, Operativo, etc.">
             <mat-icon matSuffix>search</mat-icon>
           </mat-form-field>
         </div>
@@ -40,7 +40,24 @@
               <th mat-header-cell *matHeaderCellDef> Descripción </th>
               <td mat-cell *matCellDef="let equipo"> {{equipo.descripcion}} </td>
             </ng-container>
-            
+
+            <ng-container matColumnDef="estado">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado </th>
+              <td mat-cell *matCellDef="let equipo">
+                <mat-chip
+                  class="chip-estado"
+                  [ngClass]="{
+                    'chip-operativo': getEstadoNombre(equipo.estado_id) === 'Operativo',
+                    'chip-mantenimiento': getEstadoNombre(equipo.estado_id) === 'En Mantenimiento',
+                    'chip-danado': getEstadoNombre(equipo.estado_id) === 'Dañado',
+                    'chip-disponible': getEstadoNombre(equipo.estado_id) === 'Disponible',
+                    'chip-desconocido': getEstadoNombre(equipo.estado_id) === 'Desconocido'
+                  }">
+                  {{ getEstadoNombre(equipo.estado_id) }}
+                </mat-chip>
+              </td>
+            </ng-container>
+
             <ng-container matColumnDef="usuario_asignado">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Usuario Asignado </th>
               <td mat-cell *matCellDef="let equipo"> {{equipo.nombre_usuario_asignado || 'Sin asignar'}} </td>
@@ -60,7 +77,7 @@
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            
+
             <tr class="mat-row" *matNoDataRow>
               <td class="mat-cell text-center" [attr.colspan]="displayedColumns.length">
                 No se encontraron equipos que coincidan con la búsqueda.

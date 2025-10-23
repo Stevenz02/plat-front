@@ -66,3 +66,63 @@
   background-color: #fff;
   border-top: 1px solid var(--border-color);
 }
+
+/* --- NUEVO: Estilos para Chips de Estado Personalizados --- */
+/* Base para ambos chips */
+.chip-activo,
+.chip-inactivo {
+  /* Estilos generales del chip como contenedor */
+  height: 24px !important;
+  min-height: 24px !important;
+  padding: 0 !important; /* Quitamos padding del contenedor principal */
+  border-radius: 12px !important;
+  border: none !important;
+  overflow: hidden; /* Oculta cualquier desbordamiento interno */
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box;
+  vertical-align: middle; /* Alineación vertical */
+}
+
+/* Estilo para el contenedor interno del texto/label */
+:host ::ng-deep .chip-activo .mat-mdc-chip-action-label,
+:host ::ng-deep .chip-inactivo .mat-mdc-chip-action-label {
+  padding: 4px 10px !important; /* Aplicamos padding aquí */
+  border-radius: inherit; /* Hereda el border-radius del padre */
+  display: block; /* Asegura que ocupe el espacio */
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  color: white !important; /* Texto blanco por defecto */
+  font-weight: 500;
+  font-size: 0.75rem;
+  line-height: 16px; /* Ajusta line-height a la altura interna (24px - 4px*2 padding) */
+  text-align: center;
+}
+
+
+/* Aplicar colores de fondo */
+.chip-activo {
+  background-color: #4CAF50 !important; /* Verde */
+}
+
+.chip-inactivo {
+  background-color: #f44336 !important; /* Rojo */
+}
+
+/* Ajustes para Alto Contraste */
+.themed-container.theme-high-contrast .chip-activo {
+    background-color: #00FF00 !important; /* Verde brillante */
+    border: 1px solid white !important;
+}
+.themed-container.theme-high-contrast .chip-inactivo {
+    background-color: #FF0000 !important; /* Rojo brillante */
+    border: 1px solid white !important;
+}
+
+/* Asegurar color de texto negro en HC */
+.themed-container.theme-high-contrast :host ::ng-deep .chip-activo .mat-mdc-chip-action-label,
+.themed-container.theme-high-contrast :host ::ng-deep .chip-inactivo .mat-mdc-chip-action-label {
+   color: black !important;
+}

@@ -6,7 +6,7 @@
         <img src="assets/logoepa.png" alt="EPA" class="logo-img" />
         <div class="logo-text">
           <h3>Tablero de control</h3>
-          <h4>Versión: 1.0</h4>
+          <h4>Versión: 1.2</h4>
         </div>
       </div>
       <nav class="menu">
@@ -19,11 +19,11 @@
         <div class="menu-item" routerLink="/dashboard/inventario" routerLinkActive="active" matTooltip="Mis Equipos" [matTooltipDisabled]="menuAbierto">
           <mat-icon>receipt_long</mat-icon> <span class="label">Inventario</span>
         </div>
-        <div class="menu-item" routerLink="/dashboard/perfil" routerLinkActive="active" matTooltip="Gestionar Perfil" [matTooltipDisabled]="menuAbierto">
-          <mat-icon>manage_accounts</mat-icon> <span class="label">Gestionar Perfil</span>
-        </div>
         <div class="menu-item disabled" matTooltip="Recursos (en desarrollo)" [matTooltipDisabled]="menuAbierto">
           <mat-icon>build</mat-icon> <span class="label">Conocimiento</span>
+        </div>
+        <div class="menu-item" routerLink="/dashboard/perfil" routerLinkActive="active" matTooltip="Gestionar Perfil" [matTooltipDisabled]="menuAbierto">
+          <mat-icon>manage_accounts</mat-icon> <span class="label">Gestionar Perfil</span>
         </div>
       </nav>
 

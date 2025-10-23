@@ -1,129 +1,147 @@
-/* Definición de colores institucionales como variables CSS */
-:host {
-  --primary-color: #002d72; /* Azul institucional */
-  --accent-color: #0d47a1;  /* Un azul un poco más claro para acentos */
-  --text-light: #ffffff;
-  --background-light: #f4f7fa;
-  --border-color: #e0e0e0;
-}
+/* src/app/dashboard-admin/pages/inventario/gestionar-inventario/gestionar-inventario.css - CORREGIDO */
+
+/* No se necesitan variables locales aquí */
 
 .container-fluid {
-  background-color: var(--background-light);
-  min-height: calc(100vh - 64px); /* Ajustar según la altura de tu navbar */
+  background-color: var(--background-color); /* Heredado */
+  min-height: calc(100vh - 64px);
 }
 
-/* Estilo de la tarjeta principal */
-.card {
-  border: none;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-}
+/* Estilos base .card, .card-body, tablas vienen de styles.css */
 
 .card-header {
-  background-color: var(--primary-color);
-  color: var(--text-light);
   padding: 24px;
   border-bottom: 3px solid var(--accent-color);
+  /* background-color y color vienen de styles.css */
 }
 
 .card-header h1 {
   margin: 0;
-  font-size: 1.8rem;
+  font-size: var(--font-size-large); /* Usa variable */
   font-weight: 500;
+  /* color viene de styles.css */
 }
 
 .card-header p {
   margin: 4px 0 0;
   opacity: 0.9;
-  font-size: 0.95rem;
+  font-size: var(--font-size-small); /* Usa variable */
+  /* color viene de styles.css */
 }
 
 .card-body {
   padding: 24px;
-  position: relative; /* Necesario para el spinner de carga */
+  position: relative; /* Para el spinner */
 }
 
-/* Spinner de Carga */
+/* Spinner - Usa variables globales */
 .loading-shade {
   position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: rgba(255, 255, 255, 0.85);
+  inset: 0;
+  background: rgba(var(--card-background-rgb), 0.85); /* Usa variable RGB */
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+.loading-shade mat-spinner::ng-deep circle {
+    stroke: var(--primary-color) !important; /* Asegura contraste */
+}
+/* Spinner en HC */
+.themed-container.theme-high-contrast .loading-shade mat-spinner::ng-deep circle {
+    stroke: var(--primary-color) !important; /* Amarillo */
+}
 
-/* Contenedor de la tabla para permitir scroll horizontal en pantallas más pequeñas */
+/* Contenedor tabla */
 .table-container {
   overflow-x: auto;
   border-radius: 4px;
+  border: 1px solid var(--border-color); /* Borde sutil con variable */
 }
 
-/* Encabezado de la tabla */
-.mat-mdc-header-cell {
-  background-color: var(--primary-color) !important;
-  color: var(--text-light) !important;
-  font-weight: 600;
-  font-size: 14px;
-  padding: 16px;
+/* Encabezados, celdas, hover vienen de styles.css */
+
+/* --- NUEVO: Estilos base para chips de estado de equipo --- */
+.chip-estado {
+  /* Forzar la forma del contenedor del chip */
+  --mdc-chip-container-shape: 12px !important; /* Mismo valor que border-radius */
+
+  color: white !important; /* Texto blanco por defecto */
+  height: 24px !important;
+  min-height: 24px !important;
+  padding: 0 !important; /* Quitamos padding del contenedor principal */
+  border-radius: 12px !important;
+  border: none !important;
+  overflow: hidden; /* Oculta cualquier desbordamiento interno */
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box;
+  vertical-align: middle; /* Alineación vertical */
+  font-weight: 500;
+  font-size: 0.75rem;
+}
+/* Estilo para el contenedor interno del texto/label */
+:host ::ng-deep .chip-estado .mat-mdc-chip-action-label {
+  padding: 4px 10px !important; /* Aplicamos padding aquí */
+  border-radius: inherit; /* Hereda el border-radius del padre */
+  display: block; /* Asegura que ocupe el espacio */
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  color: white !important; /* Texto blanco por defecto */
+  font-weight: 500;
+  font-size: 0.75rem;
+  line-height: 16px; /* Ajusta line-height a la altura interna (24px - 4px*2 padding) */
+  text-align: center;
 }
 
-/* Celdas de la tabla */
-.mat-mdc-cell {
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border-color);
-  color: #333;
-}
+/* Colores específicos para cada estado */
+.chip-operativo { background-color: #4CAF50 !important; } /* Verde */
+.chip-mantenimiento { background-color: #FF9800 !important; } /* Naranja */
+.chip-danado { background-color: #f44336 !important; } /* Rojo */
+.chip-disponible { background-color: #2196F3 !important; } /* Azul */
+.chip-desconocido { background-color: #9E9E9E !important; } /* Gris */
 
-.mat-mdc-row:hover .mat-mdc-cell {
-  background-color: #f5f5f5;
+/* Ajustes Alto Contraste para chips de estado */
+.themed-container.theme-high-contrast .chip-estado {
+  border: 1px solid white !important;
+  --mdc-chip-container-shape: 11px !important; /* Ajustar por borde */
 }
-
-/* Insignias de Estado y Prioridad */
-.status-badge, .priority-badge {
-  display: inline-block;
-  padding: 5px 14px;
-  border-radius: 16px;
-  color: var(--text-light);
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.themed-container.theme-high-contrast :host ::ng-deep .chip-estado .mat-mdc-chip-action-label {
+    color: black !important; /* Texto negro en HC */
 }
+.themed-container.theme-high-contrast .chip-operativo { background-color: #00FF00 !important; } /* Verde brillante */
+.themed-container.theme-high-contrast .chip-mantenimiento { background-color: #FFA500 !important; } /* Naranja brillante */
+.themed-container.theme-high-contrast .chip-danado { background-color: #FF0000 !important; } /* Rojo brillante */
+.themed-container.theme-high-contrast .chip-disponible { background-color: #00FFFF !important; } /* Cian */
+.themed-container.theme-high-contrast .chip-desconocido { background-color: #FFFFFF !important; } /* Blanco */
+/* --- FIN ESTILOS CHIPS ESTADO --- */
 
-/* Botones de acción */
+
+/* Botones de acción - Mantenemos alineación corregida */
 .actions-cell {
   white-space: nowrap;
   display: flex;
   align-items: center;
+  gap: 10px; /* Espacio uniforme */
+  padding-top: 10px; /* Ajuste vertical */
+  padding-bottom: 10px; /* Ajuste vertical */
 }
 
-/* Aplica un margen a CUALQUIER botón o enlace dentro de la celda */
-.actions-cell > * {
-  margin: 0 4px;
+/* Icon button color viene de styles.css */
+/* Ajuste de color para botón accent (person_add) */
+.actions-cell button[color="accent"] {
+    color: var(--accent-color);
+}
+.themed-container.theme-high-contrast .actions-cell button[color="accent"] {
+    color: var(--accent-color) !important; /* Cian en HC */
 }
 
-.btn-manage-ticket {
-  border-color: var(--accent-color);
-  color: var(--accent-color);
-}
-.btn-manage-ticket:hover {
-    background-color: var(--accent-color);
-    color: var(--text-light)
-}
 
-/* Paginador */
-.mat-mdc-paginator {
-  background-color: #fff;
-  border-top: 1px solid var(--border-color);
-}
+/* Paginador - Estilos base vienen de styles.css */
 
-/* ESTILOS NUEVOS para la barra de herramientas */
+/* Barra de herramientas superior (Crear + Buscar) */
 .toolbar-container {
   display: flex;
   justify-content: space-between;
@@ -133,7 +151,17 @@
   margin-bottom: 1.5rem;
 }
 
+/* Campo de filtro - Estilos base vienen de styles.css */
 .filter-field {
   width: 100%;
   max-width: 350px;
+}
+
+/* Ajuste específico para el botón "Registrar Nuevo Equipo" en HC */
+.themed-container.theme-high-contrast .toolbar-container button[color="primary"] {
+    background-color: var(--primary-color) !important; /* Fondo amarillo */
+    color: #000000 !important; /* Texto negro */
+}
+.themed-container.theme-high-contrast .toolbar-container button[color="primary"] mat-icon {
+   color: #000000 !important; /* Icono negro */
 }

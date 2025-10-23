@@ -37,7 +37,7 @@
             <ng-container matColumnDef="activo">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado </th>
               <td mat-cell *matCellDef="let user">
-                <mat-chip [color]="user.activo ? 'primary' : 'warn'" selected>
+                <mat-chip [ngClass]="{'chip-activo': user.activo, 'chip-inactivo': !user.activo}">
                   {{ user.activo ? 'Activo' : 'Inactivo' }}
                 </mat-chip>
               </td>
