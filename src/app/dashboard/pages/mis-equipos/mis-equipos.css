@@ -1,96 +1,92 @@
-/* Puedes copiar estilos base de mis-tickets.css y adaptarlos */
-:host {
-  --primary-color: #002d72;
-  --accent-color: #0d47a1;
-  --text-light: #ffffff;
-  --background-light: #f4f7fa;
-  --border-color: #e0e0e0;
-}
+/* src/app/dashboard/pages/mis-equipos/mis-equipos.css - CORREGIDO */
+
+/* No se necesitan variables locales aquí */
 
 .container-fluid {
-  background-color: var(--background-light);
+  background-color: var(--background-color); /* Heredado */
   min-height: calc(100vh - 64px);
 }
 
-.equipos-card {
-  border: none;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-  background-color: var(--text-light);
-}
-
 .card-header {
-  background-color: var(--primary-color);
-  color: var(--text-light);
+  /* background-color y color vienen de styles.css */
   padding: 16px 24px;
 }
 
 .card-header .mat-mdc-card-title {
-  font-size: 1.5rem;
+  font-size: var(--font-size-large); /* Usa variable */
   font-weight: 500;
+  /* color viene de styles.css */
 }
 .card-header .mat-mdc-card-subtitle {
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.9rem;
+  color: rgba(var(--toolbar-text, 255, 255, 255), 0.85); /* Subtítulo relativo al color de texto del toolbar */
+  font-size: var(--font-size-small); /* Usa variable */
   margin-top: 4px;
 }
+/* Ajuste subtítulo en HC */
+.themed-container.theme-high-contrast .card-header .mat-mdc-card-subtitle {
+  color: var(--accent-color) !important; /* Cian en HC */
+}
+
 
 .card-content {
   padding: 24px;
-  position: relative;
+  position: relative; /* Para spinner */
 }
 
+/* Spinner - Usa variables globales */
 .loading-shade {
   position: absolute;
-  inset: 0; /* Abarca todo el card-content */
-  background: rgba(255, 255, 255, 0.85);
+  inset: 0;
+  background: rgba(var(--card-background-rgb), 0.85); /* Variable RGB */
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+.loading-shade mat-spinner::ng-deep circle {
+    stroke: var(--primary-color) !important; /* Asegura contraste */
+}
+/* Spinner en HC */
+.themed-container.theme-high-contrast .loading-shade mat-spinner::ng-deep circle {
+    stroke: var(--primary-color) !important; /* Amarillo */
+}
 
+/* Contenedor tabla */
 .table-container {
-  overflow-x: auto; /* Permite scroll horizontal en tablas anchas */
+  overflow-x: auto;
   border-radius: 4px;
-  border: 1px solid var(--border-color); /* Borde sutil */
+  border: 1px solid var(--border-color); /* Variable */
 }
 
-.mat-mdc-header-cell {
-  background-color: #eef2f7 !important; /* Un gris azulado claro */
-  color: var(--primary-color) !important;
-  font-weight: 600;
-  font-size: 0.85rem;
-}
+/* Encabezado tabla - Usa estilos globales de styles.css */
+/* .mat-mdc-header-cell {} */
 
-.mat-mdc-cell {
-  padding: 10px 16px;
-  border-bottom: 1px solid var(--border-color);
-  font-size: 0.9rem;
-}
+/* Celdas tabla - Usa estilos globales de styles.css */
+/* .mat-mdc-cell {} */
+/* .mat-mdc-row:hover .mat-mdc-cell {} */
+/* .mat-mdc-row:last-child .mat-mdc-cell {} */
 
-.mat-mdc-row:hover .mat-mdc-cell {
-  background-color: #f9fafb;
-}
-
-.mat-mdc-row:last-child .mat-mdc-cell {
-    border-bottom: none;
-}
-
+/* Botones de acción - Aplicar alineación */
 .actions-cell {
   white-space: nowrap; /* Evita que los botones se partan */
+  display: flex; /* Activa Flexbox */
+  align-items: center; /* Centra verticalmente los items */
+  gap: 10px; /* Espacio uniforme entre elementos con gap */
+  padding-top: 10px; /* Ajusta el padding si es necesario */
+  padding-bottom: 10px;
 }
-.actions-cell button {
-  margin: 0 4px;
-}
+/* Quitar margen si solo hay un botón */
+/* .actions-cell button { margin: 0 4px; } */
 
-.mat-mdc-paginator {
-  background-color: transparent;
-  border-top: 1px solid var(--border-color);
-}
+/* Icon button color viene de styles.css */
 
-.filter-field { /* Estilo para el campo de búsqueda */
+/* Paginador - Usa estilos globales de styles.css */
+/* .mat-mdc-paginator {} */
+
+/* Campo de filtro */
+.filter-field {
     max-width: 400px;
-    margin-left: auto; /* Lo alinea a la derecha si hay espacio */
+    margin-left: auto; /* Alinea a la derecha si hay espacio */
+    margin-bottom: 1.5rem; /* Espacio antes de la tabla */
+    /* Colores heredados de styles.css */
 }
