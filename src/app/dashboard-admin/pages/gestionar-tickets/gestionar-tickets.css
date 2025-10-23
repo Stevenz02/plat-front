@@ -1,124 +1,110 @@
-/* Definición de colores institucionales como variables CSS */
-:host {
-  --primary-color: #002d72; /* Azul institucional */
-  --accent-color: #0d47a1;  /* Un azul un poco más claro para acentos */
-  --text-light: #ffffff;
-  --background-light: #f4f7fa;
-  --border-color: #e0e0e0;
-}
+/* src/app/dashboard-admin/pages/gestionar-tickets/gestionar-tickets.css - CORREGIDO (Alineación Acciones) */
+
+/* No se necesitan variables locales aquí */
 
 .container-fluid {
-  background-color: var(--background-light);
-  min-height: calc(100vh - 64px); /* Ajustar según la altura de tu navbar */
+  background-color: var(--background-color); /* Heredado */
+  min-height: calc(100vh - 64px);
 }
 
-/* Estilo de la tarjeta principal */
-.card {
-  border: none;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-}
+/* Los estilos base de .card, .card-body, .mat-mdc-table, .mat-mdc-header-cell, .mat-mdc-cell, etc., vienen de styles.css */
 
 .card-header {
-  background-color: var(--primary-color);
-  color: var(--text-light);
+  /* Ya estilizado globalmente, solo añadimos/mantenemos lo específico */
   padding: 24px;
   border-bottom: 3px solid var(--accent-color);
+  /* background-color y color vienen de styles.css */
 }
 
 .card-header h1 {
   margin: 0;
-  font-size: 1.8rem;
+  font-size: var(--font-size-large); /* Usa variable */
   font-weight: 500;
+  /* color viene de styles.css */
 }
 
 .card-header p {
   margin: 4px 0 0;
   opacity: 0.9;
-  font-size: 0.95rem;
+  font-size: var(--font-size-small); /* Usa variable */
+  /* color viene de styles.css */
 }
 
 .card-body {
   padding: 24px;
-  position: relative; /* Necesario para el spinner de carga */
+  position: relative; /* Para el spinner */
 }
 
-/* Spinner de Carga */
+/* Spinner - Usa variables globales */
 .loading-shade {
   position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: rgba(255, 255, 255, 0.85);
+  inset: 0; /* Usa inset en lugar de top/left/bottom/right */
+  background: rgba(var(--card-background-rgb), 0.85); /* Usa variable RGB */
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+/* Estilo del círculo del spinner */
+.loading-shade mat-spinner::ng-deep circle {
+    stroke: var(--primary-color) !important; /* Asegura contraste */
+}
+/* En HC, usa el color primario de HC */
+.themed-container.theme-high-contrast .loading-shade mat-spinner::ng-deep circle {
+    stroke: var(--primary-color) !important; /* Amarillo */
+}
 
-/* Contenedor de la tabla para permitir scroll horizontal en pantallas más pequeñas */
+
+/* Contenedor tabla */
 .table-container {
   overflow-x: auto;
   border-radius: 4px;
+  border: 1px solid var(--border-color); /* Borde sutil con variable */
 }
 
-/* Encabezado de la tabla */
-.mat-mdc-header-cell {
-  background-color: var(--primary-color) !important;
-  color: var(--text-light) !important;
-  font-weight: 600;
-  font-size: 14px;
-  padding: 16px;
-}
-
-/* Celdas de la tabla */
-.mat-mdc-cell {
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border-color);
-  color: #333;
-}
-
-.mat-mdc-row:hover .mat-mdc-cell {
-  background-color: #f5f5f5;
-}
-
-/* Insignias de Estado y Prioridad */
+/* Badges - Estilos base y ajuste HC vienen de styles.css */
 .status-badge, .priority-badge {
   display: inline-block;
   padding: 5px 14px;
   border-radius: 16px;
-  color: var(--text-light);
-  font-size: 12px;
+  color: white; /* Mantenemos blanco por defecto, HC lo ajusta */
+  font-size: 12px; /* Tamaño fijo está bien */
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
+/* Estilo HC ya está en styles.css */
 
-/* Botones de acción */
+
+/* --- CORRECCIÓN Celdas de Acción --- */
 .actions-cell {
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
+  white-space: nowrap; /* Evita que los botones se partan */
+  display: flex; /* Activa Flexbox */
+  align-items: center; /* Centra verticalmente los items */
+  gap: 10px; /* Espacio uniforme entre elementos con gap */
+  padding-top: 10px; /* Ajusta el padding si es necesario */
+  padding-bottom: 10px;
 }
-
-/* Aplica un margen a CUALQUIER botón o enlace dentro de la celda */
-.actions-cell > * {
+/* Quitar margen individual si usamos gap */
+/* .actions-cell > * {
   margin: 0 4px;
-}
+} */
+/* --- FIN CORRECCIÓN --- */
 
+
+/* Icon button color viene de styles.css */
+
+/* Botón específico 'Gestionar' */
 .btn-manage-ticket {
-  border-color: var(--accent-color);
-  color: var(--accent-color);
+  border-color: var(--accent-color); /* Variable de tema */
+  color: var(--accent-color); /* Variable de tema */
 }
 .btn-manage-ticket:hover {
-    background-color: var(--accent-color);
-    color: var(--text-light)
+    background-color: var(--accent-color); /* Variable de tema */
+    /* Color de texto que contraste con accent-color */
+    color: var(--toolbar-text); /* Intentamos con el color de texto del toolbar */
 }
+/* Estilo específico para HC ya está en styles.css */
 
-/* Paginador */
-.mat-mdc-paginator {
-  background-color: #fff;
-  border-top: 1px solid var(--border-color);
-}
+/* Paginador - Estilos base vienen de styles.css */
+/* .mat-mdc-paginator {} */ /* No necesita reglas extra aquí */
