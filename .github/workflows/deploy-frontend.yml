@@ -1,0 +1,66 @@
+name: Despliegue de Frontend a Firebase
+
+# 1. Trigger: Se activa en cada push a la rama 'development'
+# (Asegúrate de que tu rama se llame 'development' o cámbiala a 'main')
+on:
+  push:
+    branches:
+      - development
+
+jobs:
+  # ------------------------------
+  # TRABAJO DE PRUEBAS (CI)
+  # ------------------------------
+  test:
+    name: 1. Pruebas Unitarias (CI)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sacar el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Correr pruebas (headless)
+        # El script "test" en tu package.json es "ng test".
+        # Le añadimos las banderas para que funcione en un servidor.
+        run: npm run test -- --watch=false --browsers=ChromeHeadless
+
+  # ------------------------------
+  # TRABAJO DE DESPLIEGUE (CD)
+  # ------------------------------
+  deploy:
+    name: 2. Desplegar en Firebase (CD)
+    runs-on: ubuntu-latest
+    # El despliegue solo ocurre si el trabajo 'test' fue exitoso
+    needs: test
+
+    steps:
+      - name: Sacar el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Construir la App (Build)
+        # El script "build" en tu package.json es "ng build"
+        run: npm run build -- --configuration production
+
+      - name: Desplegar en Firebase
+        uses: w9jds/firebase-action@v3.0.0
+        with:
+          # Usamos el secreto que guardamos
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          # El comando a ejecutar
+          # Tu firebase.json está configurado para "hosting"
+          action: firebase deploy --only hosting
