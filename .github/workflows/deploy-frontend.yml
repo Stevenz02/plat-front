@@ -57,7 +57,7 @@ jobs:
         run: npm run build -- --configuration production
 
       - name: Desplegar en Firebase
-        uses: w9jds/firebase-action@v3.0.0
+        uses: w9jds/firebase-action@v2.1.0
         with:
           # Usamos el secreto que guardamos
           token: ${{ secrets.FIREBASE_TOKEN }}
