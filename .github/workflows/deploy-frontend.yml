@@ -1,7 +1,5 @@
 name: Despliegue de Frontend a Firebase
 
-# 1. Trigger: Se activa en cada push a la rama 'development'
-# (Asegúrate de que tu rama se llame 'development' o cámbiala a 'main')
 on:
   push:
     branches:
@@ -18,7 +16,7 @@ jobs:
       - name: Sacar el código
         uses: actions/checkout@v4
 
-      - name: Configurar Node.js
+      - name: Configurar Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -27,8 +25,6 @@ jobs:
         run: npm install
 
       - name: Correr pruebas (headless)
-        # El script "test" en tu package.json es "ng test".
-        # Le añadimos las banderas para que funcione en un servidor.
         run: npm run test -- --watch=false --browsers=ChromeHeadless
 
   # ------------------------------
@@ -37,14 +33,13 @@ jobs:
   deploy:
     name: 2. Desplegar en Firebase (CD)
     runs-on: ubuntu-latest
-    # El despliegue solo ocurre si el trabajo 'test' fue exitoso
     needs: test
 
     steps:
       - name: Sacar el código
         uses: actions/checkout@v4
 
-      - name: Configurar Node.js
+      - name: Configurar Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -53,14 +48,14 @@ jobs:
         run: npm install
 
       - name: Construir la App (Build)
-        # El script "build" en tu package.json es "ng build"
         run: npm run build -- --configuration production
 
-      - name: Desplegar en Firebase
-        uses: w9jds/firebase-action@v2.1.0
+      - name: Desplegar en Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          # Usamos el secreto que guardamos
-          token: ${{ secrets.FIREBASE_TOKEN }}
-          # El comando a ejecutar
-          # Tu firebase.json está configurado para "hosting"
-          action: firebase deploy --only hosting
+          # El secreto que ya creaste (FIREBASE_TOKEN)
+          repoToken: ${{ secrets.GITHUB_TOKEN }} 
+          firebaseServiceAccount: ${{ secrets.FIREBASE_TOKEN }}
+          channelId: live
+          # El ID de tu proyecto de Firebase
+          projectId: plat-epa
